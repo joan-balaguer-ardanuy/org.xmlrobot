@@ -2,13 +2,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.xmlrobot</groupId>
-    <artifactId>root</artifactId>
+    <artifactId>core</artifactId>
     <version>1.0</version>
   </parent>
-  <artifactId>common</artifactId>
-  <packaging>pom</packaging>
-  <modules>
-  	<module>lang</module>
-  	<module>data</module>
-  </modules>
+  <artifactId>control</artifactId>
 </project>

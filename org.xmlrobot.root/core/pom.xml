@@ -5,10 +5,10 @@
     <artifactId>root</artifactId>
     <version>1.0</version>
   </parent>
-  <artifactId>common</artifactId>
+  <artifactId>core</artifactId>
   <packaging>pom</packaging>
   <modules>
-  	<module>lang</module>
-  	<module>data</module>
+  	<module>control</module>
+  	<module>parent</module>
   </modules>
 </project>
