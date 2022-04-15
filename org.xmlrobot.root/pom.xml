@@ -4,4 +4,7 @@
   <artifactId>root</artifactId>
   <version>1.0</version>
   <packaging>pom</packaging>
+  <modules>
+  	<module>common</module>
+  </modules>
 </project>
