@@ -3,15 +3,15 @@ package org.xmlrobot.configuration;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import hyperspace.Message;
 import hyperspace.XML;
 
 /**
- * Service QName configuration XML message class.
- * It inherits {@link AbstractConfiguration} class and contains 
- * all the necessary data to instance a
+ * Service QName {@link XML} {@link Message} class.
+ * It contains all the necessary data to instance a
  * {@link javax.xml.namespace.QName}. It encapsulates a 
  * namespaceURI, a localPart and a prefix. Look at
- * {@link org.httprobot.configuration.adapter.ServiceQNameAdapter} 
+ * {@link org.xmlrobot.configuration.adapter.ServiceQNameAdapter} 
  * to see how this object is marshalled and unmarshalled 
  * by JAXB framework.
  * @author joan

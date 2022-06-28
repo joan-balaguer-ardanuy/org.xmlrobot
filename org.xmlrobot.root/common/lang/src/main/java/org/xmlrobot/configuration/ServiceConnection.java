@@ -6,15 +6,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import hyperspace.Message;
 import hyperspace.XML;
 
 import org.xmlrobot.configuration.adapter.ServiceQNameAdapter;
 import org.xmlrobot.configuration.adapter.ServiceUrlAdapter;
 
 /**
- * Service connection XML configuration message class.
- * Inherits {@link AbstractConfiguration} and encapsulates a
- * {@link QName} and {@link URL} properties. It contains all
+ * Service connection {@link XML} {@link Message} class.
+ * Encapsulates a {@link QName} and {@link URL} properties. It contains all
  * necessary data to connect to the WebService server which will
  * provide the {@link Source} configuration XML message.
  * @author joan

@@ -6,4 +6,11 @@
     <version>1.0</version>
   </parent>
   <artifactId>data</artifactId>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.xmlrobot</groupId>
+  		<artifactId>lang</artifactId>
+  		<version>1.0</version>
+  	</dependency>
+  </dependencies>
 </project>

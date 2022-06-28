@@ -11,4 +11,16 @@
   	<module>control</module>
   	<module>parent</module>
   </modules>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.xmlrobot</groupId>
+  		<artifactId>lang</artifactId>
+  		<version>1.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.xmlrobot</groupId>
+  		<artifactId>data</artifactId>
+  		<version>1.0</version>
+  	</dependency>
+  </dependencies>
 </project>
