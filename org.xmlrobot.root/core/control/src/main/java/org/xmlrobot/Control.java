@@ -3,15 +3,13 @@
  */
 package org.xmlrobot;
 
-import java.util.Map;
-
 /**
  * @author joan
  *
  */
-public interface Control 
-	extends Robot<Control>, Map<Data, Object> {
+public class Control 
+	extends AbstractStream<Data,Object,Control> {
 
-	void initialitze();
-	void load();
+	private static final long serialVersionUID = -3218428113375546278L;
+
 }

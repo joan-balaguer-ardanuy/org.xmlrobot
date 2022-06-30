@@ -1,9 +1,10 @@
 package org.xmlrobot;
 
-/**
- * @author joan
- *
- */
-public interface Parent extends Robot<Parent> {
+public class Parent<K,V> extends AbstractStream<K,V,Parent<?,?>> {
 
+	private static final long serialVersionUID = 3687888789355724893L;
+	
+	public Parent() {
+		
+	}
 }
