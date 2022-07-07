@@ -67,7 +67,7 @@ public final class Replace extends AbstractString {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Replace clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

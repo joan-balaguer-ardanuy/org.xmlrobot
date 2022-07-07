@@ -45,7 +45,7 @@ public final class Equals extends AbstractString {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Equals clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

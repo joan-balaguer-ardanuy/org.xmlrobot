@@ -3,6 +3,7 @@ package org.xmlrobot.datatype;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import hyperspace.Message;
 import hyperspace.XML;
 import org.xmlrobot.content.ContentTypeRef;
 import org.xmlrobot.unit.Action;
@@ -56,7 +57,7 @@ public final class Document extends XML {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Document clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -3,6 +3,7 @@ package org.xmlrobot.configuration;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import hyperspace.Message;
 import hyperspace.XML;
 
 /**
@@ -137,7 +138,7 @@ public final class ServiceUrl extends XML {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Message clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

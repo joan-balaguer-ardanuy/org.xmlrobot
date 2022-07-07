@@ -20,7 +20,7 @@ public final class Trim extends AbstractString {
 	}
 
 	@Override
-	public Object clone() {
+	public Trim clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

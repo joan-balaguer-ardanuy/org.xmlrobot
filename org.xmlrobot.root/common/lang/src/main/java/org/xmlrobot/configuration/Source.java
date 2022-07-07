@@ -1,9 +1,12 @@
 package org.xmlrobot.configuration;
 
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import hyperspace.Message;
 import hyperspace.XML;
 import org.xmlrobot.content.ContentTypeRoot;
 import org.xmlrobot.datatype.DataSource;
@@ -33,7 +36,7 @@ public final class Source extends XML {
 	/**
 	 * The set of data sources.
 	 */
-	LinkedHashSet<DataSource> dataSource;
+	LinkedList<DataSource> dataSource;
 	
 	/**
 	 * Returns the {@link ContentTypeRoot}.
@@ -55,14 +58,14 @@ public final class Source extends XML {
 	 * @return the {@link LinkedHashSet} of {@link DataSource}.
 	 */
 	@XmlElement
-	public LinkedHashSet<DataSource> getDataSource() {
+	public LinkedList<DataSource> getDataSource() {
 		return dataSource;
 	}
 	/**
 	 * Sets a {@link LinkedHashSet} of {@link DataSource}
 	 * @param dataSource the {@link LinkedHashSet} of {@link DataSource}.
 	 */
-	public void setDataSource(LinkedHashSet<DataSource> dataSource) {
+	public void setDataSource(LinkedList<DataSource> dataSource) {
 		this.dataSource = dataSource;
 	}
 	
@@ -73,7 +76,7 @@ public final class Source extends XML {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Source clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

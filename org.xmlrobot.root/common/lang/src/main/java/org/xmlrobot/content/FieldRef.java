@@ -3,6 +3,7 @@ package org.xmlrobot.content;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import hyperspace.Message;
 import hyperspace.XML;
 
 import org.xmlrobot.DataType;
@@ -49,7 +50,7 @@ public final class FieldRef extends XML {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public FieldRef clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

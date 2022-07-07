@@ -2,6 +2,7 @@ package org.xmlrobot.content;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import hyperspace.Message;
 import hyperspace.XML;
 
 /**
@@ -27,7 +28,7 @@ public final class ContentTypeRef extends XML {
 	}
 
 	@Override
-	public Object clone() {
+	public Message clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -116,7 +116,7 @@ public final class Driver extends XML {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Driver clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

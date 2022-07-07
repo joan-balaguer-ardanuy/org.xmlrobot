@@ -45,7 +45,7 @@ public final class Contains extends AbstractString {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Contains clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

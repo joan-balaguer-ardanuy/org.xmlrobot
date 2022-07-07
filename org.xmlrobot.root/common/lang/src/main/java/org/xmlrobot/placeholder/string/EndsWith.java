@@ -43,7 +43,7 @@ public class EndsWith extends AbstractString {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public EndsWith clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import hyperspace.Message;
 import hyperspace.XML;
 
 import org.xmlrobot.content.ContentTypeRef;
@@ -57,7 +58,7 @@ public final class DocumentRoot extends XML {
 		document = new LinkedHashSet<Document>();
 	}
 	@Override
-	public Object clone() {
+	public DocumentRoot clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import hyperspace.Message;
 import hyperspace.XML;
 
 /**
@@ -92,7 +93,7 @@ public final class ContentTypeRoot extends XML {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public ContentTypeRoot clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

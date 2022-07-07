@@ -20,7 +20,7 @@ public final class ToUpperCase extends AbstractString {
 	}
 
 	@Override
-	public Object clone() {
+	public ToUpperCase clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

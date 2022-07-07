@@ -39,7 +39,7 @@ public final class Field extends XML {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Field clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

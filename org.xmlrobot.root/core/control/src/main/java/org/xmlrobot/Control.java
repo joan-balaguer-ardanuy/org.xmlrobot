@@ -1,15 +1,6 @@
-/**
- * 
- */
 package org.xmlrobot;
 
-/**
- * @author joan
- *
- */
-public class Control 
-	extends AbstractStream<Data,Object,Control> {
+public interface Control extends Robot<Control> {
 
-	private static final long serialVersionUID = -3218428113375546278L;
-
+	java.util.Map<Data, Object> data();
 }

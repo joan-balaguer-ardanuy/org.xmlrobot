@@ -45,7 +45,7 @@ public final class Concat extends AbstractString {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Concat clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

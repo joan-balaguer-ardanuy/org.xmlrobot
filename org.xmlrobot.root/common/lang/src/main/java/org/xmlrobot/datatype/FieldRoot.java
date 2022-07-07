@@ -30,7 +30,7 @@ public final class FieldRoot extends XML {
 		field = new LinkedHashSet<Field>();
 	}
 	@Override
-	public Object clone() {
+	public FieldRoot clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

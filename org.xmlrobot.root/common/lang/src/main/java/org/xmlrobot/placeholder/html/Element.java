@@ -58,7 +58,7 @@ public final class Element extends AbstractHtml {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Element clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

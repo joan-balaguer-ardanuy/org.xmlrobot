@@ -93,7 +93,7 @@ public final class ServiceQName extends XML {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public ServiceQName clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

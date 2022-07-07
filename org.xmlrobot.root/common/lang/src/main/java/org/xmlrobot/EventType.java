@@ -10,8 +10,9 @@ package org.xmlrobot;
  */
 public class EventType {
 	public final static String CHANGED = "CHANGED";
-	public final static String CONTROL_INITIALIZED = "CHANGED";
-	public final static String CONTROL_LOADED = "CONTROL_LOADED";
+	public final static String INITIALIZED = "INITIALIZED";
+	public final static String STARTED = "STARTED";
+	public final static String FINISHED = "FINISHED";
 	public final static String PARENT_STARTED = "PARENT_STARTED";
 	public final static String PARENT_FINISHED = "PARENT_FINISHED";
 	public final static String ACTION_WEB_LOADED = "ACTION_WEB_LOADED";

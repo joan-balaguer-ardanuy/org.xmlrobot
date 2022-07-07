@@ -66,7 +66,7 @@ public final class Substring extends AbstractString {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Substring clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

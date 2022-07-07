@@ -17,7 +17,7 @@ public final class ContainsElement extends AbstractHtml {
 
 
 	@Override
-	public Object clone() {
+	public ContainsElement clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -47,7 +47,7 @@ public final class TryParse extends AbstractString {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public TryParse clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

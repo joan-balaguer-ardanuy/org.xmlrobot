@@ -1,6 +1,7 @@
 package org.xmlrobot;
 
 public enum Data {
+	XML,
 	ACTION,
 	ALLOW_IMAGES,
 	ANCHOR,

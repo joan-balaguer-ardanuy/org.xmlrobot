@@ -89,7 +89,7 @@ public final class Action extends XML {
 		constant = new LinkedHashSet<Constant>();
 	}
 	@Override
-	public Object clone() {
+	public Action clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

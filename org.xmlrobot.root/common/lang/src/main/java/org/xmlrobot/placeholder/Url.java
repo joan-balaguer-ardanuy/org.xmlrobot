@@ -30,7 +30,7 @@ public final class Url extends AbstractString {
 	}
 
 	@Override
-	public Object clone() {
+	public Url clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

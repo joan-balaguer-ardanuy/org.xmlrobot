@@ -85,7 +85,7 @@ public final class WebLoader extends XML {
 		
 	}
 	@Override
-	public Object clone() {
+	public WebLoader clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

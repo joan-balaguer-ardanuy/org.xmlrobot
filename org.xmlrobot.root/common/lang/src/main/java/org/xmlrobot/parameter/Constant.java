@@ -63,7 +63,7 @@ public final class Constant extends XML
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Constant clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

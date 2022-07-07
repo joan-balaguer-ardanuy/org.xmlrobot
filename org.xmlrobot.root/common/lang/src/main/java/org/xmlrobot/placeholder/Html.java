@@ -28,7 +28,7 @@ public final class Html extends AbstractHtml {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public Html clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

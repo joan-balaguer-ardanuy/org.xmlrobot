@@ -45,7 +45,7 @@ public final class StartsWith extends AbstractString {
 		super();
 	}
 	@Override
-	public Object clone() {
+	public StartsWith clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}
