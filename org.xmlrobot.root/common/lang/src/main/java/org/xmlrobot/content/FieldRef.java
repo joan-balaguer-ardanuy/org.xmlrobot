@@ -3,7 +3,6 @@ package org.xmlrobot.content;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import hyperspace.Message;
 import hyperspace.XML;
 
 import org.xmlrobot.DataType;

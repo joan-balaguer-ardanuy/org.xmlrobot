@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import hyperspace.Message;
 import hyperspace.XML;
 import org.xmlrobot.content.ContentTypeRoot;
 import org.xmlrobot.datatype.DataSource;
