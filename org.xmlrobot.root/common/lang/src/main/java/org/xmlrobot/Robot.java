@@ -2,9 +2,9 @@ package org.xmlrobot;
 
 import java.util.Iterator;
 
-import hyperspace.recurrent.EntryList;
+import hyperspace.recurrent.ListMap;
 
-public interface Robot<T> extends EntryList<T>, Iterator<T> {
+public interface Robot<T> extends ListMap<T>, Iterator<T> {
 	void start();
 	void stop();
 	void reset();

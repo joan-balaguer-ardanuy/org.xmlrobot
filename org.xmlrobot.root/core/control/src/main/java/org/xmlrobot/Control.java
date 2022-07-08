@@ -4,36 +4,37 @@
 package org.xmlrobot;
 
 import hyperspace.Message;
-import hyperspace.recurrent.List;
 
 /**
  * @author joan
  *
  */
-public class Control
+public abstract class Control
 	extends XML2<Control> {
 
 	private static final long serialVersionUID = -3218428113375546278L;
 	
+	DataObject data;
+	
 	public Control() {
 		super();
 	}
-	public Control(Class<? extends Robot<Control>> type, String name) {
+	public Control(Class<? extends Control> type, String name) {
 		super(type, name);
 	}
-	public Control(Class<? extends Robot<Control>> type, Message xml, Control input, List<Control> output) {
-		super(type, xml, input, output);
+	public Control(Class<? extends Control> type, Message xml, Control input) {
+		super(type, xml, input, new ControlList(ControlList.class, xml.getName()));
 	}
-	public Control(Robot<Control> parent) {
+	public Control(Control parent) {
 		super(parent);
 	}
-	public Control(Robot<Control> parent, Control input, List<Control> output) {
-		super(parent, input, output);
+	public Control(Control parent, Control input) {
+		super(parent, input, new ControlList(ControlList.class, parent.getName()));
 	}
-	public Control(Robot<Control> root, String name) {
+	public Control(Control root, String name) {
 		super(root, name);
 	}
-	public Control(Robot<Control> root, String name, Control input, List<Control> output) {
-		super(root, name, input, output);
+	public Control(Control root, String name, Control input) {
+		super(root, name, input, new ControlList(ControlList.class, root.getName()));
 	}
 }

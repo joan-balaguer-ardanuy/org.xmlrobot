@@ -1,7 +1,6 @@
 package org.xmlrobot;
 
 import hyperspace.recurrent.Hypermap;
-import hyperspace.recurrent.Map;
 
 public class DataObject extends Hypermap<Data,Object> {
 
@@ -10,22 +9,22 @@ public class DataObject extends Hypermap<Data,Object> {
 	public DataObject() {
 		super();
 	}
-	public DataObject(Class<? extends Map<Data, Object>> type, String name) {
+	public DataObject(Class<DataObject> type, String name) {
 		super(type, name);
 	}
-	public DataObject(Class<? extends Map<Data, Object>> type, String name, Data key, Object value) {
+	public DataObject(Class<DataObject> type, String name, Data key, Object value) {
 		super(type, name, key, value);
 	}
-	public DataObject(Map<Data, Object> parent) {
+	public DataObject(DataObject parent) {
 		super(parent);
 	}
-	public DataObject(Map<Data, Object> parent, Data key, Object value) {
+	public DataObject(DataObject parent, Data key, Object value) {
 		super(parent, key, value);
 	}
-	public DataObject(Map<Data, Object> root, String name) {
+	public DataObject(DataObject root, String name) {
 		super(root, name);
 	}
-	public DataObject(Map<Data, Object> root, String name, Data key, Object value) {
+	public DataObject(DataObject root, String name, Data key, Object value) {
 		super(root, name, key, value);
 	}	
 }

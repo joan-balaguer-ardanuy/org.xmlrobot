@@ -11,22 +11,22 @@ public class SourceDocument extends Hypercube<DataSource,DocumentLibrary> {
 	
 	public SourceDocument() {
 	}
-	public SourceDocument(Class<? extends SourceDocument> type, String name, DataSource key) {
-		super(type, name, key);
+	public SourceDocument(String name) {
+		super(name);
 	}
-	public SourceDocument(Class<? extends SourceDocument> type, Class<? extends DocumentSource> antitype, String name, DataSource key, DocumentLibrary value) {
-		super(type, antitype, name, key, value);
+	public SourceDocument(Class<? extends DocumentSource> antitype, String name, DataSource key, DocumentLibrary value) {
+		super(SourceDocument.class, antitype, name, key, value);
 	}
-	public SourceDocument(SourceDocument parent, DataSource key) {
-		super(parent, key);
+	public SourceDocument(SourceDocument parent) {
+		super(parent);
 	}
 	public SourceDocument(Class<? extends DocumentSource> antitype, SourceDocument parent, DataSource key, DocumentLibrary value) {
 		super(antitype, parent, key, value);
 	}
-	public SourceDocument(SourceDocument root, String name, DataSource key) {
-		super(root, name, key);
+	public SourceDocument(SourceDocument root, String name) {
+		super(root, name);
 	}
 	public SourceDocument(Class<? extends DocumentSource> antitype, SourceDocument root, String name, DataSource key, DocumentLibrary value) {
-		super(antitype, root, name, key, value);
+		super(DocumentSource.class, root, name, key, value);
 	}
 }

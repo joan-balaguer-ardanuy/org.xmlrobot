@@ -12,20 +12,20 @@ public class DocumentSource extends Hyperchain<DocumentLibrary,DataSource> {
 	public DocumentSource() {
 		super();
 	}
-	public DocumentSource(Class<? extends DocumentSource> type, String name, DocumentLibrary key) {
-		super(type, name, key);
+	public DocumentSource(String name) {
+		super(name);
 	}
-	public DocumentSource(Class<? extends DocumentSource> type, Class<? extends SourceDocument> antitype, String name, DocumentLibrary key, DataSource value) {
-		super(type, antitype, name, key, value);
+	public DocumentSource(Class<? extends SourceDocument> antitype, String name, DocumentLibrary key, DataSource value) {
+		super(DocumentSource.class, antitype, name, key, value);
 	}
-	public DocumentSource(DocumentSource parent, DocumentLibrary key) {
-		super(parent, key);
+	public DocumentSource(DocumentSource parent) {
+		super(parent);
 	}
 	public DocumentSource(Class<? extends SourceDocument> antitype, DocumentSource parent, DocumentLibrary key, DataSource value) {
 		super(antitype, parent, key, value);
 	}
-	public DocumentSource(DocumentSource root, String name, DocumentLibrary key) {
-		super(root, name, key);
+	public DocumentSource(DocumentSource root, String name) {
+		super(root, name);
 	}
 	public DocumentSource(Class<? extends SourceDocument> antitype, DocumentSource root, String name, DocumentLibrary key, DataSource value) {
 		super(antitype, root, name, key, value);
