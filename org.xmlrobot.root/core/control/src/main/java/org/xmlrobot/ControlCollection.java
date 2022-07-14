@@ -1,31 +1,31 @@
 package org.xmlrobot;
 
-import hyperspace.recurrent.AbstractList;
+import hyperspace.recurrent.Hypercollection;
 
-public class ControlList extends AbstractList<Control> {
+public class ControlCollection extends Hypercollection<Control> {
 
 	private static final long serialVersionUID = -5758067041921967026L;
-
-	public ControlList() {
+	
+	public ControlCollection() {
 		super();
 	}
-	public ControlList(String name) {
+	public ControlCollection(String name) {
 		super(name);
 	}
-	public ControlList(Class<ControlList> antitype, String name) {
-		super(ControlList.class, antitype, name, null);
+	public ControlCollection(Class<ControlCollection> childClass, String name) {
+		super(ControlCollection.class, childClass, name, null);
 	}
-	public ControlList(ControlList parent) {
+	public ControlCollection(ControlCollection parent) {
 		super(parent);
 	}
-	public ControlList(Class<ControlList> antitype, ControlList parent, Control element) {
-		super(antitype, parent, element);
+	public ControlCollection(Class<ControlCollection> childClass, ControlCollection parent, Control element) {
+		super(childClass, parent, element);
 	}
-	public ControlList(ControlList root, String name) {
+	public ControlCollection(ControlCollection root, String name) {
 		super(root, name);
 	}
-	public ControlList(Class<ControlList> antitype, ControlList root, String name, Control element) {
-		super(antitype, root, name, element);
+	public ControlCollection(Class<ControlCollection> childClass, ControlCollection root, String name, Control element) {
+		super(childClass, root, name, element);
 	}
 	
 }

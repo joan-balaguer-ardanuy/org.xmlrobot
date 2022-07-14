@@ -9,11 +9,11 @@ public class DataObject extends Hypermap<Data,Object> {
 	public DataObject() {
 		super();
 	}
+	public DataObject(String name) {
+		super(name);
+	}
 	public DataObject(Class<DataObject> type, String name) {
 		super(type, name);
-	}
-	public DataObject(Class<DataObject> type, String name, Data key, Object value) {
-		super(type, name, key, value);
 	}
 	public DataObject(DataObject parent) {
 		super(parent);

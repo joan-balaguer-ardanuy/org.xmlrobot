@@ -1,40 +1,30 @@
-/**
- * 
- */
 package org.xmlrobot;
 
-import hyperspace.Message;
+import hyperspace.recurrent.Map;
 
-/**
- * @author joan
- *
- */
-public abstract class Control
-	extends XML2<Control> {
+public abstract class ParentControl 
+	extends XML2<ParentControl,ChildControl> {
 
-	private static final long serialVersionUID = -3218428113375546278L;
+	private static final long serialVersionUID = -6986427437237528455L;
+
+	Map<Data,Object> data;
 	
-	DataObject data;
-	
-	public Control() {
+	public ParentControl() {
 		super();
 	}
-	public Control(Class<? extends Control> type, String name) {
-		super(type, name);
+	public ParentControl(String name) {
+		super(name);
 	}
-	public Control(Class<? extends Control> type, Message xml, Control input) {
-		super(type, xml, input, new ControlList(ControlList.class, xml.getName()));
+	public ParentControl(Class<ParentControl> parentClass, Class<ChildControl> childClass, String name, ParentControl key, ChildControl value) {
+		super(parentClass, childClass, name, key, value);
+		addEventListener(key);
+		data = new DataObject(DataObject.class, name);
+		data.put(Data.KEY, key);
+		data.put(Data.VALUE, getValue());
+		
 	}
-	public Control(Control parent) {
-		super(parent);
-	}
-	public Control(Control parent, Control input) {
-		super(parent, input, new ControlList(ControlList.class, parent.getName()));
-	}
-	public Control(Control root, String name) {
-		super(root, name);
-	}
-	public Control(Control root, String name, Control input) {
-		super(root, name, input, new ControlList(ControlList.class, root.getName()));
+	
+	public Map<Data,Object> data() {
+		return data;
 	}
 }
