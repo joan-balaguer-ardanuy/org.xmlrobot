@@ -12,13 +12,13 @@ import hyperspace.XML;
  * all the necessary data to instance a
  * {@link java.net.URL}. It encapsulates an
  * URL, a protocol, a host, a port and a file path. Look at
- * {@link org.httprobot.configuration.adapter.ServiceUrlAdapter}
+ * {@link org.ConnectionUrlAdapter.configuration.adapter.ServiceUrlAdapter}
  * to see how this object is marshalled and unmarshalled
  * by JAXB framework.
  * @author joan
  */
 @XmlRootElement
-public final class ServiceUrl extends XML {
+public final class ConnectionUrl extends XML {
 
 	/**
 	 * 8383249175803013880L
@@ -132,9 +132,9 @@ public final class ServiceUrl extends XML {
 	}
 
 	/**
-	 * {@link ServiceUrl} default class constructor.
+	 * {@link ConnectionUrl} default class constructor.
 	 */
-	public ServiceUrl() {
+	public ConnectionUrl() {
 		super();
 	}
 	@Override

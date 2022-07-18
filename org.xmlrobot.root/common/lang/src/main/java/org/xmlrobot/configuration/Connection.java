@@ -9,8 +9,8 @@ import javax.xml.namespace.QName;
 import hyperspace.Message;
 import hyperspace.XML;
 
-import org.xmlrobot.configuration.adapter.ServiceQNameAdapter;
-import org.xmlrobot.configuration.adapter.ServiceUrlAdapter;
+import org.xmlrobot.configuration.adapter.ConnectionQNameAdapter;
+import org.xmlrobot.configuration.adapter.ConnectionUrlAdapter;
 
 /**
  * Service connection {@link XML} {@link Message} class.
@@ -21,7 +21,7 @@ import org.xmlrobot.configuration.adapter.ServiceUrlAdapter;
  *
  */
 @XmlRootElement
-public final class ServiceConnection 
+public final class Connection 
 	extends XML {
 
 	/**
@@ -40,11 +40,11 @@ public final class ServiceConnection
 	
 	/**
 	 * Returns the {@link QName} property.
-	 * See {@link ServiceQNameAdapter} to view how this class
+	 * See {@link ConnectionQNameAdapter} to view how this class
 	 * is marshalled and unmarshalled by JAXB framework.
 	 * @return the {@link QName} property.
 	 */
-	@XmlJavaTypeAdapter(value = ServiceQNameAdapter.class)
+	@XmlJavaTypeAdapter(value = ConnectionQNameAdapter.class)
 	public QName getQName() {
 		return qName;
 	}
@@ -57,11 +57,11 @@ public final class ServiceConnection
 	}
 	/**
 	 * Returns the {@link URL} property-
-	 * See {@link ServiceUrlAdapter} to view how this class
+	 * See {@link ConnectionUrlAdapter} to view how this class
 	 * is marshalled and unmarshalled by JAXB framework.
 	 * @return
 	 */
-	@XmlJavaTypeAdapter(value = ServiceUrlAdapter.class)
+	@XmlJavaTypeAdapter(value = ConnectionUrlAdapter.class)
 	public URL getURL() {
 		return url;
 	}
@@ -74,16 +74,16 @@ public final class ServiceConnection
 	}
 
 	/**
-	 * {@link ServiceConnection} default class constructor.
+	 * {@link Connection} default class constructor.
 	 */
-	public ServiceConnection() {
+	public Connection() {
 		super();
 	}
 	
 	
 	@Override
-	public ServiceConnection clone() {
-		ServiceConnection serviceConnection = new ServiceConnection();
+	public Connection clone() {
+		Connection serviceConnection = new Connection();
 		serviceConnection.setQName(getQName());
 		serviceConnection.setURL(getURL());
 		return serviceConnection;

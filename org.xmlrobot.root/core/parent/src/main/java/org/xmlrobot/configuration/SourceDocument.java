@@ -3,6 +3,7 @@ package org.xmlrobot.configuration;
 import org.xmlrobot.DocumentLibrary;
 import org.xmlrobot.datatype.DataSource;
 
+import hyperspace.XML;
 import hyperspace.genesis.Hypercube;
 
 public class SourceDocument extends Hypercube<DataSource,DocumentLibrary> {
@@ -11,11 +12,11 @@ public class SourceDocument extends Hypercube<DataSource,DocumentLibrary> {
 	
 	public SourceDocument() {
 	}
-	public SourceDocument(String name) {
+	public SourceDocument(XML name) {
 		super(name);
 	}
-	public SourceDocument(Class<? extends DocumentSource> antitype, String name, DataSource key, DocumentLibrary value) {
-		super(SourceDocument.class, antitype, name, key, value);
+	public SourceDocument(Class<? extends DocumentSource> antitype, XML name) {
+		super(SourceDocument.class, antitype, name);
 	}
 	public SourceDocument(SourceDocument parent) {
 		super(parent);
@@ -23,10 +24,10 @@ public class SourceDocument extends Hypercube<DataSource,DocumentLibrary> {
 	public SourceDocument(Class<? extends DocumentSource> antitype, SourceDocument parent, DataSource key, DocumentLibrary value) {
 		super(antitype, parent, key, value);
 	}
-	public SourceDocument(SourceDocument root, String name) {
+	public SourceDocument(SourceDocument root, XML name) {
 		super(root, name);
 	}
-	public SourceDocument(Class<? extends DocumentSource> antitype, SourceDocument root, String name, DataSource key, DocumentLibrary value) {
+	public SourceDocument(Class<? extends DocumentSource> antitype, SourceDocument root, XML name, DataSource key, DocumentLibrary value) {
 		super(DocumentSource.class, root, name, key, value);
 	}
 }

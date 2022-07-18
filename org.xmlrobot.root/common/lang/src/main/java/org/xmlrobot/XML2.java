@@ -5,8 +5,10 @@ import java.util.Iterator;
 import java.util.Objects;
 
 import hyperspace.Entry;
+import hyperspace.EventArgs;
 import hyperspace.Hyperspace;
 import hyperspace.Message;
+import hyperspace.XML;
 
 public class XML2
 	<K extends Robot<K,V>,V extends Robot<V,K>>
@@ -17,21 +19,18 @@ public class XML2
 	
 	Message xml;
 	
-	public Message getXml() {
+	public Message getXML() {
 		return xml;
-	}
-	public void setXml(Message xml) {
-		this.xml = xml;
 	}
 	
 	public XML2() {
 		super();
 	}
-	public XML2(String name) {
-		super(name);
+	public XML2(XML message) {
+		super(message);
 	}
-	public XML2(Class<? extends Robot<K,V>> parentClass, Class<? extends Robot<V,K>> childClass, String name, K key, V value) {
-		super(parentClass, childClass, name, key, value);
+	public XML2(Class<? extends Robot<K,V>> parentClass, Class<? extends Robot<V,K>> childClass, XML message) {
+		super(parentClass, childClass, message.getMessage());
 	}
 	public XML2(Robot<K,V> parent) {
 		super(parent);
@@ -39,11 +38,24 @@ public class XML2
 	public XML2(Class<? extends Robot<V,K>> childClass, Robot<K,V> parent, K key, V value) {
 		super(childClass, parent, key, value);
 	}
-	public XML2(Robot<K,V> root, String name) {
-		super(root, name);
+	public XML2(Robot<K,V> root, XML message) {
+		super(root, message);
 	}
-	public XML2(Class<? extends Robot<V,K>> childClass, Robot<K,V> root, String name, K key, V value) {
-		super(childClass, root, name, key, value);
+	public XML2(Class<? extends Robot<V,K>> childClass, Robot<K,V> root, XML message, K key, V value) {
+		super(childClass, root, message, key, value);
+	}
+	
+	@Override
+	public void event(EventArgs e) {
+		super.event(e);
+		switch (e.getCommand()) {
+		case EventType.STARTED:
+			start();
+			break;
+
+		default:
+			break;
+		}
 	}
 	
 	public void start() {

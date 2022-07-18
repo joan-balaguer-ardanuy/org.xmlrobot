@@ -11,14 +11,14 @@ import hyperspace.XML;
  * It contains all the necessary data to instance a
  * {@link javax.xml.namespace.QName}. It encapsulates a 
  * namespaceURI, a localPart and a prefix. Look at
- * {@link org.xmlrobot.configuration.adapter.ServiceQNameAdapter} 
+ * {@link org.xmlrobot.configuration.adapter.ConnectionQNameAdapter} 
  * to see how this object is marshalled and unmarshalled 
  * by JAXB framework.
  * @author joan
  *
  */
 @XmlRootElement
-public final class ServiceQName extends XML {
+public final class ConnectionQName extends XML {
 
 	/**
 	 * 5243372154742756420Ls
@@ -87,13 +87,13 @@ public final class ServiceQName extends XML {
 	}
 
 	/**
-	 * {@link ServiceQName} default class constructor.
+	 * {@link ConnectionQName} default class constructor.
 	 */
-	public ServiceQName() {
+	public ConnectionQName() {
 		super();
 	}
 	@Override
-	public ServiceQName clone() {
+	public ConnectionQName clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}
