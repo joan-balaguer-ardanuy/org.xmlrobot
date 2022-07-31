@@ -5,13 +5,13 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
-import org.xmlrobot.configuration.Source;
+import org.xmlrobot.configuration.Configuration;
 
 public class WebService extends Service implements MessageService {
 
 	@Override
-	public Source getSource() {
-		Source message = this.getPort(MessageService.class).getSource();
+	public Configuration getSource() {
+		Configuration message = this.getPort(MessageService.class).getSource();
 		return message;
 	}
 

@@ -1,198 +1,122 @@
 package org.xmlrobot;
 
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
-import hyperspace.EventArgs;
 import hyperspace.XML;
 import hyperspace.genesis.DNA;
 
-public abstract class ParentControl
-	extends XML2<Stream<Data,Object>,Stream<Object,Data>>
-		implements Stream<Data,Object> {
+public class ParentControl extends XML2<ParentControl,ChildControl> implements Map<Data, Object> {
 
-	private static final long serialVersionUID = -6986427437237528455L;
+	private static final long serialVersionUID = -8735445195576976969L;
 
-	DNA<Data,Object> dna;
+	DNA<Data,Object> map;
+
+	public DNA<Data, Object> getMap() {
+		return map;
+	}
+	public void setMap(DNA<Data, Object> map) {
+		this.map = map;
+	}
 
 	@Override
-	public Data getInput() {
-		return dna.getKey();
+	public Data getKey() {
+		return map.getKey();
 	}
 	@Override
-	public Data setInput(Data key) {
-		return dna.setKey(key);
+	public Data setKey(Data key) {
+		return map.setKey(key);
+	}	@Override
+	public Object getValue() {
+		return map.getValue();
 	}
 	@Override
-	public Object getOutput() {
-		return dna.getValue();
+	public Object setValue(Object value) {
+		return map.setValue(value);
 	}
-	@Override
-	public Object setOutput(Object value) {
-		return dna.setValue(value);
-	}
-	
+
 	public ParentControl() {
 		super();
 	}
 	public ParentControl(XML message) {
-		super(message);
-		dna = new DataObject(ObjectData.class, message);
-		setCommand(EventType.STARTED);
-	}	
-	public ParentControl(Class<? extends ParentControl> parentClass, Class<? extends ChildControl> childClass, XML message) {
-		super(parentClass, childClass, message);
-		dna = new DataObject(ObjectData.class, message);
-		setCommand(EventType.STARTED);
+		super(message, new ParentControlCollection(ParentControlCollection.class, message));
 	}
-	public ParentControl(ParentControl parent) {
-		super(parent);
-		dna = new DataObject(ObjectData.class, parent.getMessage());
-		setCommand(EventType.STARTED);
+	public ParentControl(Class<? extends ParentControl> parentClass, Class<? extends ChildControl> childClass, XML message, ParentControl key, DNA<Data,Object> map) {
+		super(parentClass, childClass, message, key, new ParentControlCollection(ParentControlCollection.class, message));
+		setMap(map);
+		getChild().setSet(map.entryChain());
 	}
-	public ParentControl(Class<? extends ChildControl> childClass, ParentControl parent, Stream<Data, Object> key, Stream<Object, Data> value) {
-		super(childClass, parent, key, value);
-		dna = new DataObject(ObjectData.class, parent.getMessage());
-		setCommand(EventType.STARTED);
+	public ParentControl(ParentControl parent, XML message) {
+		super(parent, message, new ParentControlCollection(ParentControlCollection.class, message));
 	}
-	public ParentControl(ParentControl root, XML message) {
-		super(root, message);
-		dna = new DataObject(ObjectData.class, message);
-		setCommand(EventType.STARTED);
+	public ParentControl(Class<? extends ChildControl> childClass, ParentControl parent, XML message, DNA<Data,Object> map) {
+		super(childClass, parent, message, new ParentControlCollection(ParentControlCollection.class, message));
+		setMap(map);
+		getChild().setSet(map.entryChain());
 	}
-	public ParentControl(Class<? extends ChildControl> childClass, ParentControl root, XML message, Stream<Data, Object> key, Stream<Object, Data> value) {
-		super(childClass, root, message, key, value);
-		dna = new DataObject(ObjectData.class, message);
-		setCommand(EventType.STARTED);
+	public ParentControl(ParentControl root, ChildControl stem, XML message) {
+		super(root, stem, message, new ParentControlCollection(ParentControlCollection.class, message));
 	}
-	
+	public ParentControl(Class<? extends ChildControl> childClass, ParentControl root, ChildControl stem, XML message, DNA<Data,Object> map) {
+		super(childClass, root, stem, message, new ParentControlCollection(ParentControlCollection.class, message));
+		setMap(map);
+		getChild().setSet(map.entryChain());
+	}
+
 	@Override
-	public Object getOutput(Data key) {
-		return dna.getValue(key);
+	@Deprecated
+	public int size() {
+		return 0;
 	}
+
 	@Override
-	public Data getInput(Object value) {
-		return dna.getKey(value);
+	public boolean containsKey(Object key) {
+		return map.containsKey(key);
 	}
+
 	@Override
-	public Object getOutputOrDefault(Data key, Object defaultOutput) {
-		return dna.getValueOrDefault(key, defaultOutput);
+	public boolean containsValue(Object value) {
+		return map.containsValue(value);
 	}
+
 	@Override
-	public Data getInputOrDefault(Object value, Data defaultInput) {
-		return dna.getKeyOrDefault(value, defaultInput);
+	public Object get(Object key) {
+		return map.get(key);
 	}
+
 	@Override
-	public int indexOfInput(Data key) {
-		return dna.indexOfKey(key);
+	public Object put(Data key, Object value) {
+		return map.put(key, value);
 	}
+
 	@Override
-	public int indexOfOutput(Object value) {
-		return dna.indexOfValue(value);
+	public Object remove(Object key) {
+		return map.remove(key);
 	}
+
 	@Override
-	public Object putOutput(Data key, Object value) {
-		return dna.putValue(key, value);
+	public void putAll(java.util.Map<? extends Data, ? extends Object> m) {
+		map.putAll(m);
 	}
+
 	@Override
-	public Data putInput(Object value, Data key) {
-		return dna.putKey(value, key);
+	public Set<Data> keySet() {
+		return map.keySet();
 	}
+
 	@Override
-	public Object putOutputIfAbsent(Data key, Object value) {
-		return dna.putValueIfAbsent(key, value);
+	public Collection<Object> values() {
+		return map.values();
 	}
+
 	@Override
-	public Data putInputIfAbsent(Object value, Data key) {
-		return dna.putKeyIfAbsent(value, key);
+	public Set<Entry<Data, Object>> entrySet() {
+		return map.entrySet();
 	}
+
 	@Override
-	public Object replaceOutput(Data key, Object value) {
-		return dna.replaceValue(key, value);
-	}
-	@Override
-	public Data replaceInput(Object value, Data key) {
-		return dna.replaceKey(value, key);
-	}
-	@Override
-	public boolean replaceOutput(Data key, Object oldOutput, Object newOutput) {
-		return dna.replaceValue(key, oldOutput, newOutput);
-	}
-	@Override
-	public boolean replaceInput(Object value, Data oldInput, Data newInput) {
-		return dna.replaceKey(value, oldInput, newInput);
-	}
-	@Override
-	public void replaceAllOutputs(BiFunction<? super Data, ? super Object, ? extends Object> function) {
-		dna.replaceAllValues(function);
-	}
-	@Override
-	public void replaceAllInputs(BiFunction<? super Object, ? super Data, ? extends Data> function) {
-		dna.replaceAllKeys(function);
-	}
-	@Override
-	public boolean containsInput(Object key) {
-		return dna.containsKey(key);
-	}
-	@Override
-	public boolean containsOutput(Object value) {
-		return dna.containsValue(value);
-	}
-	@Override
-	public boolean removeInput(Data key) {
-		return dna.removeKey(key);
-	}
-	@Override
-	public boolean removeOutput(Object value) {
-		return dna.removeValue(value);
-	}
-	@Override
-	public boolean removeOutput(Data key, Object value) {
-		return dna.removeValue(key, value);
-	}
-	@Override
-	public boolean removeInput(Object value, Data key) {
-		return dna.removeKey(value, key);
-	}
-	@Override
-	public void forEachOutput(BiConsumer<? super Data, ? super Object> action) {
-		dna.forEachValue(action);
-	}
-	@Override
-	public void forEachInput(BiConsumer<? super Object, ? super Data> action) {
-		dna.forEachKey(action);
-	}
-	@Override
-	public Object computeOutputIfAbsent(Data key, Function<? super Data, ? extends Object> mappingFunction) {
-		return dna.computeValueIfAbsent(key, mappingFunction);
-	}
-	@Override
-	public Data computeInputIfAbsent(Object value, Function<? super Object, ? extends Data> mappingFunction) {
-		return dna.computeKeyIfAbsent(value, mappingFunction);
-	}
-	@Override
-	public Object computeOutputIfPresent(Data key, BiFunction<? super Data, ? super Object, ? extends Object> remappingFunction) {
-		return dna.computeValueIfPresent(key, remappingFunction);
-	}
-	@Override
-	public Data computeInputIfPresent(Object value, BiFunction<? super Object, ? super Data, ? extends Data> remappingFunction) {
-		return dna.computeKeyIfPresent(value, remappingFunction);
-	}
-	@Override
-	public Object computeOutput(Data key, BiFunction<? super Data, ? super Object, ? extends Object> remappingFunction) {
-		return dna.computeValue(key, remappingFunction);
-	}
-	@Override
-	public Data computeInput(Object value, BiFunction<? super Object, ? super Data, ? extends Data> remappingFunction) {
-		return dna.computeKey(value, remappingFunction);
-	}
-	@Override
-	public Object mergeOutput(Data key, Object value, BiFunction<? super Object, ? super Object, ? extends Object> remappingFunction) {
-		return dna.mergeValue(key, value, remappingFunction);
-	}
-	@Override
-	public Data mergeInput(Object value, Data key, BiFunction<? super Data, ? super Data, ? extends Data> remappingFunction) {
-		return dna.mergeKey(value, key, remappingFunction);
+	public Iterator<Data> iterator() {
+		return map.iterator();
 	}
 }

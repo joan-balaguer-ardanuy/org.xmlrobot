@@ -21,7 +21,7 @@ import org.xmlrobot.datatype.DataSource;
  *
  */
 @XmlRootElement
-public final class Source extends XML {
+public final class Configuration extends XML {
 
 	/**
 	 * 8762442432069232238L
@@ -69,13 +69,13 @@ public final class Source extends XML {
 	}
 	
 	/**
-	 * {@link Source} default class constructor.
+	 * {@link Configuration} default class constructor.
 	 */
-	public Source() {
+	public Configuration() {
 		super();
 	}
 	@Override
-	public Source clone() {
+	public Configuration clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

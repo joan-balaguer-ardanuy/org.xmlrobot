@@ -8,6 +8,7 @@ import javax.xml.namespace.QName;
 
 import hyperspace.Message;
 import hyperspace.XML;
+import jakarta.xml.bind.annotation.XmlElement;
 
 import org.xmlrobot.configuration.adapter.ConnectionQNameAdapter;
 import org.xmlrobot.configuration.adapter.ConnectionUrlAdapter;
@@ -16,7 +17,7 @@ import org.xmlrobot.configuration.adapter.ConnectionUrlAdapter;
  * Service connection {@link XML} {@link Message} class.
  * Encapsulates a {@link QName} and {@link URL} properties. It contains all
  * necessary data to connect to the WebService server which will
- * provide the {@link Source} configuration XML message.
+ * provide the {@link Configuration} configuration XML message.
  * @author joan
  *
  */
@@ -72,7 +73,7 @@ public final class Connection
 	public void setURL(URL url) {
 		this.url = url;
 	}
-
+	
 	/**
 	 * {@link Connection} default class constructor.
 	 */

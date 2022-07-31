@@ -1,190 +1,118 @@
 package org.xmlrobot;
 
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.Collection;
+import java.util.Iterator;
 
+import hyperspace.Entry;
 import hyperspace.XML;
 import hyperspace.genesis.Chain;
 
-public abstract class ChildControl 
-	extends XML2<Stream<Object,Data>,Stream<Data,Object>> 
-		implements Stream<Object,Data> {
+public class ChildControl extends XML2<ChildControl,ParentControl> implements EntrySet<Object,Data> {
 
 	private static final long serialVersionUID = -666554516027637756L;
 
-	Chain<Object,Data> chain;
+	Chain<Object,Data> set;
+
+	public Chain<Object,Data> getSet() {
+		return set;
+	}
+	public void setSet(Chain<Object,Data> set) {
+		this.set = set;
+	}
+
+	@Override
+	public Object getKey() {
+		return set.getKey();
+	}
+	@Override
+	public Object setKey(Object key) {
+		return set.setKey(key);
+	}
+	@Override
+	public Data getValue() {
+		return set.getValue();
+	}
+	@Override
+	public Data setValue(Data value) {
+		return set.setValue(value);
+	}
 	
 	public ChildControl() {
 		super();
 	}
 	public ChildControl(XML message) {
-		super(message);
-		chain = new ObjectData(DataObject.class, message);
+		super(message, new ChildControlCollection(ChildControlCollection.class, message));
 	}
-	public ChildControl(Class<? extends ChildControl> parentClass, Class<? extends ParentControl> childClass, XML message) {
-		super(parentClass, childClass, message);
-		chain = new ObjectData(DataObject.class, message.getMessage());
+	public ChildControl(Class<? extends ChildControl> parentClass, Class<? extends ParentControl> childClass, XML message, ChildControl key, Chain<Object,Data> set) {
+		super(parentClass, childClass, message, key, new ChildControlCollection(ChildControlCollection.class, message));
+		setSet(set);
+		getChild().setMap(set.entryDNA());
 	}
-	public ChildControl(ChildControl parent) {
-		super(parent);
-		chain = new ObjectData(DataObject.class, parent.getMessage());
+	public ChildControl(ChildControl parent, XML message) {
+		super(parent, message, new ChildControlCollection(ChildControlCollection.class, message));
 	}
-	public ChildControl(Class<? extends ParentControl> childClass, ChildControl parent, Stream<Object,Data> key, Stream<Data,Object> value) {
-		super(childClass, parent, key, value);
-		chain = new ObjectData(DataObject.class, parent.getMessage());
+	public ChildControl(Class<? extends ParentControl> childClass, ChildControl parent, XML message, Chain<Object,Data> set) {
+		super(childClass, parent, message, new ChildControlCollection(ChildControlCollection.class, message));
+		setSet(set);
+		getChild().setMap(set.entryDNA());
 	}
-	public ChildControl(ChildControl root, XML message) {
-		super(root, message);
-		chain = new ObjectData(DataObject.class, message);
+	public ChildControl(ChildControl root, ParentControl stem, XML message) {
+		super(root, stem, message, new ChildControlCollection(ChildControlCollection.class, message));
 	}
-	public ChildControl(Class<? extends ParentControl> childClass, ChildControl root, XML message, Stream<Object,Data> key, Stream<Data,Object> value) {
-		super(childClass, root, message, key, value);
-		chain = new ObjectData(DataObject.class, message);
-	}
-	
-	@Override
-	public Object getInput() {
-		return chain.getKey();
+	public ChildControl(Class<? extends ParentControl> childClass, ChildControl root, ParentControl stem, XML message, Chain<Object,Data> set) {
+		super(childClass, root, stem, message, new ChildControlCollection(ChildControlCollection.class, message));
+		setSet(set);
+		getChild().setMap(set.entryDNA());
 	}
 	@Override
-	public Object setInput(Object key) {
-		return chain.setKey(key);
+	@Deprecated
+	public int size() {
+		return 0;
 	}
 	@Override
-	public Data getOutput() {
-		return chain.getValue();
+	public boolean contains(Object o) {
+		return set.contains(o);
 	}
 	@Override
-	public Data setOutput(Data value) {
-		return chain.setValue(value);
+	public Iterator<Entry<Object, Data>> iterator() {
+		return set.iterator();
 	}
 	@Override
-	public Data getOutput(Object key) {
-		return chain.getValue(key);
+	@Deprecated
+	public Object[] toArray() {
+		return null;
 	}
 	@Override
-	public Object getInput(Data value) {
-		return chain.getKey(value);
+	@Deprecated
+	public <T> T[] toArray(T[] a) {
+		return null;
 	}
 	@Override
-	public Data getOutputOrDefault(Object key, Data defaultOutput) {
-		return chain.getValueOrDefault(key, defaultOutput);
+	public boolean add(Entry<Object, Data> e) {
+		return set.add(e);
 	}
 	@Override
-	public Object getInputOrDefault(Data value, Object defaultInput) {
-		return chain.getKeyOrDefault(value, defaultInput);
+	public boolean remove(Object o) {
+		return set.remove(o);
 	}
 	@Override
-	public int indexOfInput(Object key) {
-		return chain.indexOfKey(key);
+	public boolean containsAll(Collection<?> c) {
+		return set.containsAll(c);
 	}
 	@Override
-	public int indexOfOutput(Data value) {
-		return chain.indexOfValue(value);
+	public boolean addAll(Collection<? extends Entry<Object, Data>> c) {
+		return set.addAll(c);
 	}
 	@Override
-	public Data putOutput(Object key, Data value) {
-		return chain.putValue(key, value);
+	public boolean retainAll(Collection<?> c) {
+		return set.retainAll(c);
 	}
 	@Override
-	public Object putInput(Data value, Object key) {
-		return chain.putKey(value, key);
+	public boolean removeAll(Collection<?> c) {
+		return set.removeAll(c);
 	}
 	@Override
-	public Data putOutputIfAbsent(Object key, Data value) {
-		return chain.putValueIfAbsent(key, value);
-	}
-	@Override
-	public Object putInputIfAbsent(Data value, Object key) {
-		return chain.putKeyIfAbsent(value, key);
-	}
-	@Override
-	public Data replaceOutput(Object key, Data value) {
-		return chain.replaceValue(key, value);
-	}
-	@Override
-	public Object replaceInput(Data value, Object key) {
-		return chain.replaceKey(value, key);
-	}
-	@Override
-	public boolean replaceOutput(Object key, Data oldOutput, Data newOutput) {
-		return chain.replaceValue(key, oldOutput, newOutput);
-	}
-	@Override
-	public boolean replaceInput(Data value, Object oldInput, Object newInput) {
-		return chain.replaceKey(value, oldInput, newInput);
-	}
-	@Override
-	public void replaceAllOutputs(BiFunction<? super Object, ? super Data, ? extends Data> function) {
-		chain.replaceAllValues(function);
-	}
-	@Override
-	public void replaceAllInputs(BiFunction<? super Data, ? super Object, ? extends Object> function) {
-		chain.replaceAllKeys(function);
-	}
-	@Override
-	public boolean containsInput(Object key) {
-		return chain.containsKey(key);
-	}
-	@Override
-	public boolean containsOutput(Object value) {
-		return chain.containsValue(value);
-	}
-	@Override
-	public boolean removeInput(Object key) {
-		return chain.removeKey(key);
-	}
-	@Override
-	public boolean removeOutput(Data value) {
-		return chain.removeValue(value);
-	}
-	@Override
-	public boolean removeOutput(Object key, Data value) {
-		return chain.removeValue(key, value);
-	}
-	@Override
-	public boolean removeInput(Data value, Object key) {
-		return chain.removeKey(value, key);
-	}
-	@Override
-	public void forEachOutput(BiConsumer<? super Object, ? super Data> action) {
-		chain.forEachValue(action);
-	}
-	@Override
-	public void forEachInput(BiConsumer<? super Data, ? super Object> action) {
-		chain.forEachKey(action);
-	}
-	@Override
-	public Data computeOutputIfAbsent(Object key, Function<? super Object, ? extends Data> mappingFunction) {
-		return chain.computeValueIfAbsent(key, mappingFunction);
-	}
-	@Override
-	public Object computeInputIfAbsent(Data value, Function<? super Data, ? extends Object> mappingFunction) {
-		return chain.computeKeyIfAbsent(value, mappingFunction);
-	}
-	@Override
-	public Data computeOutputIfPresent(Object key, BiFunction<? super Object, ? super Data, ? extends Data> remappingFunction) {
-		return chain.computeValueIfPresent(key, remappingFunction);
-	}
-	@Override
-	public Object computeInputIfPresent(Data value, BiFunction<? super Data, ? super Object, ? extends Object> remappingFunction) {
-		return chain.computeKeyIfPresent(value, remappingFunction);
-	}
-	@Override
-	public Data computeOutput(Object key, BiFunction<? super Object, ? super Data, ? extends Data> remappingFunction) {
-		return chain.computeValue(key, remappingFunction);
-	}
-	@Override
-	public Object computeInput(Data value, BiFunction<? super Data, ? super Object, ? extends Object> remappingFunction) {
-		return chain.computeKey(value, remappingFunction);
-	}
-	@Override
-	public Data mergeOutput(Object key, Data value, BiFunction<? super Data, ? super Data, ? extends Data> remappingFunction) {
-		return chain.mergeValue(key, value, remappingFunction);
-	}
-	@Override
-	public Object mergeInput(Data value, Object key, BiFunction<? super Object, ? super Object, ? extends Object> remappingFunction) {
-		return chain.mergeKey(value, key, remappingFunction);
+	public Data put(Object key, Data value) {
+		return set.putValue(key, value);
 	}
 }

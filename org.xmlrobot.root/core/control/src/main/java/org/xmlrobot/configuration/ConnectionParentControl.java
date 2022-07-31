@@ -1,15 +1,13 @@
 package org.xmlrobot.configuration;
 
 import org.xmlrobot.ChildControl;
-import org.xmlrobot.Data;
-import org.xmlrobot.EventType;
+import org.xmlrobot.DataObject;
+import org.xmlrobot.ObjectData;
 import org.xmlrobot.ParentControl;
-
-import hyperspace.EventArgs;
 
 public class ConnectionParentControl extends ParentControl {
 
-	private static final long serialVersionUID = 3438328001383638980L;
+	private static final long serialVersionUID = -5682205881861262102L;
 
 	public ConnectionParentControl() {
 		super();
@@ -17,37 +15,19 @@ public class ConnectionParentControl extends ParentControl {
 	public ConnectionParentControl(Connection message) {
 		super(message);
 	}
-	public ConnectionParentControl(Class<? extends ParentControl> parentClass, Class<? extends ChildControl> childClass, Connection message) {
-		super(parentClass, childClass, message);
+	public ConnectionParentControl(Class<ConnectionChildControl> childClass, Connection message, ParentControl key) {
+		super(ConnectionParentControl.class, childClass, message, key, new DataObject(ObjectData.class, message));
 	}
-	public ConnectionParentControl(ParentControl parent) {
-		super(parent);
+	public ConnectionParentControl(ParentControl parent, Connection message) {
+		super(parent, message);
 	}
-	public ConnectionParentControl(Class<? extends ChildControl> childClass, ParentControl parent, ParentControl key, ChildControl value) {
-		super(childClass, parent, key, value);
+	public ConnectionParentControl(Class<ConnectionChildControl> childClass, ParentControl parent, Connection message) {
+		super(childClass, parent, message, new DataObject(ObjectData.class, message));
 	}
-	public ConnectionParentControl(ParentControl root, Connection message) {
-		super(root, message);
+	public ConnectionParentControl(ParentControl root, ChildControl stem, Connection message) {
+		super(root, stem, message);
 	}
-	public ConnectionParentControl(Class<? extends ChildControl> childClass, ParentControl root, Connection message, ParentControl key, ChildControl value) {
-		super(childClass, root, message, key, value);
-	}
-
-	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		switch (e.getCommand()) {
-		case EventType.STARTED:
-			if(e.getSource() instanceof ConnectionParentControl) {
-				ConnectionParentControl control = (ConnectionParentControl) e.getSource();
-				Connection connection = (Connection) e.getMessage();
-				control.putOutput(Data.Q_NAME, connection.getQName());
-				control.putOutput(Data.URL, connection.getURL());
-			}
-			break;
-
-		default:
-			break;
-		}
+	public ConnectionParentControl(Class<ConnectionChildControl> childClass, ParentControl root, ChildControl stem, Connection message) {
+		super(childClass, root, stem, message, new DataObject(ObjectData.class, message));
 	}
 }
