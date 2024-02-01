@@ -98,7 +98,7 @@ public class Earth extends Screw<Operon,Polyploid> {
 				if(!isRoot()) {
 					getKey().comparator(new Polyploid()).compare(entry, getValue());
 					Polyploid source = (Polyploid) getKey().comparator().source();
-					getStem().putValue(source, (Operon) source.getChild());
+					putKey(source, (Operon) source.getChild());
 				}
 				break;
 			default:

@@ -32,7 +32,7 @@ import org.xmlrobot.genesis.TimeMaster;
 public class Execution {
 
 	public static void main(String[] args) {
-		int dilatation = 1000;
+		int dilatation = 10;
 		Hypercube hypercube = new Hypercube(Hyperchain.class, Parity.XX);
 		hypercube.put('A', 1*dilatation);
 		hypercube.put('B', 2*dilatation);
@@ -139,7 +139,7 @@ public class Execution {
 			public void event(EventArgs e) {
 				Listener listener = (Listener) e.getSource();
 				switch (e.getCommand()) {
-				case INSTANCE:
+				case GENESIS:
 					if(listener instanceof BigBang) {
 						System.out.println("ENTRA");
 						BigBang entry = (BigBang) listener;

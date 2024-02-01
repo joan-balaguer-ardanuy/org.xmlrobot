@@ -7,7 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.xmlrobot.time.Recursion;
+import org.xmlrobot.time.Recursive;
 
 /**
  * Recursive entry.
@@ -74,7 +74,7 @@ import org.xmlrobot.time.Recursion;
  *
  */
 public interface Entry<K,V>
-	extends Recursion<Entry<K,V>,Entry<V,K>>, java.util.Map.Entry<K,V> {
+	extends Recursive<Entry<K,V>,Entry<V,K>>, java.util.Map.Entry<K,V> {
 
 	K getKey();
     K setKey(K key);
@@ -139,7 +139,7 @@ public interface Entry<K,V>
     Entry.Comparator<K,V> comparator(V value, K key);
     
     interface Comparator<K,V> 
-    	extends Recursion.Reproducer<Entry<K,V>,Entry<V,K>> {
+    	extends Recursive.Reproducer<Entry<K,V>,Entry<V,K>> {
     	
     	@Override
     	void addParent(Entry<K,V> parent);

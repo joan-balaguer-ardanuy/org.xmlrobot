@@ -99,7 +99,7 @@ public class Aaron extends Screw<BigBang,BigBong> {
 				if(!isRoot()) {
 					getKey().comparator(new BigBong()).compare(entry, getValue());
 					BigBong source = (BigBong) getKey().comparator().source();
-					getStem().putValue(source, (BigBang) source.getChild());
+					putKey(source, (BigBang) source.getChild());
 				}
 				break;
 			default:

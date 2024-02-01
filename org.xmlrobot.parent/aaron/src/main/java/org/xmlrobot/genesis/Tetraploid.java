@@ -85,7 +85,7 @@ public class Tetraploid extends ScrewNut<Diploid, Chromosome> {
 		if(e.getSource() instanceof Genomap) {
 			Genomap entry = (Genomap) e.getSource();
 			switch (e.getCommand()) {
-			case INSTANCE:
+			case GENESIS:
 				if(isRoot()) {
 					Chromosome chromosome = new Chromosome();
 					chromosome.putValue(entry, (Haploid) entry.getChild());

@@ -85,7 +85,7 @@ public class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 		if(e.getSource() instanceof Sun) {
 			Sun entry = (Sun) e.getSource();
 			switch (e.getCommand()) {
-			case INSTANCE:
+			case GENESIS:
 				if(isRoot()) {
 					MilkyWay milkyWay = new MilkyWay();
 					milkyWay.putValue(entry, (AlphaCentauri) entry.getChild());

@@ -101,7 +101,7 @@ public class Genomap extends Screw<Hypercube, Hyperchain> {
 				if(!isRoot()) {
 					getKey().comparator(new Hyperchain()).compare(entry, getValue());
 					Hyperchain source = (Hyperchain) getKey().comparator().source();
-					getStem().putValue(source, (Hypercube) source.getChild());
+					putKey(source, (Hypercube) source.getChild());
 				}
 				break;
 			default:

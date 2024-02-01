@@ -98,7 +98,7 @@ public class Matter extends Screw<Supercluster,Interstellar> {
 				if(!isRoot()) {
 					getKey().comparator(new Interstellar()).compare(entry, getValue());
 					Interstellar source = (Interstellar) getKey().comparator().source();
-					getStem().putValue(source, (Supercluster) source.getChild());
+					putKey(source, (Supercluster) source.getChild());
 				}
 				break;
 			default:

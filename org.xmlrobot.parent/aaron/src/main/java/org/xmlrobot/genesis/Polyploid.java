@@ -85,7 +85,7 @@ public class Polyploid extends ScrewNut<Tetraploid,Ribosome> {
 		if(e.getSource() instanceof Chromosome) {
 			Chromosome entry = (Chromosome) e.getSource();
 			switch (e.getCommand()) {
-			case INSTANCE:
+			case GENESIS:
 				if(isRoot()) {
 					Ribosome ribosome = new Ribosome();
 					ribosome.putValue(entry, (Diploid) entry.getChild());

@@ -1,11 +1,11 @@
 package org.xmlrobot.recurrent;
 
 import java.io.Serializable;
-import org.xmlrobot.time.Recurrence;
+import org.xmlrobot.time.Recurrent;
 
 public class AbstractRecurrence
-	<K extends Recurrence<K>>
-		implements Recurrence<K>, Serializable {
+	<K extends Recurrent<K>>
+		implements Recurrent<K>, Serializable {
 	
 	private static final long serialVersionUID = -2189724676292955895L;
 

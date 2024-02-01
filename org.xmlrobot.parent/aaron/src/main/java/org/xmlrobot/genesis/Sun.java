@@ -98,7 +98,7 @@ public class Sun extends Screw<Earth,Gliese> {
 				if(!isRoot()) {
 					getKey().comparator(new Gliese()).compare(entry, getValue());
 					Gliese source = (Gliese) getKey().comparator().source();
-					getStem().putValue(source, (Earth) source.getChild());
+					putKey(source, (Earth) source.getChild());
 				}
 				break;
 			default:

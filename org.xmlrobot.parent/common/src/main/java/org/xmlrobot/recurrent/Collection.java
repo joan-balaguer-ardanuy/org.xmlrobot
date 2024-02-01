@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.function.IntFunction;
 
-import org.xmlrobot.time.Recurrence;
+import org.xmlrobot.time.Recurrent;
 
 /**
  * parent root interface not out the <i>collection inheritance</i>. parent collection
@@ -66,7 +66,7 @@ import org.xmlrobot.time.Recurrence;
  *
  */
 public interface Collection<E>
-	extends Recurrence<Collection<E>>, java.util.Collection<E>, Serializable {
+	extends Recurrent<Collection<E>>, java.util.Collection<E>, Serializable {
 		
 	// property
 	/**

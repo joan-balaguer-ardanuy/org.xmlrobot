@@ -85,7 +85,7 @@ public class Antimatter extends ScrewNut<Interstellar,Supercluster> {
 		if(e.getSource() instanceof MilkyWay) {
 			MilkyWay entry = (MilkyWay) e.getSource();
 			switch (e.getCommand()) {
-			case INSTANCE:
+			case GENESIS:
 				if(isRoot()) {
 					Supercluster supercluster = new Supercluster();
 					supercluster.putValue(entry, (Andromeda) entry.getChild());

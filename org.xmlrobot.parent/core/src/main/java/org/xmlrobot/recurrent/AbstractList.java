@@ -272,12 +272,12 @@ public class AbstractList<E>
 		}
 
 		public E set(int index, E element) {
-			Objects.checkIndex(index, size);
+//			Objects.checkIndex(index, size);
 			return root.set(offset + index, element);
 		}
 
 		public E get(int index) {
-			Objects.checkIndex(index, size);
+//			Objects.checkIndex(index, size);
 			return root.get(offset + index);
 		}
 
@@ -292,7 +292,7 @@ public class AbstractList<E>
 		}
 
 		public E remove(int index) {
-			Objects.checkIndex(index, size);
+//			Objects.checkIndex(index, size);
 			E result = root.remove(offset + index);
 			updateSizeAndModCount(-1);
 			return result;

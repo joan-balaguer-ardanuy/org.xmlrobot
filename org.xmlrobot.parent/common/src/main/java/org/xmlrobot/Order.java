@@ -13,7 +13,7 @@ public enum Order {
 	/**
 	 * Instance state.
 	 */
-	INSTANCE,
+	GENESIS,
 	
 	/**
 	 * Listen time.

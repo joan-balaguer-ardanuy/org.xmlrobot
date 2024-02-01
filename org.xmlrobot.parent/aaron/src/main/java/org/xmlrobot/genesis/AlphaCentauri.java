@@ -85,7 +85,7 @@ public class AlphaCentauri extends ScrewNut<Gliese,Earth> {
 		if(e.getSource() instanceof Operon) {
 			Operon entry = (Operon) e.getSource();
 			switch (e.getCommand()) {
-			case INSTANCE:
+			case GENESIS:
 				if(isRoot()) {
 					Earth earth = new Earth();
 					earth.putValue(entry, (Polyploid) entry.getChild());

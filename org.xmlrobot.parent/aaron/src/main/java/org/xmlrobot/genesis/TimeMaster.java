@@ -85,7 +85,7 @@ public class TimeMaster extends ScrewNut<BigBong,BigBang> {
 		if(e.getSource() instanceof Matter) {
 			Matter entry = (Matter) e.getSource();
 			switch (e.getCommand()) {
-			case INSTANCE:
+			case GENESIS:
 				if(isRoot()) {
 					BigBang bigBang = new BigBang();
 					bigBang.putValue(entry, (Antimatter) entry.getChild());

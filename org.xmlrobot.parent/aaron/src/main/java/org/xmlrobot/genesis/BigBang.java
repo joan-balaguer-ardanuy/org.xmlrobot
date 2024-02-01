@@ -98,7 +98,7 @@ public class BigBang extends Screw<Matter,Antimatter> {
 				if(!isRoot()) {
 					getKey().comparator(new Antimatter()).compare(entry, getValue());
 					Antimatter source = (Antimatter) getKey().comparator().source();
-					getStem().putValue(source, (Matter) source.getChild());
+					putKey(source, (Matter) source.getChild());
 				}
 				break;
 			default:

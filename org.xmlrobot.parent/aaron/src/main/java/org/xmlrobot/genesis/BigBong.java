@@ -85,7 +85,7 @@ public class BigBong extends ScrewNut<Antimatter,Matter> {
 		if(e.getSource() instanceof Supercluster) {
 			Supercluster entry = (Supercluster) e.getSource();
 			switch (e.getCommand()) {
-			case INSTANCE:
+			case GENESIS:
 				if(isRoot()) {
 					Matter matter = new Matter();
 					matter.putValue(entry, (Interstellar) entry.getChild());

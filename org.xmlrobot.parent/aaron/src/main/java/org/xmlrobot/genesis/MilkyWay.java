@@ -99,7 +99,7 @@ public class MilkyWay extends Screw<Sun,AlphaCentauri> {
 				if(!isRoot()) {
 					getKey().comparator(new AlphaCentauri()).compare(entry, getValue());
 					AlphaCentauri source = (AlphaCentauri) getKey().comparator().source();
-					getStem().putValue(source, (Sun) source.getChild());
+					putKey(source, (Sun) source.getChild());
 				}
 				break;
 			default:

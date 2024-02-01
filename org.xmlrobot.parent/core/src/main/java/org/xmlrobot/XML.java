@@ -50,11 +50,11 @@ public abstract class XML implements Message {
 	}
 	
 	public XML() {
-		this.command = Order.INSTANCE;
+		this.command = Order.GENESIS;
 		this.parity = Parity.YY;
 	}
 	public XML(Parity parity) {
-		this.command = Order.INSTANCE;
+		this.command = Order.GENESIS;
 		this.parity = parity;
 	}
 	@Override

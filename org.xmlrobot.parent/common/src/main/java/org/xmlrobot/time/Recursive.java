@@ -34,8 +34,8 @@ import org.xmlrobot.TimeListener;
  * @param <K> is the key
  * @param <V> is the value
  */
-public interface Recursion<K,V> 
-	extends Recurrence<K>, Concurrence<V>, TimeListener<K,V> {
+public interface Recursive<K,V> 
+	extends Recurrent<K>, Concurrent<V>, TimeListener<K,V> {
 	
 	/**
 	 * Returns <tt>true</tt> if this time-listener is the root instance.
@@ -302,7 +302,7 @@ public interface Recursion<K,V>
 	 * @throws ClassCastException if the class of a parent or child in the inherited time-listener prevents
 	 * it from being inherited in <tt>this</tt> time-listener
 	 */
-	void putAllChildren(Recursion<? extends K, ? extends V> e);
+	void putAllChildren(Recursive<? extends K, ? extends V> e);
 
 	/**
 	 * Sets all of the time-listeners from the inherited time-listener to <tt>this</tt> time-listener (not optional
@@ -314,7 +314,7 @@ public interface Recursion<K,V>
 	 *
 	 * @param e time-listeners to be inherited in <tt>this</tt> time-listener
 	 */
-	void putAllParents(Recursion<? extends V, ? extends K> e);
+	void putAllParents(Recursive<? extends V, ? extends K> e);
 
 	/**
 	 * Replaces the time-listener for the inherited parent only if it is currently mapped
@@ -1050,16 +1050,16 @@ public interface Recursion<K,V>
 	 * Returns the inheritance comparator.
 	 * @return the inheritance comparator
 	 */
-	Recursion.Reproducer<K,V> comparator();
+	Recursive.Reproducer<K,V> comparator();
 	
 	/**
 	 * Returns the inheritance comparator.
 	 * @return the inheritance comparator
 	 */
-	Recursion.Reproducer<K,V> comparator(V source);
+	Recursive.Reproducer<K,V> comparator(V source);
 	
 	/**
-	 * {@link Recursion} information transmitter.
+	 * {@link Recursive} information transmitter.
 	 * @author joan
 	 * @param <K> is the key
 	 * @param <V> is the value

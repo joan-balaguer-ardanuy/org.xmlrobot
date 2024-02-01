@@ -85,7 +85,7 @@ public class Gliese extends ScrewNut<Polyploid,Operon> {
 		if(e.getSource() instanceof Ribosome) {
 			Ribosome entry = (Ribosome) e.getSource();
 			switch (e.getCommand()) {
-			case INSTANCE:
+			case GENESIS:
 				if(isRoot()) {
 					Operon operon = new Operon();
 					operon.putValue(entry, (Tetraploid) entry.getChild());

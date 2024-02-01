@@ -85,7 +85,7 @@ public class Diploid extends ScrewNut<Haploid, Genomap> {
 		if(e.getSource() instanceof Hypercube) {
 			Hypercube entry = (Hypercube) e.getSource();
 			switch (e.getCommand()) {
-			case INSTANCE:
+			case GENESIS:
 				if(isRoot()) {
 					Genomap genomap = new Genomap();
 					genomap.putValue(entry, (Hyperchain) entry.getChild());
@@ -95,7 +95,7 @@ public class Diploid extends ScrewNut<Haploid, Genomap> {
 			default:
 				break;
 			}
-		} 
+		}
 		else if(e.getSource() instanceof Haploid) {
 			Haploid entry = (Haploid) e.getSource();
 			switch (e.getCommand()) {

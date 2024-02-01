@@ -85,7 +85,7 @@ public class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 		if(e.getSource() instanceof Earth) {
 			Earth entry = (Earth) e.getSource();
 			switch (e.getCommand()) {
-			case INSTANCE:
+			case GENESIS:
 				if(isRoot()) {
 					Sun sun = new Sun();
 					sun.putValue(entry, (Gliese) entry.getChild());

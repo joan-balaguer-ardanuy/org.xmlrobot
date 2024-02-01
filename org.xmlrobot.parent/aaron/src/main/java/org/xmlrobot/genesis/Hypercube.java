@@ -112,16 +112,6 @@ public final class Hypercube extends Screw<Character,Integer> {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		if((isRoot() && !isEmpty()) || !isStem()) {
-			getChild().run();
-		}
-		switch (getCommand()) {
-		case LISTEN:
-			setCommand(Order.TRANSFER);
-			break;
-		default:
-			setCommand(Order.LISTEN);
-			break;
-		}
+		super.run();
 	}
 }

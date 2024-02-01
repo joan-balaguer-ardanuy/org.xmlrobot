@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.Order;
 import org.xmlrobot.Entry;
+import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
 import org.xmlrobot.recurrent.Enumerator;
 
@@ -97,16 +98,6 @@ public class Hyperchain extends ScrewNut<Integer,Character> {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		if((isRoot() && !isEmpty()) || !isStem()) {
-			getChild().run();
-		}
-		switch (getCommand()) {
-		case LISTEN:
-			setCommand(Order.TRANSFER);
-			break;
-		default:
-			setCommand(Order.LISTEN);
-			break;
-		}
+		super.run();
 	}
 }

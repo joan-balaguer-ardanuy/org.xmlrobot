@@ -99,7 +99,7 @@ public class Chromosome extends Screw<Genomap, Haploid> {
 				if(!isRoot()) {
 					getKey().comparator(new Haploid()).compare(entry, getValue());
 					Haploid source = (Haploid) getKey().comparator().source();
-					getStem().putValue(source, (Genomap) source.getChild());
+					putKey(source, (Genomap) source.getChild());
 				}
 				break;
 			default:

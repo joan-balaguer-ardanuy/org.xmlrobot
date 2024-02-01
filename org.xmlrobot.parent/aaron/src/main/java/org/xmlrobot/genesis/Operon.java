@@ -98,7 +98,7 @@ public class Operon extends Screw<Ribosome,Tetraploid> {
 				if(!isRoot()) {
 					getKey().comparator(new Tetraploid()).compare(entry, getValue());
 					Tetraploid source = (Tetraploid) getKey().comparator().source();
-					getStem().putValue(source, (Ribosome) source.getChild());
+					putKey(source, (Ribosome) source.getChild());
 				}
 				break;
 			default:

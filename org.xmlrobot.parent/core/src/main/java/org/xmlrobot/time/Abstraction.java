@@ -4,9 +4,9 @@ import org.xmlrobot.Parity;
 
 
 public abstract class Abstraction
-	<K extends Recursion<K,V>,V extends Recursion<V,K>>
+	<K extends Recursive<K,V>,V extends Recursive<V,K>>
 		extends Unification<K,V>
-			implements Recursion<K,V> {
+			implements Recursive<K,V> {
 
 	/**
 	 * 6736845275705891958L
