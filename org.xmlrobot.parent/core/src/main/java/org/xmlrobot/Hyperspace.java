@@ -3,6 +3,7 @@
  */
 package org.xmlrobot;
 
+import javax.xml.bind.annotation.XmlTransient;
 
 public abstract class Hyperspace
 	<K extends TimeListener<K,V>,V extends TimeListener<V,K>> 
@@ -14,6 +15,17 @@ public abstract class Hyperspace
 	 */
 	private static final long serialVersionUID = 4428935997216883052L;
 
+	@Override
+	@XmlTransient
+	public Order getCommand() {
+		return super.getCommand();
+	}
+	@Override
+	public void setCommand(Order command) {
+		super.setCommand(command);
+		sendEvent(new EventArgs<>(this, getChild()));
+	}
+	
 	/**
 	 * {@link Hyperspace} class constructor.
 	 */
@@ -58,9 +70,6 @@ public abstract class Hyperspace
 	@Override
 	public abstract Transmitter<K,V> comparator();
 	
-	@Override
-	public abstract Transmitter<K,V> comparator(V source);
-	
 	/**
 	 * Information generator class. Implements {@code TimeListener.Transmitter}.
 	 * @author joan
@@ -70,34 +79,43 @@ public abstract class Hyperspace
 		V source;
 		
 		@Override
-		public V source() {
+		public V getSource() {
 			return source;
+		}
+		@Override
+		public void setSource(V source) {
+			this.source = source;
+		}
+		public Generator() {
+			this.source = null;
 		}
 		public Generator(V source) {
 			this.source = source;
 		}
 		@Override
 		public synchronized void compare(K parent, V child) {
+			parent.compareTo(child);
+			setSource(parent.comparator().getSource());
 			K p = parent.getParent();
-			V c = child.getParent();		
-			do {
-				p.compareTo(c);
-				addChild(p.comparator().source());
+			V c = child.call();		
+			while (p != parent && c != child) {
+				c.compareTo(p);
+				setParent(c.comparator().getSource());
 				p = p.getParent();
-				c = c.getParent();
+				c = c.call();
 				if (p != parent && c != child) {
-					c.compareTo(p);
-					addParent(c.comparator().source());
+					p.compareTo(c);
+					setChild(p.comparator().getSource());
 					p = p.getParent();
-					c = c.getParent();
+					c = c.call();
 				}
-			} while (p != parent && c != child);
+			}
 		}
 		
 		@Override
-		public abstract void addChild(V child);
+		public abstract void setChild(V child);
 		
 		@Override
-		public abstract void addParent(K parent);
+		public abstract void setParent(K parent);
 	}
 }

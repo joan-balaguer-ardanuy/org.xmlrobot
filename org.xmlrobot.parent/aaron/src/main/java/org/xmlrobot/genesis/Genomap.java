@@ -6,20 +6,18 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Genomap extends Screw<Hypercube, Hyperchain> {
+public final class Genomap extends Screw<Hypercube, Hyperchain> {
 
 	private static final long serialVersionUID = -3096574629565456019L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<org.xmlrobot.Entry<Hypercube,Hyperchain>> en = enumerator();
-		while(en.hasMoreElements()) {
-			org.xmlrobot.Entry<Hypercube,Hyperchain> entry = en.nextElement();
+		for(org.xmlrobot.Entry<Hypercube,Hyperchain> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -47,13 +45,15 @@ public class Genomap extends Screw<Hypercube, Hyperchain> {
 	}
 
 	public Genomap() {
-		this(Haploid.class, Parity.random());
+		super();
 	}
 	public Genomap(Parity parity) {
 		super(parity);
 	}
-	public Genomap(Class<Haploid> childClass, Parity parity) {
-		super(childClass, parity);
+	public Genomap(Hypercube key, Hyperchain value) {
+		super(Haploid.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Genomap(Genomap parent) {
 		super(parent);
@@ -71,37 +71,42 @@ public class Genomap extends Screw<Hypercube, Hyperchain> {
 		key.addEventListener(this);
 		value.addEventListener(getChild());
 	}
-
+	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<Hyperchain,Hypercube> o) {
-		getKey().comparator(new Hyperchain()).compare(getKey(), o.getKey());
-		org.xmlrobot.Entry<Integer,Character> entry = getKey().comparator().source();
+		getKey().comparator().compare(o.getValue(), getValue());
+		org.xmlrobot.Entry<Integer,Character> entry = getKey().comparator().getSource();
 		comparator((Hyperchain) entry, (Hypercube) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Genomap) {
-			Genomap entry = (Genomap) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case LISTEN:
-				entry.permuteChild(call(), get());
-				break;
-			case TRANSFER:
-				entry.release();
+				if(e.getSource() instanceof Hypercube) {
+					getKey().comparator().compare((Hypercube) e.getKey(), getValue());
+					getValue().comparator().compare((Hyperchain) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(),
+							getValue().comparator().getSource()));
+				}
 				break;
 			default:
 				break;
 			}
-		} else if(e.getSource() instanceof Hypercube) {
-			Hypercube entry = (Hypercube) e.getSource();
+		} else {
 			switch (e.getCommand()) {
+//			case LISTEN:
+//				if(e.getSource() instanceof Genomap) { 
+//					Genomap entry = (Genomap) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
 			case TRANSFER:
-				if(!isRoot()) {
-					getKey().comparator(new Hyperchain()).compare(entry, getValue());
-					Hyperchain source = (Hyperchain) getKey().comparator().source();
-					putKey(source, (Hypercube) source.getChild());
+				if(e.getSource() instanceof Genomap) { 
+					Genomap entry = (Genomap) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -110,8 +115,11 @@ public class Genomap extends Screw<Hypercube, Hyperchain> {
 		}
 	}
 	@Override
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Hypercube> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

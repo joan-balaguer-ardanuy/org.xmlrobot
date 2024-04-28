@@ -7,20 +7,18 @@ import javax.xml.bind.annotation.XmlType;
 import org.xmlrobot.Entry;
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
+public final class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 
 	private static final long serialVersionUID = 1951089975362507507L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<Entry<AlphaCentauri,Sun>> en = enumerator();
-		while(en.hasMoreElements()) {
-			Entry<AlphaCentauri,Sun> entry = en.nextElement();
+		for(Entry<AlphaCentauri,Sun> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -47,13 +45,15 @@ public class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 	}
 	
 	public Andromeda() {
-		this(MilkyWay.class, Parity.random());
+		super();
 	}
 	public Andromeda(Parity parity) {
 		super(parity);
 	}
-	public Andromeda(Class<MilkyWay> childClass, Parity parity) {
-		super(childClass, parity);
+	public Andromeda(AlphaCentauri key, Sun value) {
+		super(MilkyWay.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Andromeda(Andromeda parent) {
 		super(parent);
@@ -74,35 +74,46 @@ public class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 	
 	@Override
 	public int compareTo(Entry<Sun, AlphaCentauri> o) {
-		getKey().comparator(new Sun()).compare(getKey(), o.getKey());
-		Entry<Earth,Gliese> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		Entry<Earth,Gliese> entry = getKey().comparator().getSource();
 		comparator((Sun) entry, (AlphaCentauri) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Earth) {
-			Earth entry = (Earth) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(isRoot()) {
-					Sun sun = new Sun();
-					sun.putValue(entry, (Gliese) entry.getChild());
-					sendEvent(new EventArgs(sun));
+				if(e.getSource() instanceof Earth) {
+					Earth key = (Earth) e.getSource();
+					Gliese value = (Gliese) e.getValue();
+					getValue().putValue(key, value);
+				}
+				break;
+			case LISTEN:
+				if(e.getSource() instanceof AlphaCentauri) {
+					getKey().comparator().compare((AlphaCentauri) e.getSource(), getValue());
+					getValue().comparator().compare((Sun) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
 				}
 				break;
 			default:
 				break;
 			}
-		} 
-		else if(e.getSource() instanceof AlphaCentauri) {
-			AlphaCentauri entry = (AlphaCentauri) e.getSource();
+		} else {
 			switch (e.getCommand()) {
-			case LISTEN:
-				if (!isRoot()) {
-					getKey().comparator(new Sun()).compare(entry, getValue());
-					sendEvent(new EventArgs(getKey().comparator().source()));
+//			case LISTEN:
+//				if(e.getSource() instanceof Andromeda) {
+//					Andromeda entry = (Andromeda) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
+			case TRANSFER:
+				if(e.getSource() instanceof Andromeda) {
+					Andromeda entry = (Andromeda) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -110,8 +121,11 @@ public class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 			}
 		}
 	}
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<AlphaCentauri> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

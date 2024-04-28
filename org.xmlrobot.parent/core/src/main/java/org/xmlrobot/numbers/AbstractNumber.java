@@ -1,11 +1,9 @@
-package org.xmlrobot.recurrent;
+package org.xmlrobot.numbers;
 
 import java.io.Serializable;
-import org.xmlrobot.time.Recurrent;
 
-public class AbstractRecurrence
-	<K extends Recurrent<K>>
-		implements Recurrent<K>, Serializable {
+public class AbstractNumber<K extends Number<K>>
+	implements Number<K>, Serializable {
 	
 	private static final long serialVersionUID = -2189724676292955895L;
 
@@ -15,7 +13,6 @@ public class AbstractRecurrence
 	
 	K past;
 
-	
 	@Override
 	public K getRoot() {
 		return root;
@@ -50,12 +47,12 @@ public class AbstractRecurrence
 	}
 	
 	@SuppressWarnings("unchecked")
-	public AbstractRecurrence() {
+	public AbstractNumber() {
 		root = parent = past = (K) this;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public AbstractRecurrence(K parent) {
+	public AbstractNumber(K parent) {
 		setParent(parent);
 		put(parent.call());
 		parent.call().setParent((K) this);
@@ -140,7 +137,7 @@ public class AbstractRecurrence
 	@Override
 	public boolean releaseAllParents(K parent) {
 		boolean modified = false;
-        Enumerator<K> en = enumerator();
+		Enumerator<K> en = enumerator();
         while (en.hasMoreElements()) {
             if (parent.hasParent(en.nextElement())) {
                 en.remove();
@@ -163,26 +160,26 @@ public class AbstractRecurrence
 	}
 	@Override
 	public Enumerator<K> enumerator() {
-		return new RecurrentEnumerator(getParent());
+		return new ParentEnumerator(getParent());
 	}
-	protected final class RecurrentEnumerator implements Enumerator<K> {
+	protected final class ParentEnumerator implements Enumerator<K> {
 
 		/**
-		 * The current time-listener.
+		 * The current number.
 		 */
 		K current;
 
 		/**
-		 * The next time-listener.
+		 * The next number.
 		 */
 		K next;
 		
 		/**
-		 * If this recursor has next time-listener.
+		 * If this enumerator has next number.
 		 */
 		boolean hasNext;
 
-		public RecurrentEnumerator(K parent) {
+		public ParentEnumerator(K parent) {
 			next = current = parent;
 			hasNext = true;
 		}
@@ -196,7 +193,7 @@ public class AbstractRecurrence
 			K c = next;
 			current = c;
 			next = c.getParent();
-			if (c == AbstractRecurrence.this)
+			if (c == AbstractNumber.this)
 				hasNext = false;
 			else
 				hasNext = true;

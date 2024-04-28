@@ -7,20 +7,18 @@ import javax.xml.bind.annotation.XmlType;
 import org.xmlrobot.Entry;
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class AlphaCentauri extends ScrewNut<Gliese,Earth> {
+public final class AlphaCentauri extends ScrewNut<Gliese,Earth> {
 
 	private static final long serialVersionUID = -1649925660086238159L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<Entry<Gliese,Earth>> en = enumerator();
-		while(en.hasMoreElements()) {
-			Entry<Gliese,Earth> entry = en.nextElement();
+		for(Entry<Gliese,Earth> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -47,13 +45,15 @@ public class AlphaCentauri extends ScrewNut<Gliese,Earth> {
 	}
 	
 	public AlphaCentauri() {
-		this(Sun.class, Parity.random());
+		super();
 	}
 	public AlphaCentauri(Parity parity) {
 		super(parity);
 	}
-	public AlphaCentauri(Class<Sun> childClass, Parity parity) {
-		super(childClass, parity);
+	public AlphaCentauri(Gliese key, Earth value) {
+		super(Sun.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public AlphaCentauri(AlphaCentauri parent) {
 		super(parent);
@@ -74,35 +74,46 @@ public class AlphaCentauri extends ScrewNut<Gliese,Earth> {
 	
 	@Override
 	public int compareTo(Entry<Earth, Gliese> o) {
-		getKey().comparator(new Earth()).compare(getKey(), o.getKey());
-		Entry<Operon,Polyploid> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		Entry<Operon,Polyploid> entry = getKey().comparator().getSource();
 		comparator((Earth) entry, (Gliese) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Operon) {
-			Operon entry = (Operon) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(isRoot()) {
-					Earth earth = new Earth();
-					earth.putValue(entry, (Polyploid) entry.getChild());
-					sendEvent(new EventArgs(earth));
+				if(e.getSource() instanceof Operon) {
+					Operon key = (Operon) e.getSource();
+					Polyploid value = (Polyploid) e.getValue();
+					getValue().putValue(key, value);
+				}
+				break;
+			case LISTEN:
+				if(e.getSource() instanceof Gliese) {
+					getKey().comparator().compare((Gliese) e.getSource(), getValue());
+					getValue().comparator().compare((Earth) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
 				}
 				break;
 			default:
 				break;
 			}
-		} 
-		else if(e.getSource() instanceof Gliese) {
-			Gliese entry = (Gliese) e.getSource();
+		} else {
 			switch (e.getCommand()) {
-			case LISTEN:
-				if (!isRoot()) {
-					getKey().comparator(new Earth()).compare(entry, getValue());
-					sendEvent(new EventArgs(getKey().comparator().source()));
+//			case LISTEN:
+//				if(e.getSource() instanceof AlphaCentauri) {
+//					AlphaCentauri entry = (AlphaCentauri) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
+			case TRANSFER:
+				if(e.getSource() instanceof AlphaCentauri) {
+					AlphaCentauri entry = (AlphaCentauri) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -110,8 +121,11 @@ public class AlphaCentauri extends ScrewNut<Gliese,Earth> {
 			}
 		}
 	}
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Gliese> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

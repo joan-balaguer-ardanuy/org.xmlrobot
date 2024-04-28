@@ -1,7 +1,8 @@
 package org.xmlrobot.time;
 
+import java.util.Iterator;
+
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
 
 /**
  * <tt>
@@ -217,9 +218,9 @@ public abstract class Recurrence
 
 	@Override
 	public boolean hasParent(K parent) {
-		Enumerator<K> en = enumerator();
-		while(en.hasMoreElements())  {
-			if(en.nextElement() == parent) {
+		Iterator<K> it = iterator();
+		while(it.hasNext())  {
+			if(it.next() == parent) {
 				return true;
 			}
 		}
@@ -227,10 +228,10 @@ public abstract class Recurrence
 	}
 	@Override
 	public boolean releaseParent(K parent) {
-		Enumerator<K> en = enumerator();
-		while(en.hasMoreElements()) {
-			if(en.nextElement() == parent) {
-				en.remove();
+		Iterator<K> it = iterator();
+		while(it.hasNext()) {
+			if(it.next() == parent) {
+				it.remove();
 				return true;
 			}
 		}
@@ -239,34 +240,34 @@ public abstract class Recurrence
 	@Override
 	public boolean addParent(K parent) {
 		if(!hasParent(parent)) {
-			submitChild(parent, parent.getChild());
+			recurChild(parent, parent.getChild());
 			return true;
 		} else return false;
 	}
 	@Override
 	public boolean hasAllParents(K parent) {
-		Enumerator<K> en = parent.enumerator();
-		while(en.hasMoreElements())
-			if(!hasParent(en.nextElement()))
+		Iterator<K> it = parent.iterator();
+		while(it.hasNext())
+			if(!hasParent(it.next()))
 				return false;
 		return false;
 	}
 	@Override
 	public boolean addAllParents(K parent) {
 		boolean modified = false;
-		Enumerator<K> en = parent.enumerator();
-		while (en.hasMoreElements())
-			if (addParent(en.nextElement()))
+		Iterator<K> it = parent.iterator();
+		while (it.hasNext())
+			if (addParent(it.next()))
 				modified = true;
 		return modified;
 	}
 	@Override
 	public boolean releaseAllParents(K parent) {
 		boolean modified = false;
-        Enumerator<K> en = enumerator();
-        while (en.hasMoreElements()) {
-            if (parent.hasParent(en.nextElement())) {
-                en.remove();
+		Iterator<K> it = iterator();
+        while (it.hasNext()) {
+            if (parent.hasParent(it.next())) {
+                it.remove();
                 modified = true;
             }
         }
@@ -275,10 +276,10 @@ public abstract class Recurrence
 	@Override
 	public boolean retainAllParents(K parent) {
 		boolean modified = false;
-		Enumerator<K> en = enumerator();
-		while (en.hasMoreElements()) {
-			if (!parent.hasParent(en.nextElement())) {
-				en.remove();
+		Iterator<K> it = iterator();
+		while (it.hasNext()) {
+			if (!parent.hasParent(it.next())) {
+				it.remove();
 				modified = true;
 			}
 		}

@@ -7,20 +7,18 @@ import javax.xml.bind.annotation.XmlType;
 import org.xmlrobot.Entry;
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class BigBong extends ScrewNut<Antimatter,Matter> {
+public final class BigBong extends ScrewNut<Antimatter,Matter> {
 
 	private static final long serialVersionUID = 4131224918311712139L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<Entry<Antimatter,Matter>> en = enumerator();
-		while(en.hasMoreElements()) {
-			Entry<Antimatter,Matter> entry = en.nextElement();
+		for(Entry<Antimatter,Matter> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -47,13 +45,15 @@ public class BigBong extends ScrewNut<Antimatter,Matter> {
 	}
 	
 	public BigBong() {
-		this(BigBang.class, Parity.random());
+		super();
 	}
 	public BigBong(Parity parity) {
 		super(parity);
 	}
-	public BigBong(Class<BigBang> childClass, Parity parity) {
-		super(childClass, parity);
+	public BigBong(Antimatter key, Matter value) {
+		super(BigBang.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public BigBong(BigBong parent) {
 		super(parent);
@@ -74,35 +74,46 @@ public class BigBong extends ScrewNut<Antimatter,Matter> {
 	
 	@Override
 	public int compareTo(Entry<Matter, Antimatter> o) {
-		getKey().comparator(new Matter()).compare(getKey(), o.getKey());
-		Entry<Supercluster,Interstellar> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		Entry<Supercluster,Interstellar> entry = getKey().comparator().getSource();
 		comparator((Matter) entry, (Antimatter) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Supercluster) {
-			Supercluster entry = (Supercluster) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(isRoot()) {
-					Matter matter = new Matter();
-					matter.putValue(entry, (Interstellar) entry.getChild());
-					sendEvent(new EventArgs(matter));
+				if(e.getSource() instanceof Supercluster) {
+					Supercluster key = (Supercluster) e.getSource();
+					Interstellar value = (Interstellar) e.getValue();
+					getValue().putValue(key, value);
+				}
+				break;
+			case LISTEN:
+				if(e.getSource() instanceof Antimatter) {
+					getKey().comparator().compare((Antimatter) e.getSource(), getValue());
+					getValue().comparator().compare((Matter) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
 				}
 				break;
 			default:
 				break;
 			}
-		} 
-		else if(e.getSource() instanceof Antimatter) {
-			Antimatter entry = (Antimatter) e.getSource();
+		} else {
 			switch (e.getCommand()) {
-			case LISTEN:
-				if (!isRoot()) {
-					getKey().comparator(new Matter()).compare(entry, getValue());
-					sendEvent(new EventArgs(getKey().comparator().source()));
+//			case LISTEN:
+//				if(e.getSource() instanceof BigBong) {
+//					BigBong entry = (BigBong) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
+			case TRANSFER:
+				if(e.getSource() instanceof BigBong) {
+					BigBong entry = (BigBong) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -110,8 +121,11 @@ public class BigBong extends ScrewNut<Antimatter,Matter> {
 			}
 		}
 	}
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Antimatter> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

@@ -1053,12 +1053,6 @@ public interface Recursive<K,V>
 	Recursive.Reproducer<K,V> comparator();
 	
 	/**
-	 * Returns the inheritance comparator.
-	 * @return the inheritance comparator
-	 */
-	Recursive.Reproducer<K,V> comparator(V source);
-	
-	/**
 	 * {@link Recursive} information transmitter.
 	 * @author joan
 	 * @param <K> is the key
@@ -1067,9 +1061,9 @@ public interface Recursive<K,V>
 	interface Reproducer<K,V> extends Transmitter<K,V> {
 		
 		@Override
-		void addChild(V child);
+		void setChild(V child);
 		
 		@Override
-		void addParent(K parent);
+		void setParent(K parent);
 	}
 }

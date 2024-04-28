@@ -4,24 +4,19 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.xmlrobot.Order;
 import org.xmlrobot.Entry;
-import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Hyperchain extends ScrewNut<Integer,Character> {
+public final class Hyperchain extends ScrewNut<Integer,Character> {
 
 	private static final long serialVersionUID = -626650173493948273L;
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<Entry<Integer,Character>> en = enumerator();
-		while(en.hasMoreElements()) {
-			Entry<Integer,Character> entrada = en.nextElement();
-			stringBuilder.append(entrada.getValue());
+		for(Entry<Integer,Character> entry : this) {
+			stringBuilder.append(entry.getValue());
 		}
 		return stringBuilder.toString();
 	}
@@ -49,13 +44,13 @@ public class Hyperchain extends ScrewNut<Integer,Character> {
 	}
 	
 	public Hyperchain() {
-		this(Hypercube.class, Parity.random());
+		super();
 	}
 	public Hyperchain(Parity parity) {
 		super(parity);
 	}
-	public Hyperchain(Class<Hypercube> childClass, Parity parity) {
-		super(childClass, parity);
+	public Hyperchain(Integer key, Character value) {
+		super(Hypercube.class, Parity.random(), key, value);
 	}
 	public Hyperchain(Hyperchain parent) {
 		super(parent);
@@ -71,7 +66,7 @@ public class Hyperchain extends ScrewNut<Integer,Character> {
 	}
 	
 	@Override
-	public synchronized int compareTo(Entry<Character, Integer> o) {
+	public int compareTo(Entry<Character, Integer> o) {
 		switch (getParity()) {
 		case XY:
 			if(getKey() < o.getValue()) {
@@ -94,7 +89,7 @@ public class Hyperchain extends ScrewNut<Integer,Character> {
 	@Override
 	public void run() {
 		try {
-			Thread.sleep(getValue());
+			Thread.sleep(getKey());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

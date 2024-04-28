@@ -7,20 +7,18 @@ import javax.xml.bind.annotation.XmlType;
 import org.xmlrobot.Entry;
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Polyploid extends ScrewNut<Tetraploid,Ribosome> {
+public final class Polyploid extends ScrewNut<Tetraploid,Ribosome> {
 
 	private static final long serialVersionUID = 3697213256533673578L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<Entry<Tetraploid,Ribosome>> en = enumerator();
-		while(en.hasMoreElements()) {
-			Entry<Tetraploid,Ribosome> entry = en.nextElement();
+		for(Entry<Tetraploid,Ribosome> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -47,13 +45,15 @@ public class Polyploid extends ScrewNut<Tetraploid,Ribosome> {
 	}
 	
 	public Polyploid() {
-		this(Operon.class, Parity.random());
+		super();
 	}
 	public Polyploid(Parity parity) {
 		super(parity);
 	}
-	public Polyploid(Class<Operon> childClass, Parity parity) {
-		super(childClass, parity);
+	public Polyploid(Tetraploid key, Ribosome value) {
+		super(Operon.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Polyploid(Polyploid parent) {
 		super(parent);
@@ -74,35 +74,46 @@ public class Polyploid extends ScrewNut<Tetraploid,Ribosome> {
 	
 	@Override
 	public int compareTo(Entry<Ribosome, Tetraploid> o) {
-		getKey().comparator(new Ribosome()).compare(getKey(), o.getKey());
-		Entry<Chromosome,Diploid> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		Entry<Chromosome,Diploid> entry = getKey().comparator().getSource();
 		comparator((Ribosome) entry, (Tetraploid) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Chromosome) {
-			Chromosome entry = (Chromosome) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(isRoot()) {
-					Ribosome ribosome = new Ribosome();
-					ribosome.putValue(entry, (Diploid) entry.getChild());
-					sendEvent(new EventArgs(ribosome));
+				if(e.getSource() instanceof Chromosome) {
+					Chromosome key = (Chromosome) e.getSource();
+					Diploid value = (Diploid) e.getValue();
+					getValue().putValue(key, value);
+				}
+				break;
+			case LISTEN:
+				if(e.getSource() instanceof Tetraploid) {
+					getKey().comparator().compare((Tetraploid) e.getSource(), getValue());
+					getValue().comparator().compare((Ribosome) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
 				}
 				break;
 			default:
 				break;
 			}
-		} 
-		else if(e.getSource() instanceof Tetraploid) {
-			Tetraploid entry = (Tetraploid) e.getSource();
+		} else {
 			switch (e.getCommand()) {
-			case LISTEN:
-				if (!isRoot()) {
-					getKey().comparator(new Ribosome()).compare(entry, getValue());
-					sendEvent(new EventArgs(getKey().comparator().source()));
+//			case LISTEN:
+//				if(e.getSource() instanceof Polyploid) {
+//					Polyploid entry = (Polyploid) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
+			case TRANSFER:
+				if(e.getSource() instanceof Polyploid) {
+					Polyploid entry = (Polyploid) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -110,8 +121,11 @@ public class Polyploid extends ScrewNut<Tetraploid,Ribosome> {
 			}
 		}
 	}
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Tetraploid> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

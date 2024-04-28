@@ -9,13 +9,30 @@ import java.util.EventObject;
  * @author joan
  *
  */
-public class EventArgs extends EventObject implements Listener {
+public class EventArgs<K,V> extends EventObject implements Listener, java.util.Map.Entry<K,V> {
 
 	/**
 	 * 6347247597829991161L
 	 */
 	private static final long serialVersionUID = 6347247597829991161L;
+
+	V value;
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public K getKey() {
+		return (K) super.getSource();
+	}
+	@Override
+	public V getValue() {
+		return value;
+	}
+	@Override
+	public V setValue(V value) {
+		V old = this.value;
+		this.value = value;
+		return old;
+	}
 	@Override
 	public Order getCommand() {
 		return getSource().getCommand();
@@ -39,11 +56,20 @@ public class EventArgs extends EventObject implements Listener {
 	
 	/**
 	 * {@link EventArgs} default class constructor.
-	 * @param source {@link Listener} the source of the event
-	 * @param message {@link Message} the message
+	 * @param key the key
+	 * @param value the value
 	 */
-	public EventArgs(Listener source) {
-		super(source);
+	public EventArgs(K key, V value) {
+		super(key);
+		setValue(value);
+	}
+	/**
+	 * {@link EventArgs} default class constructor.
+	 * @param timeListener the time-listener
+	 */
+	public EventArgs(TimeListener<K,V> timeListener) {
+		super(timeListener);
+		setValue(timeListener.getChild());
 	}
 	
 	@Override
@@ -63,8 +89,8 @@ public class EventArgs extends EventObject implements Listener {
 		getSource().removeEventListener(listener);
 	}
 	@Override
-	public void event(EventArgs e) {
-		getSource().event(e);
+	public void event(Object sender, EventArgs<?,?> e) {
+		getSource().event(sender, e);
 	}
 	@Override
 	public Thread newThread(Runnable r) {

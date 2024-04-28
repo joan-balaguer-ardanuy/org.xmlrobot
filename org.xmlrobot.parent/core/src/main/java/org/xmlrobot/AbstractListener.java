@@ -1,10 +1,8 @@
 package org.xmlrobot;
 
-import org.xmlrobot.recurrent.Set;
-
 import java.util.Iterator;
 
-import javax.xml.bind.annotation.XmlTransient;
+import org.xmlrobot.numbers.Set;
 
 public abstract class AbstractListener
 	extends XML
@@ -16,17 +14,6 @@ public abstract class AbstractListener
 	 * The listeners
 	 */
 	private Set<Listener> listeners;
-	
-	@Override
-	@XmlTransient
-	public Order getCommand() {
-		return super.getCommand();
-	}
-	@Override
-	public void setCommand(Order command) {
-		super.setCommand(command);
-		sendEvent(new EventArgs(this));
-	}
 	
 	/**
 	 * {@link AbstractListener} default class constructor
@@ -60,16 +47,16 @@ public abstract class AbstractListener
 	 * Sends event to all event {@link Listener} added in the set.
 	 * @param e {@link EventArgs} the arguments of the event
 	 */
-	protected void sendEvent(EventArgs e) {
+	protected void sendEvent(EventArgs<?,?> e) {
 		if(listeners != null) {
 			Iterator<Listener> iterator = listeners.iterator();
 			while(iterator.hasNext()) {
-				iterator.next().event(e);
+				iterator.next().event(this, e);
 			}
 		}
 	}
 	@Override
-	public void event(EventArgs e) {
+	public void event(Object sender, EventArgs<?,?> e) {
 		sendEvent(e);
 	}
 	@Override

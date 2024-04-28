@@ -1,4 +1,4 @@
-package org.xmlrobot.recurrent;
+package org.xmlrobot.numbers;
 
 public interface Map<K,V>
 	extends Set<Mapping<K,V>>, Mapping<K,V> {

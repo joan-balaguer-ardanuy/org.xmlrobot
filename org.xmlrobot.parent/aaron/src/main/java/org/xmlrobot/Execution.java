@@ -1,188 +1,99 @@
 package org.xmlrobot;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-
-import org.xmlrobot.genesis.Aaron;
-import org.xmlrobot.genesis.AlphaCentauri;
-import org.xmlrobot.genesis.Andromeda;
-import org.xmlrobot.genesis.Antimatter;
-import org.xmlrobot.genesis.BigBang;
-import org.xmlrobot.genesis.BigBong;
-import org.xmlrobot.genesis.Chromosome;
-import org.xmlrobot.genesis.Diploid;
-import org.xmlrobot.genesis.Earth;
-import org.xmlrobot.genesis.Genomap;
-import org.xmlrobot.genesis.Gliese;
-import org.xmlrobot.genesis.Haploid;
-import org.xmlrobot.genesis.Hyperchain;
-import org.xmlrobot.genesis.Hypercube;
-import org.xmlrobot.genesis.Interstellar;
-import org.xmlrobot.genesis.Matter;
-import org.xmlrobot.genesis.MilkyWay;
-import org.xmlrobot.genesis.Operon;
-import org.xmlrobot.genesis.Polyploid;
-import org.xmlrobot.genesis.Ribosome;
-import org.xmlrobot.genesis.Sun;
-import org.xmlrobot.genesis.Supercluster;
-import org.xmlrobot.genesis.Tetraploid;
-import org.xmlrobot.genesis.TimeMaster;
+import org.xmlrobot.genesis.*;
 
 public class Execution {
 
 	public static void main(String[] args) {
-		int dilatation = 10;
-		Hypercube hypercube = new Hypercube(Hyperchain.class, Parity.XX);
-		hypercube.put('A', 1*dilatation);
-		hypercube.put('B', 2*dilatation);
-		hypercube.put('C', 3*dilatation);
-		hypercube.put('D', 4*dilatation);
-		hypercube.put('E', 5*dilatation);
-		hypercube.put('F', 6*dilatation);
-		hypercube.put('G', 7*dilatation);
-		hypercube.put('H', 8*dilatation);
-		hypercube.put('I', 9*dilatation);
-		hypercube.put('J', 10*dilatation);
-		hypercube.put('K', 11*dilatation);
-		hypercube.put('L', 12*dilatation);
-		hypercube.put('M', 13*dilatation);
-		hypercube.put('N', 14*dilatation);
-		hypercube.put('O', 15*dilatation);
-		hypercube.put('P', 16*dilatation);
-		hypercube.put('Q', 17*dilatation);
-		hypercube.put('R', 18*dilatation);
-		hypercube.put('S', 19*dilatation);
-		hypercube.put('T', 20*dilatation);
-		hypercube.put('U', 21*dilatation);
-		hypercube.put('V', 22*dilatation);
-		hypercube.put('W', 23*dilatation);
-		hypercube.put('X', 24*dilatation);
-		hypercube.put('Y', 25*dilatation);
-		hypercube.put('Z', 26*dilatation);
-		hypercube.put('Ç', 27*dilatation);
+		int dilatation = 1;
+		Hypercube hypercube = new Hypercube('A', 1*dilatation);
+		hypercube.putValue('B', 2*dilatation);
+		hypercube.putValue('C', 3*dilatation);
+		hypercube.putValue('D', 4*dilatation);
+		hypercube.putValue('E', 5*dilatation);
+		hypercube.putValue('F', 6*dilatation);
+		hypercube.putValue('G', 7*dilatation);
+		hypercube.putValue('H', 8*dilatation);
+		hypercube.putValue('I', 9*dilatation);
+		hypercube.putValue('J', 10*dilatation);
+		hypercube.putValue('K', 11*dilatation);
+		hypercube.putValue('L', 12*dilatation);
+		hypercube.putValue('M', 13*dilatation);
+		hypercube.putValue('N', 14*dilatation);
+		hypercube.putValue('O', 15*dilatation);
+		hypercube.putValue('P', 16*dilatation);
+		hypercube.putValue('Q', 17*dilatation);
+		hypercube.putValue('R', 18*dilatation);
+		hypercube.putValue('S', 19*dilatation);
+		hypercube.putValue('T', 20*dilatation);
+		hypercube.putValue('U', 21*dilatation);
+		hypercube.putValue('V', 22*dilatation);
+		hypercube.putValue('W', 23*dilatation);
+		hypercube.putValue('X', 24*dilatation);
+		hypercube.putValue('Y', 25*dilatation);
+		hypercube.putValue('Z', 26*dilatation);
+		hypercube.putValue('Ç', 27*dilatation);
+		
+		Hyperchain hyperchain = new Hyperchain(1*dilatation, 'A');
+		hyperchain.putValue(2*dilatation, 'B');
+		hyperchain.putValue(3*dilatation, 'C');
+		hyperchain.putValue(4*dilatation, 'D');
+		hyperchain.putValue(5*dilatation, 'E');
+		hyperchain.putValue(6*dilatation, 'F');
+		hyperchain.putValue(7*dilatation, 'G');
+		hyperchain.putValue(8*dilatation, 'H');
+		hyperchain.putValue(9*dilatation, 'I');
+		hyperchain.putValue(10*dilatation, 'J');
+		hyperchain.putValue(11*dilatation, 'K');
+		hyperchain.putValue(12*dilatation, 'L');
+		hyperchain.putValue(13*dilatation, 'M');
+		hyperchain.putValue(14*dilatation, 'N');
+		hyperchain.putValue(15*dilatation, 'O');
+		hyperchain.putValue(16*dilatation, 'P');
+		hyperchain.putValue(17*dilatation, 'Q');
+		hyperchain.putValue(18*dilatation, 'R');
+		hyperchain.putValue(19*dilatation, 'S');
+		hyperchain.putValue(20*dilatation, 'T');
+		hyperchain.putValue(21*dilatation, 'U');
+		hyperchain.putValue(22*dilatation, 'V');
+		hyperchain.putValue(23*dilatation, 'W');
+		hyperchain.putValue(24*dilatation, 'X');
+		hyperchain.putValue(25*dilatation, 'Y');
+		hyperchain.putValue(26*dilatation, 'Z');
+		hyperchain.putValue(27*dilatation, 'Ç');
 
-		Genomap genomap = new Genomap(Haploid.class, Parity.YY);
-		genomap.put(hypercube, (Hyperchain) hypercube.getChild());
+		Genomap genomap = new Genomap(hypercube, hyperchain);
+		Haploid haploid = new Haploid(hyperchain, hypercube);
 		
-		Chromosome chromosome = new Chromosome(Diploid.class, Parity.YY);
-		chromosome.put(genomap, (Haploid) genomap.getChild());
-
-		Ribosome ribosome = new Ribosome(Tetraploid.class, Parity.YY);
-		ribosome.put(chromosome, (Diploid) chromosome.getChild());
+		Chromosome chromosome = new Chromosome(genomap, haploid);
+		Diploid diploid = new Diploid(haploid, genomap);
 		
-		Operon operon = new Operon(Polyploid.class, Parity.YY);
-		operon.put(ribosome, (Tetraploid) ribosome.getChild());
+		Ribosome ribosome = new Ribosome(chromosome, diploid);
+		Tetraploid tetraploid = new Tetraploid(diploid, chromosome);
 		
-		Earth earth = new Earth(Gliese.class, Parity.YY);
-		earth.put(operon, (Polyploid) operon.getChild());
+		Operon operon = new Operon(ribosome, tetraploid);
+		Polyploid polyploid = new Polyploid(tetraploid, ribosome);
 		
-		Sun sun = new Sun(AlphaCentauri.class, Parity.YY);
-		sun.put(earth, (Gliese) earth.getChild());
+		Earth earth = new Earth(operon, polyploid);
+		Gliese gliese = new Gliese(polyploid, operon);
 		
-		MilkyWay milkyWay = new MilkyWay(Andromeda.class, Parity.YY);
-		milkyWay.put(sun, (AlphaCentauri) sun.getChild());
+		Sun sun = new Sun(earth, gliese);
+		AlphaCentauri alphaCentauri = new AlphaCentauri(gliese, earth);
 		
-		Supercluster supercluster = new Supercluster(Interstellar.class, Parity.YY);
-		supercluster.put(milkyWay, (Andromeda) milkyWay.getChild());
+		MilkyWay milkyWay = new MilkyWay(sun, alphaCentauri);
+		Andromeda andromeda = new Andromeda(alphaCentauri, sun);
 		
-		Matter matter = new Matter(Antimatter.class, Parity.YY);
-		matter.put(supercluster, (Interstellar) supercluster.getChild());
+		Supercluster supercluster = new Supercluster(milkyWay, andromeda);
+		Interstellar interstellar = new Interstellar(andromeda, milkyWay);
 		
-		BigBang bigBang = new BigBang(BigBong.class, Parity.YY);
-		bigBang.put(matter, (Antimatter) matter.getChild());
+		Matter matter = new Matter(supercluster, interstellar);
+		Antimatter antimatter = new Antimatter(interstellar, supercluster);
 		
-		Aaron aaron = new Aaron(TimeMaster.class, Parity.YY);
-		aaron.put(bigBang, (BigBong) bigBang.getChild());
+		BigBang bigBang = new BigBang(matter, antimatter);
+		BigBong bigBong = new BigBong(antimatter, matter);
 		
-		Listener timeListener = new Listener() {
-			
-			private static final long serialVersionUID = 9215158565934363875L;
-			@Override
-			public void execute(Runnable command) {
-				newThread(command).start();
-			}
-			@Override
-			public Thread newThread(Runnable r) {
-				return new Thread(r);
-			}
-			@Override
-			public void run() {
-				
-			}
-			@Override
-			public void setParity(Parity parity) {
-				
-			}
-			@Override
-			public void setCommand(Order command) {
-				
-			}
-			@Override
-			public Parity getParity() {
-				return Parity.YY;
-			}
-			
-			@Override
-			public String getName() {
-				return null;
-			}
-			@Override
-			public Order getCommand() {
-				return null;
-			}
-			@Override
-			public void removeEventListener(Listener listener) {
-				
-			}
-			@Override
-			public void event(EventArgs e) {
-				Listener listener = (Listener) e.getSource();
-				switch (e.getCommand()) {
-				case GENESIS:
-					if(listener instanceof BigBang) {
-						System.out.println("ENTRA");
-						BigBang entry = (BigBang) listener;
-						entry.addEventListener(this);
-						entry.getChild().addEventListener(this);
-						execute(entry);
-					}
-					break;
-				case LISTEN:
-					if(listener instanceof Hypercube || listener instanceof Hyperchain) {
-						
-					} else {
-						PrintStream output;
-						try {
-							output = new PrintStream(
-								     new FileOutputStream("output.txt", true));
-							output.println(listener.getClass().getName()) ;
-							output.close();
-						} catch (FileNotFoundException e1) {
-							e1.printStackTrace();
-						}
-					}
-					break;
-				default:
-					break;
-				}
-			}
-			@Override
-			public void addEventListener(Listener listener) {
-				
-			}
-		};
+		Aaron aaron = new Aaron(bigBang, bigBong);
 		
-		aaron.addEventListener(timeListener);
-		aaron.getChild().addEventListener(timeListener);
-//		System.setErr(new PrintStream(new OutputStream() {
-//			
-//			@Override
-//			public void write(int b) throws IOException {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//		}));
 		aaron.execute(aaron);
 	}
 }

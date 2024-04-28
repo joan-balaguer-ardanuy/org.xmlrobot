@@ -11,7 +11,6 @@ import java.util.Objects;
 import org.xmlrobot.Entry;
 import org.xmlrobot.Parity;
 import org.xmlrobot.ScrewDriver;
-import org.xmlrobot.recurrent.Enumerator;
 
 /**
  * @author joan
@@ -45,9 +44,11 @@ public abstract class ScrewNut<K,V>
 	 * {@link ScrewNut} class constructor.
 	 * @param childClass {@link Class} the child class
 	 * @param parity {@link Parity} the parity
+	 * @param key the key
+	 * @param value the value
 	 */
-	public ScrewNut(Class<? extends Screw<V,K>> childClass, Parity parity) {
-		super(childClass, parity);
+	public ScrewNut(Class<? extends Screw<V,K>> childClass, Parity parity, K key, V value) {
+		super(childClass, parity, key, value);
 	}
 	/**
 	 * {@link ScrewNut} class constructor.
@@ -90,7 +91,7 @@ public abstract class ScrewNut<K,V>
 	public DNA<V,K> entryDNA() {
 		return (DNA<V,K>) getChild();
 	}
-
+	
 	public void clear() {
 		release();
 	}
@@ -175,25 +176,6 @@ public abstract class ScrewNut<K,V>
 			i++;
 		}
 		return i;
-	}
-
-	public Iterator<Entry<K,V>> iterator() {
-		Enumerator<Entry<K,V>> en = enumerator();
-		return new Iterator<Entry<K,V>>() {
-
-			@Override
-			public boolean hasNext() {
-				return en.hasMoreElements();
-			}
-			@Override
-			public Entry<K, V> next() {
-				return en.nextElement();
-			}
-			@Override
-			public void remove() {
-				en.remove();
-			}
-		};
 	}
 
 	@Deprecated

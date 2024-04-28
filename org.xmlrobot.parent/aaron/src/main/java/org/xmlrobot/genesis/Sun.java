@@ -6,19 +6,17 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Sun extends Screw<Earth,Gliese> {
+public final class Sun extends Screw<Earth,Gliese> {
 	
 	private static final long serialVersionUID = 521974463465488019L;
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<org.xmlrobot.Entry<Earth,Gliese>> en = enumerator();
-		while(en.hasMoreElements()) {
-			org.xmlrobot.Entry<Earth,Gliese> entry = en.nextElement();
+		for(org.xmlrobot.Entry<Earth,Gliese> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -45,13 +43,15 @@ public class Sun extends Screw<Earth,Gliese> {
 	}
 	
 	public Sun() {
-		this(AlphaCentauri.class, Parity.random());
+		super();
 	}
 	public Sun(Parity parity) {
 		super(parity);
 	}
-	public Sun(Class<AlphaCentauri> childClass, Parity parity) {
-		super(childClass, parity);
+	public Sun(Earth key, Gliese value) {
+		super(AlphaCentauri.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Sun(Sun parent) {
 		super(parent);
@@ -69,36 +69,49 @@ public class Sun extends Screw<Earth,Gliese> {
 		key.addEventListener(this);
 		value.addEventListener(getChild());
 	}
+	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<Gliese,Earth> o) {
-		getKey().comparator(new Gliese()).compare(getKey(), o.getKey());
-		org.xmlrobot.Entry<Polyploid, Operon> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		org.xmlrobot.Entry<Polyploid, Operon> entry = getKey().comparator().getSource();
 		comparator((Gliese) entry, (Earth) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Sun) {
-			Sun entry = (Sun) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
-			case LISTEN:
-				entry.permuteChild(call(), get());
+			case GENESIS:
+				if(e.getSource() instanceof Polyploid) {
+					Polyploid key = (Polyploid) e.getSource();
+					Operon value = (Operon) e.getValue();
+					getValue().putValue(key, value);
+				}
 				break;
-			case TRANSFER:
-				entry.release();
+			case LISTEN:
+				if(e.getSource() instanceof Earth) {
+					getKey().comparator().compare((Earth) e.getSource(), getValue());
+					getValue().comparator().compare((Gliese) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
+				}
 				break;
 			default:
 				break;
 			}
-		} else if(e.getSource() instanceof Earth) {
-			Earth entry = (Earth) e.getSource();
+		} else {
 			switch (e.getCommand()) {
+//			case LISTEN:
+//				if(e.getSource() instanceof Sun) {
+//					Sun entry = (Sun) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
 			case TRANSFER:
-				if(!isRoot()) {
-					getKey().comparator(new Gliese()).compare(entry, getValue());
-					Gliese source = (Gliese) getKey().comparator().source();
-					putKey(source, (Earth) source.getChild());
+				if(e.getSource() instanceof Sun) {
+					Sun entry = (Sun) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -107,8 +120,11 @@ public class Sun extends Screw<Earth,Gliese> {
 		}
 	}
 	@Override
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Earth> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

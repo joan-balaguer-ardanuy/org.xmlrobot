@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.xmlrobot.numbers.Enumerable;
 import org.xmlrobot.time.Recursive;
 
 /**
@@ -74,7 +75,7 @@ import org.xmlrobot.time.Recursive;
  *
  */
 public interface Entry<K,V>
-	extends Recursive<Entry<K,V>,Entry<V,K>>, java.util.Map.Entry<K,V> {
+	extends Recursive<Entry<K,V>,Entry<V,K>>, Enumerable<K>, java.util.Map.Entry<K,V> {
 
 	K getKey();
     K setKey(K key);
@@ -135,16 +136,15 @@ public interface Entry<K,V>
 
     @Override
     Entry.Comparator<K,V> comparator();
-    Entry.Comparator<K,V> comparator(Entry<V,K> source);
     Entry.Comparator<K,V> comparator(V value, K key);
     
     interface Comparator<K,V> 
     	extends Recursive.Reproducer<Entry<K,V>,Entry<V,K>> {
     	
     	@Override
-    	void addParent(Entry<K,V> parent);
+    	void setParent(Entry<K,V> parent);
     	
     	@Override
-    	void addChild(Entry<V,K> child);
+    	void setChild(Entry<V,K> child);
     }
 }

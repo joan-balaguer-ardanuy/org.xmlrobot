@@ -1,7 +1,5 @@
 package org.xmlrobot.genesis;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -9,20 +7,18 @@ import javax.xml.bind.annotation.XmlType;
 import org.xmlrobot.Entry;
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Haploid extends ScrewNut<Hyperchain, Hypercube> {
+public final class Haploid extends ScrewNut<Hyperchain, Hypercube> {
 
 	private static final long serialVersionUID = 6871541139973062247L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<Entry<Hyperchain,Hypercube>> en = enumerator();
-		while(en.hasMoreElements()) {
-			Entry<Hyperchain,Hypercube> entry = en.nextElement();
+		for(Entry<Hyperchain,Hypercube> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -49,13 +45,15 @@ public class Haploid extends ScrewNut<Hyperchain, Hypercube> {
 	}
 	
 	public Haploid() {
-		this(Genomap.class, Parity.random());
+		super();
 	}
 	public Haploid(Parity parity) {
 		super(parity);
 	}
-	public Haploid(Class<Genomap> childClass, Parity parity) {
-		super(childClass, parity);
+	public Haploid(Hyperchain key, Hypercube value) {
+		super(Genomap.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Haploid(Haploid parent) {
 		super(parent);
@@ -76,21 +74,39 @@ public class Haploid extends ScrewNut<Hyperchain, Hypercube> {
 	
 	@Override
 	public int compareTo(Entry<Hypercube, Hyperchain> o) {
-		getKey().comparator(new Hypercube()).compare(getKey(), o.getKey());
-		Entry<Character,Integer> entry = getKey().comparator().source();
+		getKey().comparator().compare(o.getValue(), getValue());
+		Entry<Character,Integer> entry = getKey().comparator().getSource();
 		comparator((Hypercube) entry, (Hyperchain) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Hyperchain) {
-			Hyperchain entry = (Hyperchain) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e); 
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case LISTEN:
-				if(!isRoot()) {
-					getKey().comparator(new Hypercube()).compare(entry, getValue());
-					sendEvent(new EventArgs(getKey().comparator().source()));
+				if(e.getSource() instanceof Hyperchain) {
+					getKey().comparator().compare((Hyperchain) e.getKey(), getValue());
+					getValue().comparator().compare((Hypercube) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(),
+							getValue().comparator().getSource()));
+				}
+				break;
+			default:
+				break;
+			}
+		} else {
+			switch (e.getCommand()) {
+//			case LISTEN:
+//				if(e.getSource() instanceof Haploid) { 
+//					Haploid entry = (Haploid) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
+			case TRANSFER:
+				if(e.getSource() instanceof Haploid) {
+					Haploid entry = (Haploid) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -98,8 +114,11 @@ public class Haploid extends ScrewNut<Hyperchain, Hypercube> {
 			}
 		}
 	}
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Hyperchain> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

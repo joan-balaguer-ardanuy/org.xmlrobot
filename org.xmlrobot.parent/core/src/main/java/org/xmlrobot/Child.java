@@ -71,6 +71,11 @@ public abstract class Child
 	}
 
 	@Override
+	public void run() {
+		execute(getChild());
+		super.run();
+	}
+	@Override
 	public void release() {
 		call().setParent(getParent());
 		get().setParent(getParent().getChild());

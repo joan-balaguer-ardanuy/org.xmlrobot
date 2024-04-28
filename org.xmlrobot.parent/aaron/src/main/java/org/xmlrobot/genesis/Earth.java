@@ -6,19 +6,17 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Earth extends Screw<Operon,Polyploid> {
+public final class Earth extends Screw<Operon,Polyploid> {
 
 	private static final long serialVersionUID = -524858795429899605L;
 	@Override
 	public String getName() {
-		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<org.xmlrobot.Entry<Operon,Polyploid>> en = enumerator();
-		while(en.hasMoreElements()) {
-			org.xmlrobot.Entry<Operon,Polyploid> entry = en.nextElement();
+		StringBuilder stringBuilder = new StringBuilder();;
+		for(org.xmlrobot.Entry<Operon,Polyploid> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -45,13 +43,15 @@ public class Earth extends Screw<Operon,Polyploid> {
 	}
 	
 	public Earth() {
-		this(Gliese.class, Parity.random());
+		super();
 	}
 	public Earth(Parity parity) {
 		super(parity);
 	}
-	public Earth(Class<Gliese> childClass, Parity parity) {
-		super(childClass, parity);
+	public Earth(Operon key, Polyploid value) {
+		super(Gliese.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Earth(Earth parent) {
 		super(parent);
@@ -69,36 +69,49 @@ public class Earth extends Screw<Operon,Polyploid> {
 		key.addEventListener(this);
 		value.addEventListener(getChild());
 	}
+	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<Polyploid, Operon> o) {
-		getKey().comparator(new Polyploid()).compare(getKey(), o.getKey());
-		org.xmlrobot.Entry<Tetraploid, Ribosome> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		org.xmlrobot.Entry<Tetraploid, Ribosome> entry = getKey().comparator().getSource();
 		comparator((Polyploid) entry, (Operon) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Earth) {
-			Earth entry = (Earth) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
-			case LISTEN:
-				entry.permuteChild(call(), get());
+			case GENESIS:
+				if(e.getSource() instanceof Tetraploid) {
+					Tetraploid key = (Tetraploid) e.getSource();
+					Ribosome value = (Ribosome) e.getValue();
+					getValue().putValue(key, value);
+				}
 				break;
-			case TRANSFER:
-				entry.release();
+			case LISTEN:
+				if(e.getSource() instanceof Operon) {
+					getKey().comparator().compare((Operon) e.getSource(), getValue());
+					getValue().comparator().compare((Polyploid) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
+				}
 				break;
 			default:
 				break;
 			}
-		} else if(e.getSource() instanceof Operon) {
-			Operon entry = (Operon) e.getSource();
+		} else {
 			switch (e.getCommand()) {
+//			case LISTEN:
+//				if(e.getSource() instanceof Earth) {
+//					Earth entry = (Earth) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
 			case TRANSFER:
-				if(!isRoot()) {
-					getKey().comparator(new Polyploid()).compare(entry, getValue());
-					Polyploid source = (Polyploid) getKey().comparator().source();
-					putKey(source, (Operon) source.getChild());
+				if(e.getSource() instanceof Earth) {
+					Earth entry = (Earth) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -107,8 +120,11 @@ public class Earth extends Screw<Operon,Polyploid> {
 		}
 	}
 	@Override
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Operon> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

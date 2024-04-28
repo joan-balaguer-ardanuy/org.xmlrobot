@@ -6,19 +6,17 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Supercluster extends Screw<MilkyWay,Andromeda> {
+public final class Supercluster extends Screw<MilkyWay,Andromeda> {
 
 	private static final long serialVersionUID = 306393406087450209L;
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<org.xmlrobot.Entry<MilkyWay,Andromeda>> en = enumerator();
-		while(en.hasMoreElements()) {
-			org.xmlrobot.Entry<MilkyWay,Andromeda> entry = en.nextElement();
+		for(org.xmlrobot.Entry<MilkyWay,Andromeda> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -45,13 +43,15 @@ public class Supercluster extends Screw<MilkyWay,Andromeda> {
 	}
 	
 	public Supercluster() {
-		this(Interstellar.class, Parity.random());
+		super();
 	}
 	public Supercluster(Parity parity) {
 		super(parity);
 	}
-	public Supercluster(Class<Interstellar> childClass, Parity parity) {
-		super(childClass, parity);
+	public Supercluster(MilkyWay key, Andromeda value) {
+		super(Interstellar.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Supercluster(Supercluster parent) {
 		super(parent);
@@ -69,36 +69,49 @@ public class Supercluster extends Screw<MilkyWay,Andromeda> {
 		key.addEventListener(this);
 		value.addEventListener(getChild());
 	}
+	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<Andromeda,MilkyWay> o) {
-		getKey().comparator(new Andromeda()).compare(getKey(), o.getKey());
-		org.xmlrobot.Entry<AlphaCentauri, Sun> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		org.xmlrobot.Entry<AlphaCentauri, Sun> entry = getKey().comparator().getSource();
 		comparator((Andromeda) entry, (MilkyWay) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Supercluster) {
-			Supercluster entry = (Supercluster) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
-			case LISTEN:
-				entry.permuteChild(call(), get());
+			case GENESIS:
+				if(e.getSource() instanceof AlphaCentauri) {
+					AlphaCentauri key = (AlphaCentauri) e.getSource();
+					Sun value = (Sun) e.getValue();
+					getValue().putValue(key, value);
+				}
 				break;
-			case TRANSFER:
-				entry.release();
+			case LISTEN:
+				if(e.getSource() instanceof MilkyWay) {
+					getKey().comparator().compare((MilkyWay) e.getSource(), getValue());
+					getValue().comparator().compare((Andromeda) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
+				}
 				break;
 			default:
 				break;
 			}
-		} else if(e.getSource() instanceof MilkyWay) {
-			MilkyWay entry = (MilkyWay) e.getSource();
+		} else {
 			switch (e.getCommand()) {
+//			case LISTEN:
+//				if(e.getSource() instanceof Supercluster) {
+//					Supercluster entry = (Supercluster) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
 			case TRANSFER:
-				if(!isRoot()) {
-					getKey().comparator(new Andromeda()).compare(entry, getValue());
-					Andromeda source = (Andromeda) getKey().comparator().source();
-					putKey(source, (MilkyWay) source.getChild());
+				if(e.getSource() instanceof Supercluster) {
+					Supercluster entry = (Supercluster) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -107,8 +120,11 @@ public class Supercluster extends Screw<MilkyWay,Andromeda> {
 		}
 	}
 	@Override
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<MilkyWay> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

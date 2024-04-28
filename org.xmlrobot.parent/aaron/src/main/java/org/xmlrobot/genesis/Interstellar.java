@@ -7,20 +7,18 @@ import javax.xml.bind.annotation.XmlType;
 import org.xmlrobot.Entry;
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
+public final class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 
 	private static final long serialVersionUID = -609824198859953022L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<Entry<Andromeda,MilkyWay>> en = enumerator();
-		while(en.hasMoreElements()) {
-			Entry<Andromeda,MilkyWay> entry = en.nextElement();
+		for(Entry<Andromeda,MilkyWay> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -47,13 +45,15 @@ public class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 	}
 	
 	public Interstellar() {
-		this(Supercluster.class, Parity.random());
+		super();
 	}
 	public Interstellar(Parity parity) {
 		super(parity);
 	}
-	public Interstellar(Class<Supercluster> childClass, Parity parity) {
-		super(childClass, parity);
+	public Interstellar(Andromeda key, MilkyWay value) {
+		super(Supercluster.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Interstellar(Interstellar parent) {
 		super(parent);
@@ -74,35 +74,46 @@ public class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 	
 	@Override
 	public int compareTo(Entry<MilkyWay, Andromeda> o) {
-		getKey().comparator(new MilkyWay()).compare(getKey(), o.getKey());
-		Entry<Sun,AlphaCentauri> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		Entry<Sun,AlphaCentauri> entry = getKey().comparator().getSource();
 		comparator((MilkyWay) entry, (Andromeda) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Sun) {
-			Sun entry = (Sun) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(isRoot()) {
-					MilkyWay milkyWay = new MilkyWay();
-					milkyWay.putValue(entry, (AlphaCentauri) entry.getChild());
-					sendEvent(new EventArgs(milkyWay));
+				if(e.getSource() instanceof Sun) {
+					Sun key = (Sun) e.getSource();
+					AlphaCentauri value = (AlphaCentauri) e.getValue();
+					getValue().putValue(key, value);
+				}
+				break;
+			case LISTEN:
+				if(e.getSource() instanceof Andromeda) {
+					getKey().comparator().compare((Andromeda) e.getSource(), getValue());
+					getValue().comparator().compare((MilkyWay) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
 				}
 				break;
 			default:
 				break;
 			}
-		} 
-		else if(e.getSource() instanceof Andromeda) {
-			Andromeda entry = (Andromeda) e.getSource();
+		} else {
 			switch (e.getCommand()) {
-			case LISTEN:
-				if (!isRoot()) {
-					getKey().comparator(new MilkyWay()).compare(entry, getValue());
-					sendEvent(new EventArgs(getKey().comparator().source()));
+//			case LISTEN:
+//				if(e.getSource() instanceof Interstellar) {
+//					Interstellar entry = (Interstellar) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
+			case TRANSFER:
+				if(e.getSource() instanceof Interstellar) {
+					Interstellar entry = (Interstellar) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -110,8 +121,11 @@ public class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 			}
 		}
 	}
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Andromeda> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

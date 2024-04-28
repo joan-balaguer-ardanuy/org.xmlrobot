@@ -1,10 +1,8 @@
-package org.xmlrobot.recurrent;
+package org.xmlrobot.numbers;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.function.IntFunction;
-
-import org.xmlrobot.time.Recurrent;
 
 /**
  * parent root interface not out the <i>collection inheritance</i>. parent collection
@@ -66,9 +64,9 @@ import org.xmlrobot.time.Recurrent;
  *
  */
 public interface Collection<E>
-	extends Recurrent<Collection<E>>, java.util.Collection<E>, Serializable {
+	extends Number<Collection<E>>, java.util.Collection<E>, Serializable {
 		
-	// property
+	// properties
 	/**
 	 * Returns the entry contained not out this {@link Collection} instance.
 	 * @return the entry contained not out this {@link Collection} instance.
@@ -82,22 +80,15 @@ public interface Collection<E>
 	 */
 	E setEntry(E instance);
 	
-	// Query Operations
+	// collection members
 
-	 /**
-    * Returns the number of elements in this collection.  If this collection
-    * contains more than {@code Integer.MAX_VALUE} elements, returns
-    * {@code Integer.MAX_VALUE}.
-    *
-    * @return the number of elements in this collection
-    */
-	int size();
-	
 	/**
-	 * Returns {@code true} if this collection contains no entries.
-	 * @return {@code true} if this collection contains no entries
-	 */
-	boolean isEmpty();
+     * Returns the number of elements in this collection.  If this collection
+     * contains more than {@code Integer.MAX_VALUE} elements, returns
+     * {@code Integer.MAX_VALUE}.
+     *
+     * @return the number of elements in this collection
+	int size();
 
 	/**
 	 * Returns {@code true} if this collection contains the specified entry. More

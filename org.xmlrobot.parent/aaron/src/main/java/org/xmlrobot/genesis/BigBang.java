@@ -6,19 +6,17 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class BigBang extends Screw<Matter,Antimatter> {
+public final class BigBang extends Screw<Matter,Antimatter> {
 
 	private static final long serialVersionUID = 7325459897854775266L;
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<org.xmlrobot.Entry<Matter,Antimatter>> en = enumerator();
-		while(en.hasMoreElements()) {
-			org.xmlrobot.Entry<Matter,Antimatter> entry = en.nextElement();
+		for(org.xmlrobot.Entry<Matter,Antimatter> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -45,13 +43,15 @@ public class BigBang extends Screw<Matter,Antimatter> {
 	}
 	
 	public BigBang() {
-		this(BigBong.class, Parity.random());
+		super();
 	}
 	public BigBang(Parity parity) {
 		super(parity);
 	}
-	public BigBang(Class<BigBong> childClass, Parity parity) {
-		super(childClass, parity);
+	public BigBang(Matter key, Antimatter value) {
+		super(BigBong.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public BigBang(BigBang parent) {
 		super(parent);
@@ -69,36 +69,49 @@ public class BigBang extends Screw<Matter,Antimatter> {
 		key.addEventListener(this);
 		value.addEventListener(getChild());
 	}
+	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<Antimatter,Matter> o) {
-		getKey().comparator(new Antimatter()).compare(getKey(), o.getKey());
-		org.xmlrobot.Entry<Interstellar, Supercluster> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		org.xmlrobot.Entry<Interstellar, Supercluster> entry = getKey().comparator().getSource();
 		comparator((Antimatter) entry, (Matter) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof BigBang) {
-			BigBang entry = (BigBang) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
-			case LISTEN:
-				entry.permuteChild(call(), get());
+			case GENESIS:
+				if(e.getSource() instanceof Interstellar) {
+					Interstellar key = (Interstellar) e.getSource();
+					Supercluster value = (Supercluster) e.getValue();
+					getValue().putValue(key, value);
+				}
 				break;
-			case TRANSFER:
-				entry.release();
+			case LISTEN:
+				if(e.getSource() instanceof Matter) {
+					getKey().comparator().compare((Matter) e.getSource(), getValue());
+					getValue().comparator().compare((Antimatter) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
+				}
 				break;
 			default:
 				break;
 			}
-		} else if(e.getSource() instanceof Matter) {
-			Matter entry = (Matter) e.getSource();
+		} else {
 			switch (e.getCommand()) {
+//			case LISTEN:
+//				if(e.getSource() instanceof BigBang) {
+//					BigBang entry = (BigBang) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
 			case TRANSFER:
-				if(!isRoot()) {
-					getKey().comparator(new Antimatter()).compare(entry, getValue());
-					Antimatter source = (Antimatter) getKey().comparator().source();
-					putKey(source, (Matter) source.getChild());
+				if(e.getSource() instanceof BigBang) {
+					BigBang entry = (BigBang) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -107,8 +120,11 @@ public class BigBang extends Screw<Matter,Antimatter> {
 		}
 	}
 	@Override
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Matter> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

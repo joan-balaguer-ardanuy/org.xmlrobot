@@ -6,20 +6,18 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Aaron extends Screw<BigBang,BigBong> {
+public final class Aaron extends Screw<BigBang,BigBong> {
 
 	private static final long serialVersionUID = -4885033226486761983L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<org.xmlrobot.Entry<BigBang,BigBong>> en = enumerator();
-		while(en.hasMoreElements()) {
-			org.xmlrobot.Entry<BigBang,BigBong> entry = en.nextElement();
+		for(org.xmlrobot.Entry<BigBang,BigBong> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -46,13 +44,15 @@ public class Aaron extends Screw<BigBang,BigBong> {
 	}
 	
 	public Aaron() {
-		this(TimeMaster.class, Parity.random());
+		super();
 	}
 	public Aaron(Parity parity) {
 		super(parity);
 	}
-	public Aaron(Class<TimeMaster> childClass, Parity parity) {
-		super(childClass, parity);
+	public Aaron(BigBang key, BigBong value) {
+		super(TimeMaster.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Aaron(Aaron parent) {
 		super(parent);
@@ -70,36 +70,24 @@ public class Aaron extends Screw<BigBang,BigBong> {
 		key.addEventListener(this);
 		value.addEventListener(getChild());
 	}
+	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<BigBong,BigBang> o) {
-		getKey().comparator(new BigBong()).compare(getKey(), o.getKey());
-		org.xmlrobot.Entry<Antimatter,Matter> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		org.xmlrobot.Entry<Antimatter,Matter> entry = getKey().comparator().getSource();
 		comparator((BigBong) entry, (BigBang) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Aaron) {
-			Aaron entry = (Aaron) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
-			case LISTEN:
-				entry.permuteChild(call(), get());
-				break;
-			case TRANSFER:
-				entry.release();
-				break;
-			default:
-				break;
-			}
-		} else if(e.getSource() instanceof BigBang) {
-			BigBang entry = (BigBang) e.getSource();
-			switch (e.getCommand()) {
-			case TRANSFER:
-				if(!isRoot()) {
-					getKey().comparator(new BigBong()).compare(entry, getValue());
-					BigBong source = (BigBong) getKey().comparator().source();
-					putKey(source, (BigBang) source.getChild());
+			case GENESIS:
+				if(e.getSource() instanceof Antimatter) {
+					Antimatter key = (Antimatter) e.getSource();
+					Matter value = (Matter) e.getValue();
+					getValue().putValue(key, value);
 				}
 				break;
 			default:
@@ -108,8 +96,11 @@ public class Aaron extends Screw<BigBang,BigBong> {
 		}
 	}
 	@Override
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<BigBang> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

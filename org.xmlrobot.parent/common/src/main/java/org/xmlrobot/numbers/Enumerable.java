@@ -1,4 +1,4 @@
-package org.xmlrobot.recurrent;
+package org.xmlrobot.numbers;
 
 public interface Enumerable<E> {
 

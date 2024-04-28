@@ -6,20 +6,18 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Chromosome extends Screw<Genomap, Haploid> {
+public final class Chromosome extends Screw<Genomap, Haploid> {
 
 	private static final long serialVersionUID = 4135008320029372246L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<org.xmlrobot.Entry<Genomap,Haploid>> en = enumerator();
-		while(en.hasMoreElements()) {
-			org.xmlrobot.Entry<Genomap,Haploid> entry = en.nextElement();
+		for(org.xmlrobot.Entry<Genomap,Haploid> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -46,13 +44,15 @@ public class Chromosome extends Screw<Genomap, Haploid> {
 	}
 	
 	public Chromosome() {
-		this(Diploid.class, Parity.random());
+		super();
 	}
 	public Chromosome(Parity parity) {
 		super(parity);
 	}
-	public Chromosome(Class<Diploid> childClass, Parity parity) {
-		super(childClass, parity);
+	public Chromosome(Genomap key, Haploid value) {
+		super(Diploid.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Chromosome(Chromosome parent) {
 		super(parent);
@@ -70,36 +70,49 @@ public class Chromosome extends Screw<Genomap, Haploid> {
 		key.addEventListener(this);
 		value.addEventListener(getChild());
 	}
+	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<Haploid, Genomap> o) {
-		getKey().comparator(new Haploid()).compare(getKey(), o.getKey());
-		org.xmlrobot.Entry<Hyperchain, Hypercube> entry = getKey().comparator().source();
+		getKey().comparator().compare(o.getValue(), getValue());
+		org.xmlrobot.Entry<Hyperchain, Hypercube> entry = getKey().comparator().getSource();
 		comparator((Haploid) entry, (Genomap) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Chromosome) {
-			Chromosome entry = (Chromosome) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
-			case LISTEN:
-				entry.permuteChild(call(), get());
+			case GENESIS:
+				if(e.getSource() instanceof Hyperchain) {
+					Hyperchain key = (Hyperchain) e.getKey();
+					Hypercube value = (Hypercube) e.getValue();
+					getValue().putValue(key, value);
+				}
 				break;
-			case TRANSFER:
-				entry.release();
+			case LISTEN:
+				if(e.getSource() instanceof Genomap) {
+					getKey().comparator().compare((Genomap) e.getKey(), getValue());
+					getValue().comparator().compare((Haploid) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(),
+							getValue().comparator().getSource()));
+				}
 				break;
 			default:
 				break;
 			}
-		} else if(e.getSource() instanceof Genomap) {
-			Genomap entry = (Genomap) e.getSource();
+		} else {
 			switch (e.getCommand()) {
+//			case LISTEN:
+//				if(e.getSource() instanceof Chromosome) { 
+//					Chromosome entry = (Chromosome) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
 			case TRANSFER:
-				if(!isRoot()) {
-					getKey().comparator(new Haploid()).compare(entry, getValue());
-					Haploid source = (Haploid) getKey().comparator().source();
-					putKey(source, (Genomap) source.getChild());
+				if(e.getSource() instanceof Chromosome) {
+					Chromosome entry = (Chromosome) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -108,8 +121,11 @@ public class Chromosome extends Screw<Genomap, Haploid> {
 		}
 	}
 	@Override
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Genomap> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

@@ -1,4 +1,4 @@
-package org.xmlrobot.recurrent;
+package org.xmlrobot.numbers;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

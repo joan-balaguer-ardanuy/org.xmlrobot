@@ -1,4 +1,4 @@
-package org.xmlrobot.recurrent;
+package org.xmlrobot.numbers;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -7,7 +7,7 @@ import java.util.Objects;
 import javax.xml.bind.annotation.XmlTransient;
 
 public class AbstractCollection<E> 
-	extends AbstractRecurrence<Collection<E>> 
+	extends AbstractNumber<Collection<E>> 
 		implements Collection<E> {
 
 	private static final long serialVersionUID = -7062454426060890047L;

@@ -7,20 +7,18 @@ import javax.xml.bind.annotation.XmlType;
 import org.xmlrobot.Entry;
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Antimatter extends ScrewNut<Interstellar,Supercluster> {
+public final class Antimatter extends ScrewNut<Interstellar,Supercluster> {
 
 	private static final long serialVersionUID = 3881553887199239558L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<Entry<Interstellar,Supercluster>> en = enumerator();
-		while(en.hasMoreElements()) {
-			Entry<Interstellar,Supercluster> entry = en.nextElement();
+		for(Entry<Interstellar,Supercluster> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -47,13 +45,15 @@ public class Antimatter extends ScrewNut<Interstellar,Supercluster> {
 	}
 	
 	public Antimatter() {
-		this(Matter.class, Parity.random());
+		super();
 	}
 	public Antimatter(Parity parity) {
 		super(parity);
 	}
-	public Antimatter(Class<Matter> childClass, Parity parity) {
-		super(childClass, parity);
+	public Antimatter(Interstellar key, Supercluster value) {
+		super(Matter.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Antimatter(Antimatter parent) {
 		super(parent);
@@ -74,35 +74,46 @@ public class Antimatter extends ScrewNut<Interstellar,Supercluster> {
 	
 	@Override
 	public int compareTo(Entry<Supercluster, Interstellar> o) {
-		getKey().comparator(new Supercluster()).compare(getKey(), o.getKey());
-		Entry<MilkyWay,Andromeda> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		Entry<MilkyWay,Andromeda> entry = getKey().comparator().getSource();
 		comparator((Supercluster) entry, (Interstellar) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof MilkyWay) {
-			MilkyWay entry = (MilkyWay) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(isRoot()) {
-					Supercluster supercluster = new Supercluster();
-					supercluster.putValue(entry, (Andromeda) entry.getChild());
-					sendEvent(new EventArgs(supercluster));
+				if(e.getSource() instanceof MilkyWay) {
+					MilkyWay key = (MilkyWay) e.getSource();
+					Andromeda value = (Andromeda) e.getValue();
+					getValue().putValue(key, value);
+				}
+				break;
+			case LISTEN:
+				if(e.getSource() instanceof Interstellar) {
+					getKey().comparator().compare((Interstellar) e.getSource(), getValue());
+					getValue().comparator().compare((Supercluster) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
 				}
 				break;
 			default:
 				break;
 			}
-		} 
-		else if(e.getSource() instanceof Interstellar) {
-			Interstellar entry = (Interstellar) e.getSource();
+		} else {
 			switch (e.getCommand()) {
-			case LISTEN:
-				if (!isRoot()) {
-					getKey().comparator(new Supercluster()).compare(entry, getValue());
-					sendEvent(new EventArgs(getKey().comparator().source()));
+//			case LISTEN:
+//				if(e.getSource() instanceof Antimatter) {
+//					Antimatter entry = (Antimatter) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
+			case TRANSFER:
+				if(e.getSource() instanceof Antimatter) {
+					Antimatter entry = (Antimatter) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -110,8 +121,11 @@ public class Antimatter extends ScrewNut<Interstellar,Supercluster> {
 			}
 		}
 	}
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Interstellar> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

@@ -7,20 +7,18 @@ import javax.xml.bind.annotation.XmlType;
 import org.xmlrobot.Entry;
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class TimeMaster extends ScrewNut<BigBong,BigBang> {
+public final class TimeMaster extends ScrewNut<BigBong,BigBang> {
 
 	private static final long serialVersionUID = 8232838480308268761L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<Entry<BigBong,BigBang>> en = enumerator();
-		while(en.hasMoreElements()) {
-			Entry<BigBong,BigBang> entry = en.nextElement();
+		for(Entry<BigBong,BigBang> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -47,13 +45,15 @@ public class TimeMaster extends ScrewNut<BigBong,BigBang> {
 	}
 	
 	public TimeMaster() {
-		this(Aaron.class, Parity.random());
+		super();
 	}
 	public TimeMaster(Parity parity) {
 		super(parity);
 	}
-	public TimeMaster(Class<Aaron> childClass, Parity parity) {
-		super(childClass, parity);
+	public TimeMaster(BigBong key, BigBang value) {
+		super(Aaron.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public TimeMaster(TimeMaster parent) {
 		super(parent);
@@ -72,37 +72,49 @@ public class TimeMaster extends ScrewNut<BigBong,BigBang> {
 		value.addEventListener(getChild());
 	}
 	
+	
 	@Override
 	public int compareTo(Entry<BigBang, BigBong> o) {
-		getKey().comparator(new BigBang()).compare(getKey(), o.getKey());
-		Entry<Matter,Antimatter> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		Entry<Matter,Antimatter> entry = getKey().comparator().getSource();
 		comparator((BigBang) entry, (BigBong) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Matter) {
-			Matter entry = (Matter) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(isRoot()) {
-					BigBang bigBang = new BigBang();
-					bigBang.putValue(entry, (Antimatter) entry.getChild());
-					sendEvent(new EventArgs(bigBang));
+				if(e.getSource() instanceof Matter) {
+					Matter key = (Matter) e.getSource();
+					Antimatter value = (Antimatter) e.getValue();
+					getValue().putValue(key, value);
+				}
+				break;
+			case LISTEN:
+				if(e.getSource() instanceof BigBong) {
+					getKey().comparator().compare((BigBong) e.getSource(), getValue());
+					getValue().comparator().compare((BigBang) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
 				}
 				break;
 			default:
 				break;
 			}
-		} 
-		else if(e.getSource() instanceof BigBong) {
-			BigBong entry = (BigBong) e.getSource();
+		} else {
 			switch (e.getCommand()) {
-			case LISTEN:
-				if (!isRoot()) {
-					getKey().comparator(new BigBang()).compare(entry, getValue());
-					sendEvent(new EventArgs(getKey().comparator().source()));
+//			case LISTEN:
+//				if(e.getSource() instanceof TimeMaster) {
+//					TimeMaster entry = (TimeMaster) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
+			case TRANSFER:
+				if(e.getSource() instanceof TimeMaster) {
+					TimeMaster entry = (TimeMaster) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -110,8 +122,11 @@ public class TimeMaster extends ScrewNut<BigBong,BigBang> {
 			}
 		}
 	}
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<BigBong> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

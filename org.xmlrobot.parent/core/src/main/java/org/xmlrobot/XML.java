@@ -57,10 +57,16 @@ public abstract class XML implements Message {
 		this.command = Order.GENESIS;
 		this.parity = parity;
 	}
+	
+	@Override
+	public final boolean equals(Object obj) {
+		return this == obj;
+	}
 	@Override
 	public String toString() {
 		return toString(this);
 	}
+	
 	/**
 	 * XML unmarshall method. Generates new {@link JAXBContext} for current class,
 	 * instances new {@link Unmarshaller} object and unmarshalls the {@link InputStream} argument.

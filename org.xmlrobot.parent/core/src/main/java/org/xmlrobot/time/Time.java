@@ -1,10 +1,10 @@
 package org.xmlrobot.time;
 
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
 
 public abstract class Time
 	<K extends Recursive<K,V>,V extends Recursive<V,K>>
@@ -72,9 +72,9 @@ public abstract class Time
 	}
 	@Override
 	public V getChild(K key) {
-		Enumerator<K> en = enumerator();
-		while(en.hasMoreElements()) {
-			if(en.nextElement() == key)
+		Iterator<K> en = iterator();
+		while(en.hasNext()) {
+			if(en.next() == key)
 				return key.getChild();
 		}
 		return null;
@@ -109,9 +109,9 @@ public abstract class Time
 	}
 	@Override
 	public V putChild(K key, V value) {
-		Enumerator<K> en = enumerator();
-		while(en.hasMoreElements())  {
-			if(en.nextElement() == key) {
+		Iterator<K> en = iterator();
+		while(en.hasNext())  {
+			if(en.next() == key) {
 				value.setParent(key.getParent().getChild());
 				key.getChild().getChild().getChild().setParent(value);
 				value.setChild(key.getChild().getChild());
@@ -151,9 +151,9 @@ public abstract class Time
 		return getChild().putChildIfAbsent(value, key);
 	}
 	public void putAllChildren(Recursive<? extends K,? extends V> m) {
-		Enumerator<? extends K> en = m.enumerator();
-		while(en.hasMoreElements()) {
-			K parent = en.nextElement();
+		Iterator<? extends K> en = m.iterator();
+		while(en.hasNext()) {
+			K parent = en.next();
 			putChild(parent, parent.getChild());
 		}
 	}
@@ -191,9 +191,9 @@ public abstract class Time
 	@Override
 	public void forEachChild(BiConsumer<? super K, ? super V> action) {
 		Objects.requireNonNull(action);
-		Enumerator<K> en = enumerator();
-		while(en.hasMoreElements())  {
-			K parent = en.nextElement();
+		Iterator<K> en = iterator();
+		while(en.hasNext())  {
+			K parent = en.next();
 			action.accept(parent, parent.getChild());
 		}
 	}

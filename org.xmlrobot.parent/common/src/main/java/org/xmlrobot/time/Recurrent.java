@@ -10,14 +10,14 @@ package org.xmlrobot.time;
 public interface Recurrent<K> extends Past<K> {
 
 	/**
-	 * Gets the root corresponding to this time-listener.
-	 * @return the root corresponding to this time-listener
+	 * Gets the root corresponding to this recurrence.
+	 * @return the root corresponding to this recurrence
 	 */
 	K getRoot();
 	
 	/**
-	 * Sets the root corresponding to this time-listener.
-	 * @return the root corresponding to this time-listener
+	 * Sets the root corresponding to this recurrence.
+	 * @return the root corresponding to this recurrence
 	 */
 	K setRoot(K root);
 	

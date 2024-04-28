@@ -4,10 +4,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.xmlrobot.Order;
-import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
@@ -18,9 +15,7 @@ public final class Hypercube extends Screw<Character,Integer> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<org.xmlrobot.Entry<Character,Integer>> en = enumerator();
-		while(en.hasMoreElements()) {
-			org.xmlrobot.Entry<Character,Integer> entry = en.nextElement();
+		for(org.xmlrobot.Entry<Character,Integer> entry : this) {
 			stringBuilder.append(entry.getKey());
 		}
 		return stringBuilder.toString();
@@ -49,13 +44,13 @@ public final class Hypercube extends Screw<Character,Integer> {
 	}
 	
 	public Hypercube() {
-		this(Hyperchain.class, Parity.random());
+		super();
 	}
 	public Hypercube(Parity parity) {
 		super(parity);
 	}
-	public Hypercube(Class<Hyperchain> childClass, Parity parity) {
-		super(childClass, parity);
+	public Hypercube(Character key, Integer value) {
+		super(Hyperchain.class, Parity.random(), key, value);
 	}
 	public Hypercube(Hypercube parent) {
 		super(parent);
@@ -69,9 +64,9 @@ public final class Hypercube extends Screw<Character,Integer> {
 	public Hypercube(Hypercube root, Parity parity, Character key, Integer value) {
 		super(Hyperchain.class, root, parity, key, value);
 	}
-	
+
 	@Override
-	public synchronized int compareTo(org.xmlrobot.Entry<Integer, Character> o) {
+	public int compareTo(org.xmlrobot.Entry<Integer, Character> o) {
 		switch (getParity()) {
 		case XX:
 			if (getValue() > o.getKey()) {
@@ -92,23 +87,9 @@ public final class Hypercube extends Screw<Character,Integer> {
 		}
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Hypercube) {
-			Hypercube entry = (Hypercube) e.getSource();
-			switch (e.getCommand()) {
-			case LISTEN:
-				entry.permuteChild(call(), get());
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	@Override
 	public void run() {
 		try {
-			Thread.sleep(getValue());
+			Thread.sleep(getKey());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -216,10 +216,10 @@ public abstract class Unification
 		return getChild() == getStem();
 	}
 	@Override
-	protected void sendEvent(EventArgs e) {
+	protected void sendEvent(EventArgs<?,?> e) {
 		super.sendEvent(e);
 		if(root != this)
-			root.event(e);
+			root.event(this, e);
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -6,20 +6,18 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class MilkyWay extends Screw<Sun,AlphaCentauri> {
+public final class MilkyWay extends Screw<Sun,AlphaCentauri> {
 
 	private static final long serialVersionUID = 1253114982913774706L;
 	
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<org.xmlrobot.Entry<Sun,AlphaCentauri>> en = enumerator();
-		while(en.hasMoreElements()) {
-			org.xmlrobot.Entry<Sun,AlphaCentauri> entry = en.nextElement();
+		for(org.xmlrobot.Entry<Sun,AlphaCentauri> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -46,13 +44,15 @@ public class MilkyWay extends Screw<Sun,AlphaCentauri> {
 	}
 	
 	public MilkyWay() {
-		this(Andromeda.class, Parity.random());
+		super();
 	}
 	public MilkyWay(Parity parity) {
 		super(parity);
 	}
-	public MilkyWay(Class<Andromeda> childClass, Parity parity) {
-		super(childClass, parity);
+	public MilkyWay(Sun key, AlphaCentauri value) {
+		super(Andromeda.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public MilkyWay(MilkyWay parent) {
 		super(parent);
@@ -70,36 +70,49 @@ public class MilkyWay extends Screw<Sun,AlphaCentauri> {
 		key.addEventListener(this);
 		value.addEventListener(getChild());
 	}
+	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<AlphaCentauri,Sun> o) {
-		getKey().comparator(new AlphaCentauri()).compare(getKey(), o.getKey());
-		org.xmlrobot.Entry<Gliese, Earth> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		org.xmlrobot.Entry<Gliese, Earth> entry = getKey().comparator().getSource();
 		comparator((AlphaCentauri) entry, (Sun) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof MilkyWay) {
-			MilkyWay entry = (MilkyWay) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
-			case LISTEN:
-				entry.permuteChild(call(), get());
+			case GENESIS:
+				if(e.getSource() instanceof Gliese) {
+					Gliese key = (Gliese) e.getSource();
+					Earth value = (Earth) e.getValue();
+					getValue().putValue(key, value);
+				}
 				break;
-			case TRANSFER:
-				entry.release();
+			case LISTEN:
+				if(e.getSource() instanceof Sun) {
+					getKey().comparator().compare((Sun) e.getSource(), getValue());
+					getValue().comparator().compare((AlphaCentauri) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
+				}
 				break;
 			default:
 				break;
 			}
-		} else if(e.getSource() instanceof Sun) {
-			Sun entry = (Sun) e.getSource();
+		} else {
 			switch (e.getCommand()) {
+//			case LISTEN:
+//				if(e.getSource() instanceof MilkyWay) {
+//					MilkyWay entry = (MilkyWay) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
 			case TRANSFER:
-				if(!isRoot()) {
-					getKey().comparator(new AlphaCentauri()).compare(entry, getValue());
-					AlphaCentauri source = (AlphaCentauri) getKey().comparator().source();
-					putKey(source, (Sun) source.getChild());
+				if(e.getSource() instanceof MilkyWay) {
+					MilkyWay entry = (MilkyWay) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -108,8 +121,11 @@ public class MilkyWay extends Screw<Sun,AlphaCentauri> {
 		}
 	}
 	@Override
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Sun> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

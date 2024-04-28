@@ -387,7 +387,7 @@ public abstract class Concurrence
 	public Concurrence(Class<? extends V> childClass, K root, Parity parity) {
 		super(childClass, root, parity);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
      *
@@ -457,19 +457,5 @@ public abstract class Concurrence
 	@Override
 	public boolean retainAllChildren(V child) {
 		return getChild().retainAllParents(child);
-	}
-	@Override
-	public void run() {
-		if((isRoot() && !isEmpty()) || !isStem()) {
-//			Thread t = newThread(getChild());
-//			t.start();
-//			try {
-//				t.join();
-//			} catch (InterruptedException e ) {
-//				
-//			}
-			getChild().run();
-		}
-		super.run(); 
 	}
 }

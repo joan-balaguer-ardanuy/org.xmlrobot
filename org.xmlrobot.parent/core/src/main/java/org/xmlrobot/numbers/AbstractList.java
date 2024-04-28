@@ -1,9 +1,8 @@
-package org.xmlrobot.recurrent;
+package org.xmlrobot.numbers;
 
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 public class AbstractList<E> 
 	extends AbstractCollection<E> 
@@ -20,6 +19,7 @@ public class AbstractList<E>
 	}
 
 	@Override
+	@Deprecated
 	public E get(int index) {
 		ListIterator<E> it = listIterator();
 		do {
@@ -33,6 +33,7 @@ public class AbstractList<E>
 	}
 
 	@Override
+	@Deprecated
 	public void add(int index, E entry) {
 		ListIterator<E> it = listIterator();
 		do {
@@ -45,6 +46,7 @@ public class AbstractList<E>
 	}
 
 	@Override
+	@Deprecated
 	public E set(int index, E entry) {
 		ListIterator<E> it = listIterator();
 		do {
@@ -59,6 +61,7 @@ public class AbstractList<E>
 	}
 
 	@Override
+	@Deprecated
 	public int indexOf(Object o) {
 		ListIterator<E> it = listIterator();
 		int index = 0;
@@ -88,6 +91,7 @@ public class AbstractList<E>
 	}
 
 	@Override
+	@Deprecated
 	public E release(int index) {
 		ListIterator<E> it = listIterator();
 		do {
@@ -102,11 +106,13 @@ public class AbstractList<E>
 	}
 
 	@Override
+	@Deprecated
 	public E remove(int index) {
 		return release(index);
 	}
 	
 	@Override
+	@Deprecated
 	public boolean addAll(int index, java.util.Collection<? extends E> c) {
 		boolean modified = false;
 		for (E e : c) {
@@ -128,6 +134,7 @@ public class AbstractList<E>
 	}
 
 	@Override
+	@Deprecated
 	public java.util.List<E> subList(int fromIndex, int toIndex) {
 		return new SubList<>(this, fromIndex, toIndex);
 	}
@@ -243,6 +250,7 @@ public class AbstractList<E>
 		}
 	}
 
+	@Deprecated
 	private static class SubList<E> extends AbstractList<E> {
 		private static final long serialVersionUID = 2197865914854831213L;
 		private final AbstractList<E> root;
@@ -373,6 +381,7 @@ public class AbstractList<E>
 		}
 	}
 
+	@Deprecated
 	static void subListRangeCheck(int fromIndex, int toIndex, int size) {
 		if (fromIndex < 0)
 			throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
@@ -404,7 +413,7 @@ public class AbstractList<E>
 	 * @param fromIndex index of first element to be removed
 	 * @param toIndex   index after last element to be removed
 	 */
-	
+	@Deprecated
 	protected void removeRange(int fromIndex, int toIndex) {
 		ListIterator<E> it = listIterator(fromIndex);
 		for (int i = 0, n = toIndex - fromIndex; i < n; i++) {

@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
 
 /**
  * <tt>
@@ -119,17 +118,17 @@ public abstract class Inheritance
 
 					@Override
 					public Iterator<Entry<K, V>> iterator() {
-						Enumerator<K> en = enumerator();
+						Iterator<K> it = Inheritance.this.iterator();
 						return new Iterator<java.util.Map.Entry<K,V>>() {
 
 							@Override
 							public boolean hasNext() {
-								return en.hasMoreElements();
+								return it.hasNext();
 							}
 
 							@Override
 							public Entry<K, V> next() {
-								K entry = en.nextElement();
+								K entry = it.next();
 								return new java.util.Map.Entry<K,V>() {
 
 									@Override
@@ -148,7 +147,7 @@ public abstract class Inheritance
 							}
 							@Override
 							public void remove() {
-								en.remove();
+								it.remove();
 							}
 						};
 					}
@@ -157,11 +156,12 @@ public abstract class Inheritance
 						release();
 					}
 					@Override
+					@Deprecated
 					public int size() {
-						Enumerator<K> en = enumerator();
+						Iterator<K> en = Inheritance.this.iterator();
 						int i = 0;
-						while(en.hasMoreElements()) {
-							en.nextElement();
+						while(en.hasNext()) {
+							en.next();
 							i++;
 						}
 						return i;

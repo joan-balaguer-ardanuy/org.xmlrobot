@@ -7,20 +7,18 @@ import javax.xml.bind.annotation.XmlType;
 import org.xmlrobot.Entry;
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Gliese extends ScrewNut<Polyploid,Operon> {
+public final class Gliese extends ScrewNut<Polyploid,Operon> {
 
 	private static final long serialVersionUID = 8051144854716651556L;
 
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<Entry<Polyploid,Operon>> en = enumerator();
-		while(en.hasMoreElements()) {
-			Entry<Polyploid,Operon> entry = en.nextElement();
+		for(Entry<Polyploid,Operon> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -47,13 +45,15 @@ public class Gliese extends ScrewNut<Polyploid,Operon> {
 	}
 	
 	public Gliese() {
-		this(Earth.class, Parity.random());
+		super();
 	}
 	public Gliese(Parity parity) {
 		super(parity);
 	}
-	public Gliese(Class<Earth> childClass, Parity parity) {
-		super(childClass, parity);
+	public Gliese(Polyploid key, Operon value) {
+		super(Earth.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Gliese(Gliese parent) {
 		super(parent);
@@ -74,35 +74,46 @@ public class Gliese extends ScrewNut<Polyploid,Operon> {
 	
 	@Override
 	public int compareTo(Entry<Operon, Polyploid> o) {
-		getKey().comparator(new Operon()).compare(getKey(), o.getKey());
-		Entry<Ribosome,Tetraploid> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		Entry<Ribosome,Tetraploid> entry = getKey().comparator().getSource();
 		comparator((Operon) entry, (Polyploid) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Ribosome) {
-			Ribosome entry = (Ribosome) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(isRoot()) {
-					Operon operon = new Operon();
-					operon.putValue(entry, (Tetraploid) entry.getChild());
-					sendEvent(new EventArgs(operon));
+				if(e.getSource() instanceof Ribosome) {
+					Ribosome key = (Ribosome) e.getSource();
+					Tetraploid value = (Tetraploid) e.getValue();
+					getValue().putValue(key, value);
+				}
+				break;
+			case LISTEN:
+				if(e.getSource() instanceof Polyploid) {
+					getKey().comparator().compare((Polyploid) e.getSource(), getValue());
+					getValue().comparator().compare((Operon) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
 				}
 				break;
 			default:
 				break;
 			}
-		} 
-		else if(e.getSource() instanceof Polyploid) {
-			Polyploid entry = (Polyploid) e.getSource();
+		} else {
 			switch (e.getCommand()) {
-			case LISTEN:
-				if (!isRoot()) {
-					getKey().comparator(new Operon()).compare(entry, getValue());
-					sendEvent(new EventArgs(getKey().comparator().source()));
+//			case LISTEN:
+//				if(e.getSource() instanceof Gliese) {
+//					Gliese entry = (Gliese) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
+			case TRANSFER:
+				if(e.getSource() instanceof Gliese) {
+					Gliese entry = (Gliese) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -110,8 +121,11 @@ public class Gliese extends ScrewNut<Polyploid,Operon> {
 			}
 		}
 	}
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Polyploid> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

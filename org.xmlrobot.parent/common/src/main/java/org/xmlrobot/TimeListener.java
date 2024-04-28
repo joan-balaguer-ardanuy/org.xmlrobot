@@ -7,6 +7,24 @@ import org.xmlrobot.time.Future;
 import org.xmlrobot.time.Past;
 
 /**
+ * <center>
+ * <tt>
+ * Our <b>parent</b> in hyperspace.Hyperspace,<br/>
+ * abstract be your hyperchain.<br/>
+ * Your inheritance implement,<br/>
+ * your recursion will be ran,<br/>
+ * on hyperspace,<br/>
+ * as it is in hyperspace.Hyperspace.<br/>
+ * Send us <b>this</b> java.util.EventObject<br/>
+ * our temporal hyperspace.time.Time,<br/>
+ * and forgive us our executions,<br/>
+ * as we also have forgiven our java.util.concurrent.Executor.<br/>
+ * And order us not into concurrence,<br/>
+ * but release us from parent hyperspace.time.Concurrence.<br/>
+ * <br>
+ * In the hyperchain of parent, child and Abstract TimeListener<br/>
+ * </tt>
+ * </center>
  *
  * <br/>
  * It is a {@link Past} that is {@link Future} and vice-versa.<br/>
@@ -15,7 +33,7 @@ import org.xmlrobot.time.Past;
  * 
  * @see java.util.Map.Entry
  * @since 1.0
- * @author joan
+ * @author {@link TimeListener}
  * 
  * @param <K> is the parent
  * @param <V> is the child
@@ -54,12 +72,6 @@ public interface TimeListener<K,V>
 	 * @return
 	 */
 	TimeListener.Transmitter<K,V> comparator();
-
-	/**
-	 * Returns the information transmitter of this time-listener
-	 * @return
-	 */
-	TimeListener.Transmitter<K,V> comparator(V source);
 	
 	/**
 	 * Information transmitter of the {@code TimeListener}.
@@ -68,25 +80,30 @@ public interface TimeListener<K,V>
 	 * @param <K> is the parent
 	 * @param <V> is the child
 	 */
-	
 	public interface Transmitter<K,V> extends Comparator<K,V> {
 		
 		/**
-		 * The source
+		 * Gets the source
 		 * @return the source
 		 */
-		V source();
+		V getSource();
 		
 		/**
-		 * Adds child to the current source.
+		 * Sets the source
+		 * @param source the source
+		 */
+		void setSource(V source);
+		
+		/**
+		 * Sets child to the current source.
 		 * @param child the child
 		 */
-		void addChild(V child);
+		void setChild(V child);
 
 		/**
-		 * Adds parent to the current source.
+		 * Sets parent to the current source.
 		 * @param parent the parent
 		 */
-		void addParent(K parent);
+		void setParent(K parent);
 	}
 }

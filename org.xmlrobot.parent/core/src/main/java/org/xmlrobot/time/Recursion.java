@@ -172,6 +172,9 @@ public abstract class Recursion
 		extends Generator
 			implements Recursive.Reproducer<K,V> {
 		
+		public Matrix() {
+			super();
+		}
 		/**
 		 * {@link Matrix} class constructor.
 		 * @param source the source
@@ -180,20 +183,20 @@ public abstract class Recursion
 			super(source);
 		}
 		
-		public void addParent(K key) {
-			key.setStem(source());
-			key.setRoot(source().getStem());
-			key.setParity(source().getParity().oposed());
-			key.getChild().setParity(source().getParity());
-			source().submitParent(key, key.getChild());
+		public void setParent(K key) {
+			key.setStem(getSource());
+			key.setRoot(getSource().getStem());
+			key.setParity(getSource().getParity().oposed());
+			key.getChild().setParity(getSource().getParity());
+			getSource().submitParent(key, key.getChild());
 		}
 		
-		public void addChild(V value) {
-			value.setRoot(source());
-			value.setStem(source().getStem());
-			value.setParity(source().getParity());
-			value.getChild().setParity(source().getParity().oposed());
-			source().submitChild(value, value.getChild());
+		public void setChild(V value) {
+			value.setRoot(getSource());
+			value.setStem(getSource().getStem());
+			value.setParity(getSource().getParity());
+			value.getChild().setParity(getSource().getParity().oposed());
+			getSource().submitChild(value, value.getChild());
 		}
 		
 	}

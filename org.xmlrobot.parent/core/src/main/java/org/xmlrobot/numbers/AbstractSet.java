@@ -1,4 +1,4 @@
-package org.xmlrobot.recurrent;
+package org.xmlrobot.numbers;
 
 public class AbstractSet<E> 
 	extends AbstractCollection<E> 

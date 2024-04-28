@@ -1,8 +1,6 @@
 package org.xmlrobot.time;
 
-import org.xmlrobot.recurrent.Enumerable;
-
-public interface Past<K> extends Enumerable<K>, java.util.concurrent.Callable<K> {
+public interface Past<K> extends Iterable<K>, java.util.concurrent.Callable<K> {
 
 	/**
 	 * Gets the parent corresponding to this past.

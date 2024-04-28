@@ -6,19 +6,17 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
-import org.xmlrobot.recurrent.Enumerator;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
-public class Ribosome extends Screw<Chromosome,Diploid> {
+public final class Ribosome extends Screw<Chromosome,Diploid> {
 	
 	private static final long serialVersionUID = -126921398816799L;
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		Enumerator<org.xmlrobot.Entry<Chromosome,Diploid>> en = enumerator();
-		while(en.hasMoreElements()) {
-			org.xmlrobot.Entry<Chromosome,Diploid> entry = en.nextElement();
+		for(org.xmlrobot.Entry<Chromosome,Diploid> entry : this) {
 			stringBuilder.append(entry.getKey().getName());
 		}
 		return stringBuilder.toString();
@@ -45,13 +43,15 @@ public class Ribosome extends Screw<Chromosome,Diploid> {
 	}
 	
 	public Ribosome() {
-		this(Tetraploid.class, Parity.random());
+		super();
 	}
 	public Ribosome(Parity parity) {
 		super(parity);
 	}
-	public Ribosome(Class<Tetraploid> childClass, Parity parity) {
-		super(childClass, parity);
+	public Ribosome(Chromosome key, Diploid value) {
+		super(Tetraploid.class, Parity.random(), key, value);
+		key.addEventListener(this);
+		value.addEventListener(getChild());
 	}
 	public Ribosome(Ribosome parent) {
 		super(parent);
@@ -69,36 +69,49 @@ public class Ribosome extends Screw<Chromosome,Diploid> {
 		key.addEventListener(this);
 		value.addEventListener(getChild());
 	}
+	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<Diploid, Chromosome> o) {
-		getKey().comparator(new Diploid()).compare(getKey(), o.getKey());
-		org.xmlrobot.Entry<Haploid, Genomap> entry = getKey().comparator().source();
+		getKey().comparator().compare(getKey(), o.getKey());
+		org.xmlrobot.Entry<Haploid, Genomap> entry = getKey().comparator().getSource();
 		comparator((Diploid) entry, (Chromosome) entry.getChild());
 		return 0;
 	}
 	@Override
-	public void event(EventArgs e) {
-		super.event(e);
-		if(e.getSource() instanceof Ribosome) {
-			Ribosome entry = (Ribosome) e.getSource();
+	public void event(Object sender, EventArgs<?,?> e) {
+		super.event(sender, e);
+		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
-			case LISTEN:
-				entry.permuteChild(call(), get());
+			case GENESIS:
+				if(e.getSource() instanceof Haploid) {
+					Haploid key = (Haploid) e.getKey();
+					Genomap value = (Genomap) e.getValue();
+					getValue().putValue(key, value);
+				}
 				break;
-			case TRANSFER:
-				entry.release();
+			case LISTEN:
+				if(e.getSource() instanceof Chromosome) {
+					getKey().comparator().compare((Chromosome) e.getSource(), getValue());
+					getValue().comparator().compare((Diploid) e.getValue(), getKey());
+					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
+							getValue().comparator().getSource()));
+				}
 				break;
 			default:
 				break;
 			}
-		} else if(e.getSource() instanceof Chromosome) {
-			Chromosome entry = (Chromosome) e.getSource();
+		} else {
 			switch (e.getCommand()) {
+//			case LISTEN:
+//				if(e.getSource() instanceof Ribosome) {
+//					Ribosome entry = (Ribosome) e.getSource();
+//					entry.permuteChild(call(), get());
+//				}
+//				break;
 			case TRANSFER:
-				if(!isRoot()) {
-					getKey().comparator(new Diploid()).compare(entry, getValue());
-					Diploid source = (Diploid) getKey().comparator().source();
-					putKey(source, (Chromosome) source.getChild());
+				if(e.getSource() instanceof Ribosome) {
+					Ribosome entry = (Ribosome) e.getSource();
+					entry.release();
 				}
 				break;
 			default:
@@ -107,8 +120,11 @@ public class Ribosome extends Screw<Chromosome,Diploid> {
 		}
 	}
 	@Override
-	public void run() {
-		getValue().run();
+	public synchronized void run() {
+		Enumerator<Chromosome> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement().run();
+		}
 		super.run();
 	}
 }

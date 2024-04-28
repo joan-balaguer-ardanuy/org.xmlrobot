@@ -1,6 +1,6 @@
 package org.xmlrobot;
 
-import org.xmlrobot.recurrent.AbstractSet;
+import org.xmlrobot.numbers.AbstractSet;
 
 public class Listeners extends AbstractSet<Listener> {
 
