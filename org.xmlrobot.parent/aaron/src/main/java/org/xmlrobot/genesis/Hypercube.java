@@ -4,6 +4,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
 
 @XmlRootElement
@@ -87,7 +88,19 @@ public final class Hypercube extends Screw<Character,Integer> {
 		}
 	}
 	@Override
-	public void run() {
+	public void event(Object sender, EventArgs<?, ?> e) {
+		super.event(sender, e);
+		switch (e.getCommand()) {
+		case LISTEN:
+			comparator().compare((Hypercube) e.getKey(), getStem());
+			sendEvent(new EventArgs<>(comparator().getSource()));
+			break;
+		default:
+			break;
+		}
+	}
+	@Override
+	public synchronized void run() {
 		try {
 			Thread.sleep(getKey());
 		} catch (InterruptedException e) {

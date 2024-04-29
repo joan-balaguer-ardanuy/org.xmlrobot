@@ -85,18 +85,9 @@ public final class Antimatter extends ScrewNut<Interstellar,Supercluster> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof MilkyWay) {
-					MilkyWay key = (MilkyWay) e.getSource();
-					Andromeda value = (Andromeda) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Interstellar) {
-					getKey().comparator().compare((Interstellar) e.getSource(), getValue());
-					getValue().comparator().compare((Supercluster) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Supercluster) {
+					Supercluster key = (Supercluster) e.getSource();
+					putKey(key, (Interstellar) key.getChild());
 				}
 				break;
 			default:
@@ -104,12 +95,12 @@ public final class Antimatter extends ScrewNut<Interstellar,Supercluster> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Antimatter) {
-//					Antimatter entry = (Antimatter) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Antimatter) {
+					comparator().compare((Antimatter) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Antimatter) {
 					Antimatter entry = (Antimatter) e.getSource();

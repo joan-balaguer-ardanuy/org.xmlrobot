@@ -93,7 +93,7 @@ public abstract class Hyperspace
 			this.source = source;
 		}
 		@Override
-		public synchronized void compare(K parent, V child) {
+		public void compare(K parent, V child) {
 			parent.compareTo(child);
 			setSource(parent.comparator().getSource());
 			K p = parent.getParent();

@@ -83,18 +83,9 @@ public final class Earth extends Screw<Operon,Polyploid> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Tetraploid) {
-					Tetraploid key = (Tetraploid) e.getSource();
-					Ribosome value = (Ribosome) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Operon) {
-					getKey().comparator().compare((Operon) e.getSource(), getValue());
-					getValue().comparator().compare((Polyploid) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Polyploid) {
+					Polyploid key = (Polyploid) e.getSource();
+					putKey(key, (Operon) key.getChild());
 				}
 				break;
 			default:
@@ -102,12 +93,12 @@ public final class Earth extends Screw<Operon,Polyploid> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Earth) {
-//					Earth entry = (Earth) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Earth) {
+					comparator().compare((Earth) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Earth) {
 					Earth entry = (Earth) e.getSource();

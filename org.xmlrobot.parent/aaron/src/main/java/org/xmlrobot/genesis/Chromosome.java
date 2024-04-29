@@ -84,18 +84,9 @@ public final class Chromosome extends Screw<Genomap, Haploid> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Hyperchain) {
-					Hyperchain key = (Hyperchain) e.getKey();
-					Hypercube value = (Hypercube) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Genomap) {
-					getKey().comparator().compare((Genomap) e.getKey(), getValue());
-					getValue().comparator().compare((Haploid) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(),
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Haploid) {
+					Haploid key = (Haploid) e.getSource();
+					putKey(key, (Genomap) key.getChild());
 				}
 				break;
 			default:
@@ -103,12 +94,12 @@ public final class Chromosome extends Screw<Genomap, Haploid> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Chromosome) { 
-//					Chromosome entry = (Chromosome) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Chromosome) {
+					comparator().compare((Chromosome) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Chromosome) {
 					Chromosome entry = (Chromosome) e.getSource();

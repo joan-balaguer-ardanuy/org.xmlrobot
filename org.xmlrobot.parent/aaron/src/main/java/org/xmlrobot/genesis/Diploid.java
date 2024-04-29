@@ -85,18 +85,9 @@ public final class Diploid extends ScrewNut<Haploid, Genomap> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Hypercube) {
-					Hypercube key = (Hypercube) e.getKey();
-					Hyperchain value = (Hyperchain) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Haploid) {
-					getKey().comparator().compare((Haploid) e.getKey(), getValue());
-					getValue().comparator().compare((Genomap) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(),
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Genomap) {
+					Genomap key = (Genomap) e.getSource();
+					putKey(key, (Haploid) key.getChild());
 				}
 				break;
 			default:
@@ -104,12 +95,12 @@ public final class Diploid extends ScrewNut<Haploid, Genomap> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Diploid) { 
-//					Diploid entry = (Diploid) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Diploid) {
+					comparator().compare((Diploid) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Diploid) {
 					Diploid entry = (Diploid) e.getSource();

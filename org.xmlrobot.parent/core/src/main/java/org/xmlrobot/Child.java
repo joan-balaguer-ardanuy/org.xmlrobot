@@ -71,7 +71,7 @@ public abstract class Child
 	}
 
 	@Override
-	public void run() {
+	public synchronized void run() {
 		execute(getChild());
 		super.run();
 	}

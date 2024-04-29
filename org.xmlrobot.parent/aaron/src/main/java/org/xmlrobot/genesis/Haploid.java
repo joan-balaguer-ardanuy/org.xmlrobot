@@ -84,12 +84,10 @@ public final class Haploid extends ScrewNut<Hyperchain, Hypercube> {
 		super.event(sender, e); 
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Hyperchain) {
-					getKey().comparator().compare((Hyperchain) e.getKey(), getValue());
-					getValue().comparator().compare((Hypercube) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(),
-							getValue().comparator().getSource()));
+			case GENESIS:
+				if(e.getSource() instanceof Hypercube) {
+					Hypercube entry = (Hypercube) e.getSource();
+					putKey(entry, (Hyperchain) entry.getChild());
 				}
 				break;
 			default:
@@ -97,12 +95,12 @@ public final class Haploid extends ScrewNut<Hyperchain, Hypercube> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Haploid) { 
-//					Haploid entry = (Haploid) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Haploid) {
+					comparator().compare((Haploid) e.getKey(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Haploid) {
 					Haploid entry = (Haploid) e.getSource();

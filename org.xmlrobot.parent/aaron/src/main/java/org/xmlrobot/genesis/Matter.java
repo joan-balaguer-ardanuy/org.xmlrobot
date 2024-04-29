@@ -83,18 +83,9 @@ public final class Matter extends Screw<Supercluster,Interstellar> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Andromeda) {
-					Andromeda key = (Andromeda) e.getSource();
-					MilkyWay value = (MilkyWay) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Supercluster) {
-					getKey().comparator().compare((Supercluster) e.getSource(), getValue());
-					getValue().comparator().compare((Interstellar) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Interstellar) {
+					Interstellar key = (Interstellar) e.getSource();
+					putKey(key, (Supercluster) key.getChild());
 				}
 				break;
 			default:
@@ -102,12 +93,12 @@ public final class Matter extends Screw<Supercluster,Interstellar> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Matter) {
-//					Matter entry = (Matter) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Matter) {
+					comparator().compare((Matter) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Matter) {
 					Matter entry = (Matter) e.getSource();

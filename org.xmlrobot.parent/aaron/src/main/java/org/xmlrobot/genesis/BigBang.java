@@ -83,18 +83,9 @@ public final class BigBang extends Screw<Matter,Antimatter> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Interstellar) {
-					Interstellar key = (Interstellar) e.getSource();
-					Supercluster value = (Supercluster) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Matter) {
-					getKey().comparator().compare((Matter) e.getSource(), getValue());
-					getValue().comparator().compare((Antimatter) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Antimatter) {
+					Antimatter key = (Antimatter) e.getSource();
+					putKey(key, (Matter) key.getChild());
 				}
 				break;
 			default:
@@ -102,12 +93,12 @@ public final class BigBang extends Screw<Matter,Antimatter> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof BigBang) {
-//					BigBang entry = (BigBang) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof BigBang) {
+					comparator().compare((BigBang) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof BigBang) {
 					BigBang entry = (BigBang) e.getSource();

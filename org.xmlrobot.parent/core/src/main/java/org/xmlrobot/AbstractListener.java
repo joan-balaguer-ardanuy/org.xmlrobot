@@ -60,7 +60,7 @@ public abstract class AbstractListener
 		sendEvent(e);
 	}
 	@Override
-	public void run() {
+	public synchronized void run() {
 		switch (getCommand()) {
 		case LISTEN:
 			setCommand(Order.TRANSFER);

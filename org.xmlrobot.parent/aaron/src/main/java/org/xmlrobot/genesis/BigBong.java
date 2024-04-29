@@ -85,18 +85,9 @@ public final class BigBong extends ScrewNut<Antimatter,Matter> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Supercluster) {
-					Supercluster key = (Supercluster) e.getSource();
-					Interstellar value = (Interstellar) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Antimatter) {
-					getKey().comparator().compare((Antimatter) e.getSource(), getValue());
-					getValue().comparator().compare((Matter) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Matter) {
+					Matter key = (Matter) e.getSource();
+					putKey(key, (Antimatter) key.getChild());
 				}
 				break;
 			default:
@@ -104,12 +95,12 @@ public final class BigBong extends ScrewNut<Antimatter,Matter> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof BigBong) {
-//					BigBong entry = (BigBong) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof BigBong) {
+					comparator().compare((BigBong) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof BigBong) {
 					BigBong entry = (BigBong) e.getSource();

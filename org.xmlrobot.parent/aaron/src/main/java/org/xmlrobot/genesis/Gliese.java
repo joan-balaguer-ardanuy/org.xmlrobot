@@ -85,18 +85,9 @@ public final class Gliese extends ScrewNut<Polyploid,Operon> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Ribosome) {
-					Ribosome key = (Ribosome) e.getSource();
-					Tetraploid value = (Tetraploid) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Polyploid) {
-					getKey().comparator().compare((Polyploid) e.getSource(), getValue());
-					getValue().comparator().compare((Operon) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Operon) {
+					Operon key = (Operon) e.getSource();
+					putKey(key, (Polyploid) key.getChild());
 				}
 				break;
 			default:
@@ -104,12 +95,12 @@ public final class Gliese extends ScrewNut<Polyploid,Operon> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Gliese) {
-//					Gliese entry = (Gliese) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Gliese) {
+					comparator().compare((Gliese) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Gliese) {
 					Gliese entry = (Gliese) e.getSource();

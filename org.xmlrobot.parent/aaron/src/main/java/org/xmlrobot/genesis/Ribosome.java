@@ -83,18 +83,9 @@ public final class Ribosome extends Screw<Chromosome,Diploid> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Haploid) {
-					Haploid key = (Haploid) e.getKey();
-					Genomap value = (Genomap) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Chromosome) {
-					getKey().comparator().compare((Chromosome) e.getSource(), getValue());
-					getValue().comparator().compare((Diploid) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Diploid) {
+					Diploid key = (Diploid) e.getSource();
+					putKey(key, (Chromosome) key.getChild());
 				}
 				break;
 			default:
@@ -102,12 +93,12 @@ public final class Ribosome extends Screw<Chromosome,Diploid> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Ribosome) {
-//					Ribosome entry = (Ribosome) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Ribosome) {
+					comparator().compare((Ribosome) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Ribosome) {
 					Ribosome entry = (Ribosome) e.getSource();

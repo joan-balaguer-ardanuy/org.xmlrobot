@@ -84,10 +84,26 @@ public final class Aaron extends Screw<BigBang,BigBong> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Antimatter) {
-					Antimatter key = (Antimatter) e.getSource();
-					Matter value = (Matter) e.getValue();
-					getValue().putValue(key, value);
+				if(e.getSource() instanceof BigBong) {
+					BigBong key = (BigBong) e.getSource();
+					putKey(key, (BigBang) key.getChild());
+				}
+				break;
+			default:
+				break;
+			}
+		} else {
+			switch (e.getCommand()) {
+			case LISTEN:
+				if(e.getSource() instanceof Aaron) {
+					comparator().compare((Aaron) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
+			case TRANSFER:
+				if(e.getSource() instanceof Aaron) {
+					Aaron entry = (Aaron) e.getSource();
+					entry.release();
 				}
 				break;
 			default:

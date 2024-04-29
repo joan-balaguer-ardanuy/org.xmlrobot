@@ -34,65 +34,17 @@ public class Execution {
 		hypercube.putValue('Z', 26*dilatation);
 		hypercube.putValue('Ç', 27*dilatation);
 		
-		Hyperchain hyperchain = new Hyperchain(1*dilatation, 'A');
-		hyperchain.putValue(2*dilatation, 'B');
-		hyperchain.putValue(3*dilatation, 'C');
-		hyperchain.putValue(4*dilatation, 'D');
-		hyperchain.putValue(5*dilatation, 'E');
-		hyperchain.putValue(6*dilatation, 'F');
-		hyperchain.putValue(7*dilatation, 'G');
-		hyperchain.putValue(8*dilatation, 'H');
-		hyperchain.putValue(9*dilatation, 'I');
-		hyperchain.putValue(10*dilatation, 'J');
-		hyperchain.putValue(11*dilatation, 'K');
-		hyperchain.putValue(12*dilatation, 'L');
-		hyperchain.putValue(13*dilatation, 'M');
-		hyperchain.putValue(14*dilatation, 'N');
-		hyperchain.putValue(15*dilatation, 'O');
-		hyperchain.putValue(16*dilatation, 'P');
-		hyperchain.putValue(17*dilatation, 'Q');
-		hyperchain.putValue(18*dilatation, 'R');
-		hyperchain.putValue(19*dilatation, 'S');
-		hyperchain.putValue(20*dilatation, 'T');
-		hyperchain.putValue(21*dilatation, 'U');
-		hyperchain.putValue(22*dilatation, 'V');
-		hyperchain.putValue(23*dilatation, 'W');
-		hyperchain.putValue(24*dilatation, 'X');
-		hyperchain.putValue(25*dilatation, 'Y');
-		hyperchain.putValue(26*dilatation, 'Z');
-		hyperchain.putValue(27*dilatation, 'Ç');
-
-		Genomap genomap = new Genomap(hypercube, hyperchain);
-		Haploid haploid = new Haploid(hyperchain, hypercube);
-		
-		Chromosome chromosome = new Chromosome(genomap, haploid);
-		Diploid diploid = new Diploid(haploid, genomap);
-		
-		Ribosome ribosome = new Ribosome(chromosome, diploid);
-		Tetraploid tetraploid = new Tetraploid(diploid, chromosome);
-		
-		Operon operon = new Operon(ribosome, tetraploid);
-		Polyploid polyploid = new Polyploid(tetraploid, ribosome);
-		
-		Earth earth = new Earth(operon, polyploid);
-		Gliese gliese = new Gliese(polyploid, operon);
-		
-		Sun sun = new Sun(earth, gliese);
-		AlphaCentauri alphaCentauri = new AlphaCentauri(gliese, earth);
-		
-		MilkyWay milkyWay = new MilkyWay(sun, alphaCentauri);
-		Andromeda andromeda = new Andromeda(alphaCentauri, sun);
-		
-		Supercluster supercluster = new Supercluster(milkyWay, andromeda);
-		Interstellar interstellar = new Interstellar(andromeda, milkyWay);
-		
-		Matter matter = new Matter(supercluster, interstellar);
-		Antimatter antimatter = new Antimatter(interstellar, supercluster);
-		
-		BigBang bigBang = new BigBang(matter, antimatter);
-		BigBong bigBong = new BigBong(antimatter, matter);
-		
-		Aaron aaron = new Aaron(bigBang, bigBong);
+		Genomap genomap = new Genomap(hypercube, (Hyperchain) hypercube.getChild());
+		Chromosome chromosome = new Chromosome(genomap, (Haploid) genomap.getChild());
+		Ribosome ribosome = new Ribosome(chromosome, (Diploid) chromosome.getChild());
+		Operon operon = new Operon(ribosome, (Tetraploid) ribosome.getChild());
+		Earth earth = new Earth(operon, (Polyploid) operon.getChild());
+		Sun sun = new Sun(earth, (Gliese) earth.getChild());
+		MilkyWay milkyWay = new MilkyWay(sun, (AlphaCentauri) sun.getChild());
+		Supercluster supercluster = new Supercluster(milkyWay, (Andromeda) milkyWay.getChild());
+		Matter matter = new Matter(supercluster, (Interstellar) supercluster.getChild());
+		BigBang bigBang = new BigBang(matter, (Antimatter) matter.getChild());
+		Aaron aaron = new Aaron(bigBang, (BigBong) bigBang.getChild());
 		
 		aaron.execute(aaron);
 	}

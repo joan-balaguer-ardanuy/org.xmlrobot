@@ -85,18 +85,9 @@ public final class Tetraploid extends ScrewNut<Diploid, Chromosome> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Genomap) {
-					Genomap key = (Genomap) e.getKey();
-					Haploid value = (Haploid) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Diploid) {
-					getKey().comparator().compare((Diploid) e.getSource(), getValue());
-					getValue().comparator().compare((Chromosome) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Chromosome) {
+					Chromosome key = (Chromosome) e.getSource();
+					putKey(key, (Diploid) key.getChild());
 				}
 				break;
 			default:
@@ -104,12 +95,12 @@ public final class Tetraploid extends ScrewNut<Diploid, Chromosome> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Tetraploid) {
-//					Tetraploid entry = (Tetraploid) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Tetraploid) {
+					comparator().compare((Tetraploid) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Tetraploid) {
 					Tetraploid entry = (Tetraploid) e.getSource();

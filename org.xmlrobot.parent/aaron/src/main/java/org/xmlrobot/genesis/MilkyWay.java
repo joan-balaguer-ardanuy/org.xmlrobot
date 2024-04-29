@@ -84,18 +84,9 @@ public final class MilkyWay extends Screw<Sun,AlphaCentauri> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Gliese) {
-					Gliese key = (Gliese) e.getSource();
-					Earth value = (Earth) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Sun) {
-					getKey().comparator().compare((Sun) e.getSource(), getValue());
-					getValue().comparator().compare((AlphaCentauri) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof AlphaCentauri) {
+					AlphaCentauri key = (AlphaCentauri) e.getSource();
+					putKey(key, (Sun) key.getChild());
 				}
 				break;
 			default:
@@ -103,12 +94,12 @@ public final class MilkyWay extends Screw<Sun,AlphaCentauri> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof MilkyWay) {
-//					MilkyWay entry = (MilkyWay) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof MilkyWay) {
+					comparator().compare((MilkyWay) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof MilkyWay) {
 					MilkyWay entry = (MilkyWay) e.getSource();

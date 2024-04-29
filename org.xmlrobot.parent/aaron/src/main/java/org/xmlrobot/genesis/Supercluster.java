@@ -83,18 +83,9 @@ public final class Supercluster extends Screw<MilkyWay,Andromeda> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof AlphaCentauri) {
-					AlphaCentauri key = (AlphaCentauri) e.getSource();
-					Sun value = (Sun) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof MilkyWay) {
-					getKey().comparator().compare((MilkyWay) e.getSource(), getValue());
-					getValue().comparator().compare((Andromeda) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Andromeda) {
+					Andromeda key = (Andromeda) e.getSource();
+					putKey(key, (MilkyWay) key.getChild());
 				}
 				break;
 			default:
@@ -102,12 +93,12 @@ public final class Supercluster extends Screw<MilkyWay,Andromeda> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Supercluster) {
-//					Supercluster entry = (Supercluster) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Supercluster) {
+					comparator().compare((Supercluster) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Supercluster) {
 					Supercluster entry = (Supercluster) e.getSource();

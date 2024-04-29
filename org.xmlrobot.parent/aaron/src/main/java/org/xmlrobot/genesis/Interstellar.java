@@ -85,18 +85,9 @@ public final class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Sun) {
-					Sun key = (Sun) e.getSource();
-					AlphaCentauri value = (AlphaCentauri) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Andromeda) {
-					getKey().comparator().compare((Andromeda) e.getSource(), getValue());
-					getValue().comparator().compare((MilkyWay) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof MilkyWay) {
+					MilkyWay key = (MilkyWay) e.getSource();
+					putKey(key, (Andromeda) key.getChild());
 				}
 				break;
 			default:
@@ -104,12 +95,12 @@ public final class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Interstellar) {
-//					Interstellar entry = (Interstellar) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Interstellar) {
+					comparator().compare((Interstellar) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Interstellar) {
 					Interstellar entry = (Interstellar) e.getSource();

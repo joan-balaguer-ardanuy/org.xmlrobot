@@ -85,18 +85,9 @@ public final class AlphaCentauri extends ScrewNut<Gliese,Earth> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Operon) {
-					Operon key = (Operon) e.getSource();
-					Polyploid value = (Polyploid) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Gliese) {
-					getKey().comparator().compare((Gliese) e.getSource(), getValue());
-					getValue().comparator().compare((Earth) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Earth) {
+					Earth key = (Earth) e.getSource();
+					putKey(key, (Gliese) key.getChild());
 				}
 				break;
 			default:
@@ -104,12 +95,12 @@ public final class AlphaCentauri extends ScrewNut<Gliese,Earth> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof AlphaCentauri) {
-//					AlphaCentauri entry = (AlphaCentauri) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof AlphaCentauri) {
+					comparator().compare((AlphaCentauri) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof AlphaCentauri) {
 					AlphaCentauri entry = (AlphaCentauri) e.getSource();

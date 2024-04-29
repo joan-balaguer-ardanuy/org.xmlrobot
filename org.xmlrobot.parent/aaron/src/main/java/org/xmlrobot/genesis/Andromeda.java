@@ -85,18 +85,9 @@ public final class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Earth) {
-					Earth key = (Earth) e.getSource();
-					Gliese value = (Gliese) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof AlphaCentauri) {
-					getKey().comparator().compare((AlphaCentauri) e.getSource(), getValue());
-					getValue().comparator().compare((Sun) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Sun) {
+					Sun key = (Sun) e.getSource();
+					putKey(key, (AlphaCentauri) key.getChild());
 				}
 				break;
 			default:
@@ -104,12 +95,12 @@ public final class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Andromeda) {
-//					Andromeda entry = (Andromeda) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Andromeda) {
+					comparator().compare((Andromeda) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Andromeda) {
 					Andromeda entry = (Andromeda) e.getSource();

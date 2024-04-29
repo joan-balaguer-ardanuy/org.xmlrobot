@@ -86,18 +86,9 @@ public final class TimeMaster extends ScrewNut<BigBong,BigBang> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Matter) {
-					Matter key = (Matter) e.getSource();
-					Antimatter value = (Antimatter) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof BigBong) {
-					getKey().comparator().compare((BigBong) e.getSource(), getValue());
-					getValue().comparator().compare((BigBang) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof BigBang) {
+					BigBang key = (BigBang) e.getSource();
+					putKey(key, (BigBong) key.getChild());
 				}
 				break;
 			default:
@@ -105,12 +96,12 @@ public final class TimeMaster extends ScrewNut<BigBong,BigBang> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof TimeMaster) {
-//					TimeMaster entry = (TimeMaster) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof TimeMaster) {
+					comparator().compare((TimeMaster) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof TimeMaster) {
 					TimeMaster entry = (TimeMaster) e.getSource();

@@ -83,18 +83,9 @@ public final class Operon extends Screw<Ribosome,Tetraploid> {
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				if(e.getSource() instanceof Diploid) {
-					Diploid key = (Diploid) e.getSource();
-					Chromosome value = (Chromosome) e.getValue();
-					getValue().putValue(key, value);
-				}
-				break;
-			case LISTEN:
-				if(e.getSource() instanceof Ribosome) {
-					getKey().comparator().compare((Ribosome) e.getSource(), getValue());
-					getValue().comparator().compare((Tetraploid) e.getValue(), getKey());
-					sendEvent(new EventArgs<>(getKey().comparator().getSource(), 
-							getValue().comparator().getSource()));
+				if(e.getSource() instanceof Tetraploid) {
+					Tetraploid key = (Tetraploid) e.getSource();
+					putKey(key, (Ribosome) key.getChild());
 				}
 				break;
 			default:
@@ -102,12 +93,12 @@ public final class Operon extends Screw<Ribosome,Tetraploid> {
 			}
 		} else {
 			switch (e.getCommand()) {
-//			case LISTEN:
-//				if(e.getSource() instanceof Operon) {
-//					Operon entry = (Operon) e.getSource();
-//					entry.permuteChild(call(), get());
-//				}
-//				break;
+			case LISTEN:
+				if(e.getSource() instanceof Operon) {
+					comparator().compare((Operon) e.getSource(), getStem());
+					sendEvent(new EventArgs<>(comparator().getSource()));
+				}
+				break;
 			case TRANSFER:
 				if(e.getSource() instanceof Operon) {
 					Operon entry = (Operon) e.getSource();
