@@ -88,12 +88,12 @@ public final class Hyperchain extends ScrewNut<Integer,Character> {
 		}
 	}
 	@Override
-	public void event(Object sender, EventArgs<?, ?> e) {
+	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
 		switch (e.getCommand()) {
 		case LISTEN:
-			comparator().compare((Hyperchain) e.getKey(), getStem());
-			sendEvent(new EventArgs<>(comparator().getSource()));
+			comparator().compare((Hyperchain) e.getSource(), getStem());
+			sendEvent(new EventArgs(comparator().getSource()));
 			break;
 		default:
 			break;

@@ -47,7 +47,7 @@ public abstract class AbstractListener
 	 * Sends event to all event {@link Listener} added in the set.
 	 * @param e {@link EventArgs} the arguments of the event
 	 */
-	protected void sendEvent(EventArgs<?,?> e) {
+	protected void sendEvent(EventArgs e) {
 		if(listeners != null) {
 			Iterator<Listener> iterator = listeners.iterator();
 			while(iterator.hasNext()) {
@@ -56,7 +56,7 @@ public abstract class AbstractListener
 		}
 	}
 	@Override
-	public void event(Object sender, EventArgs<?,?> e) {
+	public void event(Object sender, EventArgs e) {
 		sendEvent(e);
 	}
 	@Override

@@ -78,7 +78,7 @@ public final class Sun extends Screw<Earth,Gliese> {
 		return 0;
 	}
 	@Override
-	public void event(Object sender, EventArgs<?,?> e) {
+	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
@@ -96,7 +96,7 @@ public final class Sun extends Screw<Earth,Gliese> {
 			case LISTEN:
 				if(e.getSource() instanceof Sun) {
 					comparator().compare((Sun) e.getSource(), getStem());
-					sendEvent(new EventArgs<>(comparator().getSource()));
+					sendEvent(new EventArgs(comparator().getSource()));
 				}
 				break;
 			case TRANSFER:

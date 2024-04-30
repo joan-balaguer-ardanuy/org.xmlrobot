@@ -80,7 +80,7 @@ public final class Haploid extends ScrewNut<Hyperchain, Hypercube> {
 		return 0;
 	}
 	@Override
-	public void event(Object sender, EventArgs<?,?> e) {
+	public void event(Object sender, EventArgs e) {
 		super.event(sender, e); 
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
@@ -97,8 +97,8 @@ public final class Haploid extends ScrewNut<Hyperchain, Hypercube> {
 			switch (e.getCommand()) {
 			case LISTEN:
 				if(e.getSource() instanceof Haploid) {
-					comparator().compare((Haploid) e.getKey(), getStem());
-					sendEvent(new EventArgs<>(comparator().getSource()));
+					comparator().compare((Haploid) e.getSource(), getStem());
+					sendEvent(new EventArgs(comparator().getSource()));
 				}
 				break;
 			case TRANSFER:

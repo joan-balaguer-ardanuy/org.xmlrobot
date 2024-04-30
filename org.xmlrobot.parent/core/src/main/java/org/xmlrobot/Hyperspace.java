@@ -23,7 +23,7 @@ public abstract class Hyperspace
 	@Override
 	public void setCommand(Order command) {
 		super.setCommand(command);
-		sendEvent(new EventArgs<>(this, getChild()));
+		sendEvent(new EventArgs(this));
 	}
 	
 	/**

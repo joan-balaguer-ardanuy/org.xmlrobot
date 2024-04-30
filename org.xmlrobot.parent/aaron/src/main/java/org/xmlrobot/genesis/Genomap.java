@@ -80,13 +80,13 @@ public final class Genomap extends Screw<Hypercube, Hyperchain> {
 		return 0;
 	}
 	@Override
-	public void event(Object sender, EventArgs<?,?> e) {
+	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
 			case GENESIS:
-				Hyperchain entry = (Hyperchain) e.getKey();
-				putKey(entry, (Hypercube) entry.getChild());
+				Hyperchain key = (Hyperchain) e.getSource();
+				putKey(key, (Hypercube) key.getChild());
 				break;
 			default:
 				break;
@@ -95,8 +95,8 @@ public final class Genomap extends Screw<Hypercube, Hyperchain> {
 			switch (e.getCommand()) {
 			case LISTEN:
 				if(e.getSource() instanceof Genomap) {
-					comparator().compare((Genomap) e.getKey(), getStem());
-					sendEvent(new EventArgs<>(comparator().getSource()));
+					comparator().compare((Genomap) e.getSource(), getStem());
+					sendEvent(new EventArgs(comparator().getSource()));
 				}
 				break;
 			case TRANSFER:

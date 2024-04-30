@@ -81,7 +81,7 @@ public final class TimeMaster extends ScrewNut<BigBong,BigBang> {
 		return 0;
 	}
 	@Override
-	public void event(Object sender, EventArgs<?,?> e) {
+	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
@@ -99,7 +99,7 @@ public final class TimeMaster extends ScrewNut<BigBong,BigBang> {
 			case LISTEN:
 				if(e.getSource() instanceof TimeMaster) {
 					comparator().compare((TimeMaster) e.getSource(), getStem());
-					sendEvent(new EventArgs<>(comparator().getSource()));
+					sendEvent(new EventArgs(comparator().getSource()));
 				}
 				break;
 			case TRANSFER:

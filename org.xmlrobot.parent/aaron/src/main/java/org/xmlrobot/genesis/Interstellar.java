@@ -80,7 +80,7 @@ public final class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 		return 0;
 	}
 	@Override
-	public void event(Object sender, EventArgs<?,?> e) {
+	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
@@ -98,7 +98,7 @@ public final class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 			case LISTEN:
 				if(e.getSource() instanceof Interstellar) {
 					comparator().compare((Interstellar) e.getSource(), getStem());
-					sendEvent(new EventArgs<>(comparator().getSource()));
+					sendEvent(new EventArgs(comparator().getSource()));
 				}
 				break;
 			case TRANSFER:

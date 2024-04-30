@@ -88,12 +88,12 @@ public final class Hypercube extends Screw<Character,Integer> {
 		}
 	}
 	@Override
-	public void event(Object sender, EventArgs<?, ?> e) {
+	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
 		switch (e.getCommand()) {
 		case LISTEN:
-			comparator().compare((Hypercube) e.getKey(), getStem());
-			sendEvent(new EventArgs<>(comparator().getSource()));
+			comparator().compare((Hypercube) e.getSource(), getStem());
+			sendEvent(new EventArgs(comparator().getSource()));
 			break;
 		default:
 			break;

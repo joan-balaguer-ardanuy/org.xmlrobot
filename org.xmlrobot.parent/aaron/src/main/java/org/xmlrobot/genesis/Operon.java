@@ -78,7 +78,7 @@ public final class Operon extends Screw<Ribosome,Tetraploid> {
 		return 0;
 	}
 	@Override
-	public void event(Object sender, EventArgs<?,?> e) {
+	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
@@ -96,7 +96,7 @@ public final class Operon extends Screw<Ribosome,Tetraploid> {
 			case LISTEN:
 				if(e.getSource() instanceof Operon) {
 					comparator().compare((Operon) e.getSource(), getStem());
-					sendEvent(new EventArgs<>(comparator().getSource()));
+					sendEvent(new EventArgs(comparator().getSource()));
 				}
 				break;
 			case TRANSFER:

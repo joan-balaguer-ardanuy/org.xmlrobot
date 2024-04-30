@@ -28,5 +28,5 @@ public interface Listener
 	 * The event.
 	 * @param e {@link EventArgs} the event arguments
 	 */
-	void event(Object sender, EventArgs<?,?> e);
+	void event(Object sender, EventArgs e);
 }

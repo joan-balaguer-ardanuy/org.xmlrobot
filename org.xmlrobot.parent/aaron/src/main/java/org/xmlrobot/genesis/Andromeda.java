@@ -80,7 +80,7 @@ public final class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 		return 0;
 	}
 	@Override
-	public void event(Object sender, EventArgs<?,?> e) {
+	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
@@ -98,7 +98,7 @@ public final class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 			case LISTEN:
 				if(e.getSource() instanceof Andromeda) {
 					comparator().compare((Andromeda) e.getSource(), getStem());
-					sendEvent(new EventArgs<>(comparator().getSource()));
+					sendEvent(new EventArgs(comparator().getSource()));
 				}
 				break;
 			case TRANSFER:

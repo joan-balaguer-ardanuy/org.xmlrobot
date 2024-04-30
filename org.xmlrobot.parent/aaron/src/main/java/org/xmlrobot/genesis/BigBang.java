@@ -78,7 +78,7 @@ public final class BigBang extends Screw<Matter,Antimatter> {
 		return 0;
 	}
 	@Override
-	public void event(Object sender, EventArgs<?,?> e) {
+	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
 		if(sender.equals(getKey())) {
 			switch (e.getCommand()) {
@@ -96,7 +96,7 @@ public final class BigBang extends Screw<Matter,Antimatter> {
 			case LISTEN:
 				if(e.getSource() instanceof BigBang) {
 					comparator().compare((BigBang) e.getSource(), getStem());
-					sendEvent(new EventArgs<>(comparator().getSource()));
+					sendEvent(new EventArgs(comparator().getSource()));
 				}
 				break;
 			case TRANSFER:
