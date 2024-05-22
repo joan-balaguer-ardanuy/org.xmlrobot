@@ -17,8 +17,9 @@ public final class Chromosome extends Screw<Genomap, Haploid> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(org.xmlrobot.Entry<Genomap,Haploid> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<org.xmlrobot.Entry<Genomap,Haploid>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -81,42 +82,33 @@ public final class Chromosome extends Screw<Genomap, Haploid> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof Haploid) {
-					Haploid key = (Haploid) e.getSource();
-					putKey(key, (Genomap) key.getChild());
+		switch (e.getCommand()) {
+		case GENESIS:
+			if(sender.equals(getKey())) {
+				if (e.getSource() instanceof Genomap) {
+					Genomap entry = (Genomap) e.getSource();
+					System.out.println("Genomap");
+					putValue(entry, (Haploid) entry.getChild());
 				}
-				break;
-			default:
-				break;
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Chromosome) {
-					comparator().compare((Chromosome) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Chromosome) {
-					Chromosome entry = (Chromosome) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case LISTEN:
+			if(e.getSource() instanceof Chromosome) {
+				comparator().compare((Chromosome) e.getSource(), getStem());
+				sendEvent(new EventArgs(comparator().getSource()));
 			}
+			break;
+		default:
+			break;
 		}
 	}
 	@Override
-	public synchronized void run() {
-		Enumerator<Genomap> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

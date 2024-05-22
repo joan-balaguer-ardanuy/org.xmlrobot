@@ -18,8 +18,9 @@ public final class Tetraploid extends ScrewNut<Diploid, Chromosome> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(Entry<Diploid,Chromosome> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<Entry<Diploid,Chromosome>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -74,7 +75,7 @@ public final class Tetraploid extends ScrewNut<Diploid, Chromosome> {
 	
 	@Override
 	public int compareTo(Entry<Chromosome, Diploid> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		Entry<Genomap,Haploid> entry = getKey().comparator().getSource();
 		comparator((Chromosome) entry, (Diploid) entry.getChild());
 		return 0;
@@ -82,41 +83,29 @@ public final class Tetraploid extends ScrewNut<Diploid, Chromosome> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof Chromosome) {
-					Chromosome key = (Chromosome) e.getSource();
-					putKey(key, (Diploid) key.getChild());
-				}
-				break;
-			default:
-				break;
+		switch (e.getCommand()) {
+		case LISTEN:
+			if(e.getSource() instanceof Tetraploid) {
+				Tetraploid entry = (Tetraploid) e.getSource();
+				entry.permuteChild(call(), get());	
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Tetraploid) {
-					comparator().compare((Tetraploid) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Tetraploid) {
-					Tetraploid entry = (Tetraploid) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case TRANSFER:
+			if(e.getSource() instanceof Tetraploid) {
+				Tetraploid entry = (Tetraploid) e.getSource();
+				entry.release();
 			}
+			break;
+		default:
+			break;
 		}
 	}
-	public synchronized void run() {
-		Enumerator<Diploid> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

@@ -222,24 +222,6 @@ public abstract class Unification
 			root.event(this, e);
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Recursive<K,V> clone() {
-		try {
-			K k = (K) getClass().getConstructor().newInstance();
-			V v = (V) getChild().getClass().getConstructor().newInstance();
-			k.setParent(k);
-			v.setParent(v);
-			k.setChild(v);
-			v.setChild(k);
-			k.setRoot(getRoot());
-			v.setRoot(getStem());
-			return k;
-		} catch (Throwable t) {
-			throw new Error("hyperspace.time.Unification: clone exception.", t);
-		}
-	}
-	
 	@Override
 	public V computeChildIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
 		Objects.requireNonNull(mappingFunction);

@@ -4,7 +4,6 @@
 package org.xmlrobot.genesis;
 
 import org.xmlrobot.Entry;
-import org.xmlrobot.numbers.Enumerable;
 
 /**
  * The DNA interface. Inherits {@link hyperspace.Entry} interface that it's a recursive {@link java.util.Map.Entry}.
@@ -98,10 +97,10 @@ import org.xmlrobot.numbers.Enumerable;
  * @param <K> is the key class
  * @param <V> is the value class
  */
-public interface DNA<K,V> extends Entry<K,V>, java.util.Map<K,V>, Enumerable<K> {
+public interface DNA<K,V> extends Entry<K,V>, java.util.Map<K,V>, Iterable<K> {
 
 	default Chain<V, K> entryChain() {
-		return (Chain<V, K>) getChild();
+		return (Chain<V, K>) getStem();
 	}
 
 	/**

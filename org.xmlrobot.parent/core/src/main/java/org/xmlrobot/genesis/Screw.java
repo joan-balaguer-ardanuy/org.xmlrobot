@@ -105,10 +105,10 @@ public abstract class Screw<K,V>
     
 	@Override
 	public V remove(Object key) {
-		Iterator<org.xmlrobot.Entry<K, V>> en = iterator();
+		Enumerator<org.xmlrobot.Entry<K, V>> en = enumerator();
 		org.xmlrobot.Entry<K, V> correctEntry = null;
-		while (correctEntry == null && en.hasNext()) {
-			org.xmlrobot.Entry<K, V> e = en.next();
+		while (correctEntry == null && en.hasMoreElements()) {
+			org.xmlrobot.Entry<K, V> e = en.nextElement();
 			if (key.equals(e.getKey()))
 				correctEntry = e;
 		}
@@ -122,10 +122,10 @@ public abstract class Screw<K,V>
 
 	@Deprecated
 	public int size() {
-		Iterator<org.xmlrobot.Entry<K,V>> it = iterator();
+		Enumerator<org.xmlrobot.Entry<K,V>> it = enumerator();
 		int i = 0;
-		while(it.hasNext()) {
-			it.next();
+		while(it.hasMoreElements()) {
+			it.nextElement();
 			i++;
 		}
 		return i;
@@ -133,6 +133,11 @@ public abstract class Screw<K,V>
 	
 	public void clear() {
 		release();
+	}
+
+	@Override
+	public Iterator<K> iterator() {
+		return new KeyIterator(getParent());
 	}
 	
 	transient Set<K> keySet;
@@ -145,20 +150,9 @@ public abstract class Screw<K,V>
 		return keySet == null ? keySet = new AbstractSet<K>() {
 			@Override
 			public Iterator<K> iterator() {
-				Enumerator<K> en = new KeyEnumerator(getParent());
-                return new Iterator<K>() {
-
-					@Override
-					public boolean hasNext() {
-						return en.hasMoreElements();
-					}
-					@Override
-					public K next() {
-						return en.nextElement();
-					}
-                };
+				return new KeyIterator(getParent());
 			}
-			@Override
+			@Deprecated
 			public int size() {
 				return Screw.this.size();
 			}
@@ -178,18 +172,7 @@ public abstract class Screw<K,V>
 	public Collection<V> values() {
 		return values == null ? values = new AbstractCollection<V>() {
 			public Iterator<V> iterator() {
-				Enumerator<V> en = new ValueEnumerator(getParent());
-				return new Iterator<V>() {
-
-					@Override
-					public boolean hasNext() {
-						return en.hasMoreElements();
-					}
-					@Override
-					public V next() {
-						return en.nextElement();
-					}
-				};
+				return new ValueIterator(getParent());
             }
             public int size() {
                 return Screw.this.size();
@@ -214,18 +197,18 @@ public abstract class Screw<K,V>
 			public Iterator<java.util.Map.Entry<K, V>> iterator() {
 				// TODO Auto-generated method stub
 				return new Iterator<Map.Entry<K,V>>() {
-					private Iterator<org.xmlrobot.Entry<K,V>> it = Screw.this.iterator();
+					private Enumerator<org.xmlrobot.Entry<K,V>> en = Screw.this.enumerator();
 					@Override
 					public boolean hasNext() {
-						return it.hasNext();
+						return en.hasMoreElements();
 					}
 					@Override
 					public java.util.Map.Entry<K, V> next() {
-						return it.next();
+						return en.nextElement();
 					}
 					@Override
 					public void remove() {
-						it.remove();
+						en.remove();
 					}
 				};
 			}
@@ -246,8 +229,8 @@ public abstract class Screw<K,V>
 			
 		}: entrySet;
 	}
-	
-	public class ValueEnumerator implements Enumerator<V> {
+
+	public class KeyIterator implements Iterator<K> {
 
 		/**
 		 * The current time-listener.
@@ -264,18 +247,68 @@ public abstract class Screw<K,V>
 		 */
 		boolean hasNext;
 
-		public ValueEnumerator(org.xmlrobot.Entry<K,V> parent) {
+		public KeyIterator(org.xmlrobot.Entry<K,V> parent) {
 			next = current = parent;
 			hasNext = true;
 		}
 
 		@Override
-		public boolean hasMoreElements() {
+		public boolean hasNext() {
 			return hasNext;
 		}
 
 		@Override
-		public V nextElement() {
+		public K next() {
+			org.xmlrobot.Entry<K,V> c = next;
+			current = c;
+			next = c.getParent();
+			if (c == Screw.this)
+				hasNext = false;
+			else
+				hasNext = true;
+			return c.getKey();
+		}
+
+		@Override
+		public void remove() {
+			org.xmlrobot.Entry<K,V> k = next;
+			current.release();
+			if (!k.isEmpty()) {
+				current = k;
+				next = k.getParent();
+			} else
+				hasNext = false;
+		}
+	}
+	public class ValueIterator implements Iterator<V> {
+
+		/**
+		 * The current time-listener.
+		 */
+		org.xmlrobot.Entry<K,V> current;
+
+		/**
+		 * The next time-listener.
+		 */
+		org.xmlrobot.Entry<K,V> next;
+
+		/**
+		 * If this recursor has next time-listener.
+		 */
+		boolean hasNext;
+
+		public ValueIterator(org.xmlrobot.Entry<K,V> parent) {
+			next = current = parent;
+			hasNext = true;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return hasNext;
+		}
+
+		@Override
+		public V next() {
 			org.xmlrobot.Entry<K,V> c = next;
 			current = c;
 			next = c.getParent();

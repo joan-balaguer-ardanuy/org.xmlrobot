@@ -18,8 +18,9 @@ public final class Gliese extends ScrewNut<Polyploid,Operon> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(Entry<Polyploid,Operon> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<Entry<Polyploid,Operon>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -74,7 +75,7 @@ public final class Gliese extends ScrewNut<Polyploid,Operon> {
 	
 	@Override
 	public int compareTo(Entry<Operon, Polyploid> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		Entry<Ribosome,Tetraploid> entry = getKey().comparator().getSource();
 		comparator((Operon) entry, (Polyploid) entry.getChild());
 		return 0;
@@ -82,41 +83,30 @@ public final class Gliese extends ScrewNut<Polyploid,Operon> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof Operon) {
-					Operon key = (Operon) e.getSource();
-					putKey(key, (Polyploid) key.getChild());
-				}
-				break;
-			default:
-				break;
+		switch (e.getCommand()) {
+		case LISTEN:
+			if(e.getSource() instanceof Gliese) {
+				Gliese entry = (Gliese) e.getSource();
+				entry.permuteChild(call(), get());	
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Gliese) {
-					comparator().compare((Gliese) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Gliese) {
-					Gliese entry = (Gliese) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case TRANSFER:
+			if(e.getSource() instanceof Gliese) {
+				Gliese entry = (Gliese) e.getSource();
+				entry.release();
 			}
+			break;
+		default:
+			break;
 		}
 	}
-	public synchronized void run() {
-		Enumerator<Polyploid> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	@Override
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

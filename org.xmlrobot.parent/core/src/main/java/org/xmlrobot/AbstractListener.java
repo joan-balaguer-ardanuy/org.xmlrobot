@@ -30,6 +30,15 @@ public abstract class AbstractListener
 	}
 	
 	@Override
+	public Listener clone() {
+		try {
+			return getClass().getConstructor().newInstance();
+		} catch (Throwable t) {
+			throw new Error("org.xmlrobot.AbstractListener: clone exception.", t);
+		}
+	}
+	
+	@Override
 	public void addEventListener(Listener listener) {
 		if(listeners == null) {
 			listeners = new Listeners();

@@ -18,8 +18,9 @@ public final class Diploid extends ScrewNut<Haploid, Genomap> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(Entry<Haploid,Genomap> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<Entry<Haploid,Genomap>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -82,41 +83,29 @@ public final class Diploid extends ScrewNut<Haploid, Genomap> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof Genomap) {
-					Genomap key = (Genomap) e.getSource();
-					putKey(key, (Haploid) key.getChild());
-				}
-				break;
-			default:
-				break;
+		switch (e.getCommand()) {
+		case LISTEN:
+			if(e.getSource() instanceof Diploid) {
+				Diploid entry = (Diploid) e.getSource();
+				entry.permuteChild(call(), get());	
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Diploid) {
-					comparator().compare((Diploid) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Diploid) {
-					Diploid entry = (Diploid) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case TRANSFER:
+			if(e.getSource() instanceof Diploid) {
+				Diploid entry = (Diploid) e.getSource();
+				entry.release();
 			}
+			break;
+		default:
+			break;
 		}
 	}
-	public synchronized void run() {
-		Enumerator<Haploid> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

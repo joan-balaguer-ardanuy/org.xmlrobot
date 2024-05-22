@@ -16,8 +16,9 @@ public final class Ribosome extends Screw<Chromosome,Diploid> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(org.xmlrobot.Entry<Chromosome,Diploid> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<org.xmlrobot.Entry<Chromosome,Diploid>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -72,7 +73,7 @@ public final class Ribosome extends Screw<Chromosome,Diploid> {
 	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<Diploid, Chromosome> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		org.xmlrobot.Entry<Haploid, Genomap> entry = getKey().comparator().getSource();
 		comparator((Diploid) entry, (Chromosome) entry.getChild());
 		return 0;
@@ -80,42 +81,33 @@ public final class Ribosome extends Screw<Chromosome,Diploid> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof Diploid) {
-					Diploid key = (Diploid) e.getSource();
-					putKey(key, (Chromosome) key.getChild());
+		switch (e.getCommand()) {
+		case GENESIS:
+			if(sender.equals(getKey())) {
+				if (e.getSource() instanceof Chromosome) {
+					Chromosome entry = (Chromosome) e.getSource();
+					System.out.println("Chromosome");
+					putValue(entry, (Diploid) entry.getChild());
 				}
-				break;
-			default:
-				break;
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Ribosome) {
-					comparator().compare((Ribosome) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Ribosome) {
-					Ribosome entry = (Ribosome) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case LISTEN:
+			if(e.getSource() instanceof Ribosome) {
+				comparator().compare((Ribosome) e.getSource(), getStem());
+				sendEvent(new EventArgs(comparator().getSource()));
 			}
+			break;
+		default:
+			break;
 		}
 	}
 	@Override
-	public synchronized void run() {
-		Enumerator<Chromosome> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

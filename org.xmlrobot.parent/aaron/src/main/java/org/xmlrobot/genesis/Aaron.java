@@ -17,8 +17,9 @@ public final class Aaron extends Screw<BigBang,BigBong> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(org.xmlrobot.Entry<BigBang,BigBong> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<org.xmlrobot.Entry<BigBang,BigBong>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -73,7 +74,7 @@ public final class Aaron extends Screw<BigBang,BigBong> {
 	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<BigBong,BigBang> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		org.xmlrobot.Entry<Antimatter,Matter> entry = getKey().comparator().getSource();
 		comparator((BigBong) entry, (BigBang) entry.getChild());
 		return 0;
@@ -81,42 +82,27 @@ public final class Aaron extends Screw<BigBang,BigBong> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof BigBong) {
-					BigBong key = (BigBong) e.getSource();
-					putKey(key, (BigBang) key.getChild());
+		switch (e.getCommand()) {
+		case GENESIS:
+			if(sender.equals(getKey())) {
+				if (e.getSource() instanceof BigBang) {
+					BigBang entry = (BigBang) e.getSource();
+					System.out.println("BigBang");
+					putValue(entry, (BigBong) entry.getChild());
 				}
-				break;
-			default:
-				break;
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Aaron) {
-					comparator().compare((Aaron) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Aaron) {
-					Aaron entry = (Aaron) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
-			}
+			break;
+		default:
+			break;
 		}
 	}
 	@Override
-	public synchronized void run() {
-		Enumerator<BigBang> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

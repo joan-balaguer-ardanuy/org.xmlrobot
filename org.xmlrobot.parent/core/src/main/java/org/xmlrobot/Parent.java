@@ -1,8 +1,8 @@
 package org.xmlrobot;
 
-import java.util.Iterator;
-
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.xmlrobot.numbers.Enumerator;
 
 /**
  * The parent {@link AbstractListener} class.
@@ -95,18 +95,15 @@ public abstract class Parent
 	}
 	
 	@Override
-	public abstract TimeListener<K,V> clone();
-	
-	@Override
 	public boolean isEmpty() {
 		return getParent() == this;
 	}
 	@Override
-	public Iterator<K> iterator() {
-		return new ParentIterator(getParent());
+	public Enumerator<K> enumerator() {
+		return new ParentEnumerator(getParent());
 	}
 
-	protected final class ParentIterator implements Iterator<K> {
+	protected final class ParentEnumerator implements Enumerator<K> {
 
 		/**
 		 * The current time-listener.
@@ -117,24 +114,24 @@ public abstract class Parent
 		 * The next time-listener.
 		 */
 		K next;
-
+		
 		/**
 		 * If this recursor has next time-listener.
 		 */
 		boolean hasNext;
 
-		public ParentIterator(K parent) {
-			next = current = parent;
+		public ParentEnumerator(K past) {
+			next = current = past;
 			hasNext = true;
 		}
 
 		@Override
-		public boolean hasNext() {
+		public boolean hasMoreElements() {
 			return hasNext;
 		}
 
 		@Override
-		public K next() {
+		public K nextElement() {
 			K parent = next;
 			current = parent;
 			next = parent.getParent();

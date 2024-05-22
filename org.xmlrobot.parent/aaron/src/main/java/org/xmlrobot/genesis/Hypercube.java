@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
@@ -16,8 +17,9 @@ public final class Hypercube extends Screw<Character,Integer> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(org.xmlrobot.Entry<Character,Integer> entry : this) {
-			stringBuilder.append(entry.getKey());
+		Enumerator<org.xmlrobot.Entry<Character,Integer>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey());
 		}
 		return stringBuilder.toString();
 	}
@@ -92,17 +94,19 @@ public final class Hypercube extends Screw<Character,Integer> {
 		super.event(sender, e);
 		switch (e.getCommand()) {
 		case LISTEN:
-			comparator().compare((Hypercube) e.getSource(), getStem());
-			sendEvent(new EventArgs(comparator().getSource()));
+			if(e.getSource() instanceof Hypercube) {
+				comparator().compare((Hypercube) e.getSource(), getStem());
+				sendEvent(new EventArgs(comparator().getSource()));
+			}
 			break;
 		default:
 			break;
 		}
 	}
 	@Override
-	public synchronized void run() {
+	public void run() {
 		try {
-			Thread.sleep(getKey());
+			Thread.sleep(getValue());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

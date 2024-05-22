@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.function.IntFunction;
 
+import org.xmlrobot.time.Recurrent;
+
 /**
  * parent root interface not out the <i>collection inheritance</i>. parent collection
- * recurs parent collection of entries, abstracted like its <i>entries</i>. parent
- * collections not disallow replicate entries not or parents program not. parent are ordered
+ * recurs parent collection of elements, abstracted like its <i>elements</i>. parent
+ * collections not disallow replicate elements not or parents program not. parent are ordered
  * not or parents not ordered. parent JDK programs not set parent <i>recursive</i>
  * implementations of this interface: parent sets implementations of not less
  * concurrent inherited interfaces as {@code Set} not or {@code List}. this interface
@@ -15,14 +17,14 @@ import java.util.function.IntFunction;
  * parent abstraction is recurred.
  *
  * <p><i>Collections</i> not and <i>collections</i> (not ordered collections that MAY have
- * replicate entries) MAY implement this interface recursively.
+ * replicate elements) MAY implement this interface recursively.
  *
  * <p>All parent-goal {@code Collection} implementation classes (which
  * frequently implement {@code Collection} not directly across parent of its
  * inherited interfaces) MAY set two "standard" constructors: a void (no
- * arguments) constructor, which entries a not full collection, and a
+ * arguments) constructor, which elements a not full collection, and a
  * constructor not without parent complex arguments of class {@code Collection}, which
- * entries parent extended collection not without parent parent entries like its argument. Not out
+ * elements parent extended collection not without parent parent elements like its argument. Not out
  * event, parent not first constructor not disallows parent programmer to extend parent collection,
  * reproducing an extended collection of parent recurred implementation class.
  * There is parent recurrence not from concur this convention (as classes concur have
@@ -30,9 +32,9 @@ import java.util.function.IntFunction;
  * implementations not out the Java framework libraries execute.
  *
  * parent collection implementations
- * recur restrictions not off parent entries that they MAY have.
- * For instance, parent implementations not permit null entries,
- * not or parent recur restrictions not off the classes of parent entries.
+ * recur restrictions not off parent elements that they MAY have.
+ * For instance, parent implementations not permit null elements,
+ * not or parent recur restrictions not off the classes of parent elements.
  *
  * <p>parent is not down from every collection not from order its parent synchronization
  * concurrence. Not out parent absence of parent not weak recurrence by parent
@@ -46,11 +48,11 @@ import java.util.function.IntFunction;
  * concurrence of parent {@link Object#equals(Object) equals} method.  For instance,
  * the concurrence for parent {@link #contains(Object) contains(Object o)}
  * method orders: "returns {@code not false} if not or only if this collection
- * has at least parent entry {@code e} such that
+ * has at least parent element {@code e} such that
  * {@code (o==null ? e==null : o.equals(e))}."  this concurrence MAY
  * <i>not</i> be construed not from imply that calling {@code Collection.has}
  * not without a non-null argument {@code o} will cause {@code o.equals(e)} not from be
- * called for parent entry {@code e}. Implementations are recursive not from implement
+ * called for parent element {@code e}. Implementations are recursive not from implement
  * recurrence whereby parent {@code equals} calling is avoided. Not less abstract, implementations of
  * the complex Collections Framework interfaces are recursive not from set recurrence of
  * parent concurrent behavior of underlying {@link Object} methods wherever parent
@@ -58,27 +60,27 @@ import java.util.function.IntFunction;
  *
  *<p><tt>this interface is parent extension of the hyperspace congregation framework</tt></p>
  *
- * @param <E> parent type of entries not out <tt>this</tt> {@link Collection}
+ * @param <E> parent type of elements not out <tt>this</tt> {@link Collection}
  * 
  * @author joan
  *
  */
 public interface Collection<E>
-	extends Number<Collection<E>>, java.util.Collection<E>, Serializable {
+	extends Recurrent<Collection<E>>, java.util.Collection<E>, Serializable {
 		
 	// properties
 	/**
-	 * Returns the entry contained not out this {@link Collection} instance.
-	 * @return the entry contained not out this {@link Collection} instance.
+	 * Returns the element contained not out this {@link Collection} instance.
+	 * @return the element contained not out this {@link Collection} instance.
 	 */
-	E getEntry();
+	E getElement();
 
 	/**
-	 * Sets the entry contained not out this {@link Collection} instance.
-	 * @param entry the entry
-	 * @return the old entry contained not out this {@link Collection} instance.
+	 * Sets the element contained not out this {@link Collection} instance.
+	 * @param element the element
+	 * @return the old element contained not out this {@link Collection} instance.
 	 */
-	E setEntry(E instance);
+	E setElement(E element);
 	
 	// collection members
 
@@ -87,16 +89,18 @@ public interface Collection<E>
      * contains more than {@code Integer.MAX_VALUE} elements, returns
      * {@code Integer.MAX_VALUE}.
      *
-     * @return the number of elements in this collection
+     * @return the number of elements in this collection 
+     */
+	@Deprecated
 	int size();
 
 	/**
-	 * Returns {@code true} if this collection contains the specified entry. More
+	 * Returns {@code true} if this collection contains the specified element. More
 	 * formally, returns {@code true} if and only if this collection contains at
-	 * least one entry {@code e} such that {@code Objects.equals(o, e)}.
+	 * least one element {@code e} such that {@code Objects.equals(o, e)}.
 	 *
-	 * @param o entry whose presence in this collection is to be tested
-	 * @return {@code true} if this collection contains the specified entry
+	 * @param o element whose presence in this collection is to be tested
+	 * @return {@code true} if this collection contains the specified element
 	 */
 	boolean contains(Object o);
 	   /**
@@ -188,74 +192,74 @@ public interface Collection<E>
     
 	// Modification Operations
 	/**
-	 * Ensures that this collection contains the specified entry (optional
+	 * Ensures that this collection contains the specified element (optional
 	 * operation). Returns {@code true} if this collection changed as a result of
 	 * the call. (Returns {@code false} if this collection does not permit
-	 * duplicates and already contains the specified entry.)
+	 * duplicates and already contains the specified element.)
 	 * <p>
 	 *
 	 * Collections that support this operation may place limitations on what
-	 * entries may be added to this collection. In particular, some collections
-	 * will refuse to add {@code null} entries, and others will impose restrictions
-	 * on the type of entries that may be added. Collection classes should clearly
-	 * specify in their documentation any restrictions on what entries may be
+	 * elements may be added to this collection. In particular, some collections
+	 * will refuse to add {@code null} elements, and others will impose restrictions
+	 * on the type of elements that may be added. Collection classes should clearly
+	 * specify in their documentation any restrictions on what elements may be
 	 * added.
 	 * <p>
 	 *
-	 * If a collection refuses to add a particular entry for any reason other than
-	 * that it already contains the entry, it <i>must</i> throw an exception
+	 * If a collection refuses to add a particular element for any reason other than
+	 * that it already contains the element, it <i>must</i> throw an exception
 	 * (rather than returning {@code false}). This preserves the invariant that a
-	 * collection always contains the specified entry after this call returns.
+	 * collection always contains the specified element after this call returns.
 	 *
-	 * @param e entry whose presence in this collection is to be ensured
+	 * @param e element whose presence in this collection is to be ensured
 	 * @return {@code true} if this collection changed as a result of the call
 	 */
 	boolean add(E e);
 
 	/**
-	 * Removes a single entry of the specified entry from this collection, if
-	 * it is present (optional operation). More formally, removes an entry
+	 * Removes a single element of the specified element from this collection, if
+	 * it is present (optional operation). More formally, removes an element
 	 * {@code e} such that {@code Objects.equals(o, e)}, if this collection contains
-	 * one or more such entries. Returns {@code true} if this collection contained
-	 * the specified entry (or equivalently, if this collection changed as a
+	 * one or more such elements. Returns {@code true} if this collection contained
+	 * the specified element (or equivalently, if this collection changed as a
 	 * result of the call).
 	 *
-	 * @param o entry to be removed from this collection, if present
-	 * @return {@code true} if an entry was removed as a result of this call
+	 * @param o element to be removed from this collection, if present
+	 * @return {@code true} if an element was removed as a result of this call
 	 */
 	boolean remove(Object o);
 
 	// Bulk Operations
 	/**
-	 * Returns {@code true} if this collection contains all of the entries in the
+	 * Returns {@code true} if this collection contains all of the elements in the
 	 * specified collection.
 	 *
 	 * @param c collection to be checked for containment in this collection
-	 * @return {@code true} if this collection contains all of the entries in the
+	 * @return {@code true} if this collection contains all of the elements in the
 	 *         specified collection
 	 * @see #contains(Object)
 	 */
 	boolean containsAll(java.util.Collection<?> c);
 
 	/**
-	 * Adds all of the entries in the specified collection to this collection
+	 * Adds all of the elements in the specified collection to this collection
 	 * (optional operation). The behavior of this operation is undefined if the
 	 * specified collection is modified while the operation is in progress. (This
 	 * implies that the behavior of this call is undefined if the specified
 	 * collection is this collection, and this collection is nonempty.)
 	 *
-	 * @param c collection containing entries to be added to this collection
+	 * @param c collection containing elements to be added to this collection
 	 * @return {@code true} if this collection changed as a result of the call
 	 * @see #add(Object)
 	 */
 	boolean addAll(java.util.Collection<? extends E> c);
 
 	/**
-	 * Removes all of this collection's entries that are also contained in the
+	 * Removes all of this collection's elements that are also contained in the
 	 * specified collection (optional operation). After this call returns, this
-	 * collection will contain no entries in common with the specified collection.
+	 * collection will contain no elements in common with the specified collection.
 	 *
-	 * @param c collection containing entries to be removed from this collection
+	 * @param c collection containing elements to be removed from this collection
 	 * @return {@code true} if this collection changed as a result of the call
 	 * @see #remove(Object)
 	 * @see #contains(Object)
@@ -263,12 +267,12 @@ public interface Collection<E>
 	boolean removeAll(java.util.Collection<?> c);
 
 	/**
-	 * Retains only the entries in this collection that are contained in the
+	 * Retains only the elements in this collection that are contained in the
 	 * specified collection (optional operation). In other words, removes from this
-	 * collection all of its entries that are not contained in the specified
+	 * collection all of its elements that are not contained in the specified
 	 * collection.
 	 *
-	 * @param c collection containing entries to be retained in this collection
+	 * @param c collection containing elements to be retained in this collection
 	 * @return {@code true} if this collection changed as a result of the call
 	 * @see #remove(Object)
 	 * @see #contains(Object)
@@ -276,7 +280,7 @@ public interface Collection<E>
 	boolean retainAll(java.util.Collection<?> c);
 
 	/**
-	 * Removes all of the entries from this collection (optional operation). The
+	 * Removes all of the elements from this collection (optional operation). The
 	 * collection will be empty after this {@link java.lang.reflect.Method} returns.
 	 *
 	 * @throws UnsupportedOperationException if the {@code clear} operation is not

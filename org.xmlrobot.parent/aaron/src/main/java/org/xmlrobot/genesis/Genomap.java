@@ -17,8 +17,9 @@ public final class Genomap extends Screw<Hypercube, Hyperchain> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(org.xmlrobot.Entry<Hypercube,Hyperchain> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<org.xmlrobot.Entry<Hypercube,Hyperchain>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -82,40 +83,33 @@ public final class Genomap extends Screw<Hypercube, Hyperchain> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				Hyperchain key = (Hyperchain) e.getSource();
-				putKey(key, (Hypercube) key.getChild());
-				break;
-			default:
-				break;
-			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Genomap) {
-					comparator().compare((Genomap) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
+		switch (e.getCommand()) {
+		case GENESIS:
+			if(sender.equals(getKey())) {
+				if (e.getSource() instanceof Hypercube) {
+					Hypercube entry = (Hypercube) e.getSource();
+					System.out.println("Hypercube");
+					putValue(entry, (Hyperchain) entry.getChild());
 				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Genomap) { 
-					Genomap entry = (Genomap) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
 			}
+			break;
+		case LISTEN:
+			if(e.getSource() instanceof Genomap) {
+				comparator().compare((Genomap) e.getSource(), getStem());
+				sendEvent(new EventArgs(comparator().getSource()));
+			}
+			break;
+		default:
+			break;
 		}
 	}
 	@Override
-	public synchronized void run() {
-		Enumerator<Hypercube> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

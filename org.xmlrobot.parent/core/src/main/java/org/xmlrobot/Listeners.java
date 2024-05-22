@@ -15,7 +15,7 @@ public class Listeners extends AbstractSet<Listener> {
 	@Override
 	public boolean add(Listener e) {
 		if(isEmpty()) {
-			setEntry(e);
+			setElement(e);
 			return true;
 		} else if(!contains(e)) {
 			instance(getClass(), getParent(), e);

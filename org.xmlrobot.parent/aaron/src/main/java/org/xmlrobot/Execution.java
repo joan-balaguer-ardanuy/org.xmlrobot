@@ -5,7 +5,7 @@ import org.xmlrobot.genesis.*;
 public class Execution {
 
 	public static void main(String[] args) {
-		int dilatation = 1;
+		int dilatation = 10000;
 		Hypercube hypercube = new Hypercube('A', 1*dilatation);
 		hypercube.putValue('B', 2*dilatation);
 		hypercube.putValue('C', 3*dilatation);

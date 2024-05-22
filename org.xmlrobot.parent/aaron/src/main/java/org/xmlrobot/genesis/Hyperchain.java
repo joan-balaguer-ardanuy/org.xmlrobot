@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.xmlrobot.Entry;
 import org.xmlrobot.EventArgs;
 import org.xmlrobot.Parity;
+import org.xmlrobot.numbers.Enumerator;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})
@@ -16,8 +17,9 @@ public final class Hyperchain extends ScrewNut<Integer,Character> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(Entry<Integer,Character> entry : this) {
-			stringBuilder.append(entry.getValue());
+		Enumerator<Entry<Integer,Character>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getValue());
 		}
 		return stringBuilder.toString();
 	}
@@ -92,15 +94,17 @@ public final class Hyperchain extends ScrewNut<Integer,Character> {
 		super.event(sender, e);
 		switch (e.getCommand()) {
 		case LISTEN:
-			comparator().compare((Hyperchain) e.getSource(), getStem());
-			sendEvent(new EventArgs(comparator().getSource()));
+			if(e.getSource() instanceof Hyperchain) {
+				Hyperchain entry = (Hyperchain) e.getSource();
+				entry.permuteChild(call(), get());
+			}
 			break;
 		default:
 			break;
 		}
 	}
 	@Override
-	public synchronized void run() {
+	public void run() {
 		try {
 			Thread.sleep(getKey());
 		} catch (InterruptedException e) {

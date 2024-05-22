@@ -18,8 +18,9 @@ public final class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(Entry<Andromeda,MilkyWay> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<Entry<Andromeda,MilkyWay>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -74,7 +75,7 @@ public final class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 	
 	@Override
 	public int compareTo(Entry<MilkyWay, Andromeda> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		Entry<Sun,AlphaCentauri> entry = getKey().comparator().getSource();
 		comparator((MilkyWay) entry, (Andromeda) entry.getChild());
 		return 0;
@@ -82,41 +83,30 @@ public final class Interstellar extends ScrewNut<Andromeda,MilkyWay> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof MilkyWay) {
-					MilkyWay key = (MilkyWay) e.getSource();
-					putKey(key, (Andromeda) key.getChild());
-				}
-				break;
-			default:
-				break;
+		switch (e.getCommand()) {
+		case LISTEN:
+			if(e.getSource() instanceof Interstellar) {
+				Interstellar entry = (Interstellar) e.getSource();
+				entry.permuteChild(call(), get());	
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Interstellar) {
-					comparator().compare((Interstellar) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Interstellar) {
-					Interstellar entry = (Interstellar) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case TRANSFER:
+			if(e.getSource() instanceof Interstellar) {
+				Interstellar entry = (Interstellar) e.getSource();
+				entry.release();
 			}
+			break;
+		default:
+			break;
 		}
 	}
-	public synchronized void run() {
-		Enumerator<Andromeda> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	@Override
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

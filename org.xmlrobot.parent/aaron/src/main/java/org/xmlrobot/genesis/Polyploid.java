@@ -18,8 +18,9 @@ public final class Polyploid extends ScrewNut<Tetraploid,Ribosome> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(Entry<Tetraploid,Ribosome> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<Entry<Tetraploid,Ribosome>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -74,7 +75,7 @@ public final class Polyploid extends ScrewNut<Tetraploid,Ribosome> {
 	
 	@Override
 	public int compareTo(Entry<Ribosome, Tetraploid> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		Entry<Chromosome,Diploid> entry = getKey().comparator().getSource();
 		comparator((Ribosome) entry, (Tetraploid) entry.getChild());
 		return 0;
@@ -82,41 +83,30 @@ public final class Polyploid extends ScrewNut<Tetraploid,Ribosome> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof Ribosome) {
-					Ribosome key = (Ribosome) e.getSource();
-					putKey(key, (Tetraploid) key.getChild());
-				}
-				break;
-			default:
-				break;
+		switch (e.getCommand()) {
+		case LISTEN:
+			if(e.getSource() instanceof Polyploid) {
+				Polyploid entry = (Polyploid) e.getSource();
+				entry.permuteChild(call(), get());	
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Polyploid) {
-					comparator().compare((Polyploid) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Polyploid) {
-					Polyploid entry = (Polyploid) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case TRANSFER:
+			if(e.getSource() instanceof Polyploid) {
+				Polyploid entry = (Polyploid) e.getSource();
+				entry.release();
 			}
+			break;
+		default:
+			break;
 		}
 	}
-	public synchronized void run() {
-		Enumerator<Tetraploid> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	@Override
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

@@ -18,8 +18,9 @@ public final class Haploid extends ScrewNut<Hyperchain, Hypercube> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(Entry<Hyperchain,Hypercube> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<Entry<Hyperchain,Hypercube>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -71,7 +72,6 @@ public final class Haploid extends ScrewNut<Hyperchain, Hypercube> {
 		key.addEventListener(this);
 		value.addEventListener(getChild());
 	}
-	
 	@Override
 	public int compareTo(Entry<Hypercube, Hyperchain> o) {
 		getKey().comparator().compare(o.getValue(), getValue());
@@ -81,42 +81,30 @@ public final class Haploid extends ScrewNut<Hyperchain, Hypercube> {
 	}
 	@Override
 	public void event(Object sender, EventArgs e) {
-		super.event(sender, e); 
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof Hypercube) {
-					Hypercube entry = (Hypercube) e.getSource();
-					putKey(entry, (Hyperchain) entry.getChild());
-				}
-				break;
-			default:
-				break;
+		super.event(sender, e);
+		switch (e.getCommand()) {
+		case LISTEN:
+			if(e.getSource() instanceof Haploid) {
+				Haploid entry = (Haploid) e.getSource();
+				entry.permuteChild(call(), get());
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Haploid) {
-					comparator().compare((Haploid) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Haploid) {
-					Haploid entry = (Haploid) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case TRANSFER:
+			if(e.getSource() instanceof Haploid) {
+				Haploid entry = (Haploid) e.getSource();
+				entry.release();
 			}
+			break;
+		default:
+			break;
 		}
 	}
-	public synchronized void run() {
-		Enumerator<Hyperchain> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

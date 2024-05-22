@@ -1,8 +1,7 @@
 package org.xmlrobot.time;
 
-import java.util.Iterator;
-
 import org.xmlrobot.Parity;
+import org.xmlrobot.numbers.Enumerator;
 
 /**
  * <tt>
@@ -218,9 +217,9 @@ public abstract class Recurrence
 
 	@Override
 	public boolean hasParent(K parent) {
-		Iterator<K> it = iterator();
-		while(it.hasNext())  {
-			if(it.next() == parent) {
+		Enumerator<K> it = enumerator();
+		while(it.hasMoreElements())  {
+			if(it.nextElement() == parent) {
 				return true;
 			}
 		}
@@ -228,9 +227,9 @@ public abstract class Recurrence
 	}
 	@Override
 	public boolean releaseParent(K parent) {
-		Iterator<K> it = iterator();
-		while(it.hasNext()) {
-			if(it.next() == parent) {
+		Enumerator<K> it = enumerator();
+		while(it.hasMoreElements()) {
+			if(it.nextElement() == parent) {
 				it.remove();
 				return true;
 			}
@@ -246,27 +245,27 @@ public abstract class Recurrence
 	}
 	@Override
 	public boolean hasAllParents(K parent) {
-		Iterator<K> it = parent.iterator();
-		while(it.hasNext())
-			if(!hasParent(it.next()))
+		Enumerator<K> it = parent.enumerator();
+		while(it.hasMoreElements())
+			if(!hasParent(it.nextElement()))
 				return false;
 		return false;
 	}
 	@Override
 	public boolean addAllParents(K parent) {
 		boolean modified = false;
-		Iterator<K> it = parent.iterator();
-		while (it.hasNext())
-			if (addParent(it.next()))
+		Enumerator<K> it = parent.enumerator();
+		while (it.hasMoreElements())
+			if (addParent(it.nextElement()))
 				modified = true;
 		return modified;
 	}
 	@Override
 	public boolean releaseAllParents(K parent) {
 		boolean modified = false;
-		Iterator<K> it = iterator();
-        while (it.hasNext()) {
-            if (parent.hasParent(it.next())) {
+		Enumerator<K> it = enumerator();
+        while (it.hasMoreElements()) {
+            if (parent.hasParent(it.nextElement())) {
                 it.remove();
                 modified = true;
             }
@@ -276,9 +275,9 @@ public abstract class Recurrence
 	@Override
 	public boolean retainAllParents(K parent) {
 		boolean modified = false;
-		Iterator<K> it = iterator();
-		while (it.hasNext()) {
-			if (!parent.hasParent(it.next())) {
+		Enumerator<K> it = enumerator();
+		while (it.hasMoreElements()) {
+			if (!parent.hasParent(it.nextElement())) {
 				it.remove();
 				modified = true;
 			}

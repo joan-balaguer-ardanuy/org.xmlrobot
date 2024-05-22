@@ -67,6 +67,30 @@ public abstract class Hyperspace
 		child.getChild().getChild().setParent(child);
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public K clone() {
+		try {
+			K k = (K) super.clone();
+			V v = (V) getChild().getClass().getConstructor().newInstance();
+			k.setParent(k);
+			v.setParent(v);
+			k.setChild(v);
+			v.setChild(k);
+			return k;
+		} catch (Throwable t) {
+			throw new Error("org.xmlrobot.Hyperspace: clone exception.", t);
+		}
+	}
+
+	@Override
+	public void release() {
+		call().setParent(getParent());
+		get().setParent(getParent().getChild());
+		put(getParent().put(call()));
+		setParent(call());
+		getChild().setParent(getChild());
+	}
 	@Override
 	public abstract Transmitter<K,V> comparator();
 	
@@ -74,7 +98,7 @@ public abstract class Hyperspace
 	 * Information generator class. Implements {@code TimeListener.Transmitter}.
 	 * @author joan
 	 */
-	public abstract class Generator implements TimeListener.Transmitter<K, V> {
+	public abstract class Generator implements TimeListener.Transmitter<K,V> {
 		
 		V source;
 		

@@ -2,8 +2,10 @@ package org.xmlrobot.numbers;
 
 import java.io.Serializable;
 
-public class AbstractNumber<K extends Number<K>>
-	implements Number<K>, Serializable {
+import org.xmlrobot.time.Recurrent;
+
+public class AbstractNumber<K extends Recurrent<K>>
+	implements Recurrent<K>, Serializable {
 	
 	private static final long serialVersionUID = -2189724676292955895L;
 

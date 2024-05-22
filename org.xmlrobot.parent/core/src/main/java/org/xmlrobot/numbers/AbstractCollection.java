@@ -18,11 +18,11 @@ public class AbstractCollection<E>
 	
 	@Override
 	@XmlTransient
-	public E getEntry() {
+	public E getElement() {
 		return entry;
 	}
 	@Override
-	public E setEntry(E entry) {
+	public E setElement(E entry) {
 		if(entry == null)
 			throw new NullPointerException();
 		E old = this.entry;
@@ -36,8 +36,8 @@ public class AbstractCollection<E>
 	
 	public AbstractCollection(Collection<E> parent, E entry) {
 		super(parent);
-		setEntry(entry);
-		getRoot().setEntry(entry);
+		setElement(entry);
+		getRoot().setElement(entry);
 	}
 
 	@Deprecated
@@ -172,7 +172,7 @@ public class AbstractCollection<E>
 			if(c == AbstractCollection.this)
 				hasNext = false;
 			else hasNext = true;
-			return c.getEntry();
+			return c.getElement();
 		}
 		@Override
 		public void remove() {
@@ -218,7 +218,7 @@ public class AbstractCollection<E>
 			if(c == AbstractCollection.this)
 				hasNext = false;
 			else hasNext = true;
-			return c.getEntry();
+			return c.getElement();
 		}
 		@Override
 		public void remove() {

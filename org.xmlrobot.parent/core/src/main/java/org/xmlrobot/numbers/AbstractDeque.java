@@ -34,7 +34,7 @@ public class AbstractDeque<E>
 	public E removeLast() {
 		Collection<E> past = call();
 		past.release();
-		return past.getEntry();
+		return past.getElement();
 	}
 	@Override
 	public E getFirst() {
@@ -44,7 +44,7 @@ public class AbstractDeque<E>
 	public E getLast() {
 		if(isEmpty())
 			throw new NoSuchElementException();
-		return call().getEntry();
+		return call().getElement();
 	}
 	@Override
 	public boolean removeFirstOccurrence(Object o) {
@@ -87,7 +87,7 @@ public class AbstractDeque<E>
 			return null;
 		Collection<E> past = call();
 		past.release();
-		return past.getEntry();
+		return past.getElement();
 	}
 	@Override
 	public E peekFirst() {
@@ -97,7 +97,7 @@ public class AbstractDeque<E>
 	public E peekLast() {
 		if(isEmpty())
 			return null;
-		return call().getEntry();
+		return call().getElement();
 	}
 	@Override
 	public Iterator<E> descendingIterator() {

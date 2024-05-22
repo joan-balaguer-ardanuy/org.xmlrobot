@@ -7,7 +7,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.xmlrobot.numbers.Enumerable;
 import org.xmlrobot.time.Recursive;
 
 /**
@@ -75,7 +74,7 @@ import org.xmlrobot.time.Recursive;
  *
  */
 public interface Entry<K,V>
-	extends Recursive<Entry<K,V>,Entry<V,K>>, Enumerable<K>, java.util.Map.Entry<K,V> {
+	extends Recursive<Entry<K,V>,Entry<V,K>>, java.util.Map.Entry<K,V> {
 
 	K getKey();
     K setKey(K key);

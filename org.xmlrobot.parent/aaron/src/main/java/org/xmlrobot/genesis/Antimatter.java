@@ -18,8 +18,9 @@ public final class Antimatter extends ScrewNut<Interstellar,Supercluster> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(Entry<Interstellar,Supercluster> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<Entry<Interstellar,Supercluster>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -74,7 +75,7 @@ public final class Antimatter extends ScrewNut<Interstellar,Supercluster> {
 	
 	@Override
 	public int compareTo(Entry<Supercluster, Interstellar> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		Entry<MilkyWay,Andromeda> entry = getKey().comparator().getSource();
 		comparator((Supercluster) entry, (Interstellar) entry.getChild());
 		return 0;
@@ -82,41 +83,30 @@ public final class Antimatter extends ScrewNut<Interstellar,Supercluster> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof Supercluster) {
-					Supercluster key = (Supercluster) e.getSource();
-					putKey(key, (Interstellar) key.getChild());
-				}
-				break;
-			default:
-				break;
+		switch (e.getCommand()) {
+		case LISTEN:
+			if(e.getSource() instanceof Antimatter) {
+				Antimatter entry = (Antimatter) e.getSource();
+				entry.permuteChild(call(), get());	
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Antimatter) {
-					comparator().compare((Antimatter) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Antimatter) {
-					Antimatter entry = (Antimatter) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case TRANSFER:
+			if(e.getSource() instanceof Antimatter) {
+				Antimatter entry = (Antimatter) e.getSource();
+				entry.release();
 			}
+			break;
+		default:
+			break;
 		}
 	}
-	public synchronized void run() {
-		Enumerator<Interstellar> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	@Override
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

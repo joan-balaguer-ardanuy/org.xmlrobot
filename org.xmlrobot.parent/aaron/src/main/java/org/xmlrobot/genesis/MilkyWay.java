@@ -17,8 +17,9 @@ public final class MilkyWay extends Screw<Sun,AlphaCentauri> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(org.xmlrobot.Entry<Sun,AlphaCentauri> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<org.xmlrobot.Entry<Sun,AlphaCentauri>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -73,7 +74,7 @@ public final class MilkyWay extends Screw<Sun,AlphaCentauri> {
 	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<AlphaCentauri,Sun> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		org.xmlrobot.Entry<Gliese, Earth> entry = getKey().comparator().getSource();
 		comparator((AlphaCentauri) entry, (Sun) entry.getChild());
 		return 0;
@@ -81,42 +82,33 @@ public final class MilkyWay extends Screw<Sun,AlphaCentauri> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof AlphaCentauri) {
-					AlphaCentauri key = (AlphaCentauri) e.getSource();
-					putKey(key, (Sun) key.getChild());
+		switch (e.getCommand()) {
+		case GENESIS:
+			if(sender.equals(getKey())) {
+				if (e.getSource() instanceof Sun) {
+					Sun entry = (Sun) e.getSource();
+					System.out.println("Sun");
+					putValue(entry, (AlphaCentauri) entry.getChild());
 				}
-				break;
-			default:
-				break;
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof MilkyWay) {
-					comparator().compare((MilkyWay) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof MilkyWay) {
-					MilkyWay entry = (MilkyWay) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case LISTEN:
+			if(e.getSource() instanceof MilkyWay) {
+				comparator().compare((MilkyWay) e.getSource(), getStem());
+				sendEvent(new EventArgs(comparator().getSource()));
 			}
+			break;
+		default:
+			break;
 		}
 	}
 	@Override
-	public synchronized void run() {
-		Enumerator<Sun> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

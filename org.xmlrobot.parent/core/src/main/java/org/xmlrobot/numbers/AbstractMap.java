@@ -21,20 +21,20 @@ public abstract class AbstractMap<K,V>
 	
 	@Override
 	public K getKey() {
-		return getEntry().getKey();
+		return getElement().getKey();
 	}
 	@Override
 	public K setKey(K key) {
-		return getEntry().setKey(key);
+		return getElement().setKey(key);
 	}
 	
 	@Override
 	public V getValue() {
-		return getEntry().getValue();
+		return getElement().getValue();
 	}
 	@Override
 	public V setValue(V value) {
-		return getEntry().setValue(value);
+		return getElement().setValue(value);
 	}
 	
 	/**

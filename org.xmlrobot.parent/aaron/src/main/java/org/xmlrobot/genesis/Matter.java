@@ -16,8 +16,9 @@ public final class Matter extends Screw<Supercluster,Interstellar> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(org.xmlrobot.Entry<Supercluster,Interstellar> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<org.xmlrobot.Entry<Supercluster,Interstellar>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -72,7 +73,7 @@ public final class Matter extends Screw<Supercluster,Interstellar> {
 	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<Interstellar,Supercluster> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		org.xmlrobot.Entry<Andromeda, MilkyWay> entry = getKey().comparator().getSource();
 		comparator((Interstellar) entry, (Supercluster) entry.getChild());
 		return 0;
@@ -80,42 +81,33 @@ public final class Matter extends Screw<Supercluster,Interstellar> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof Interstellar) {
-					Interstellar key = (Interstellar) e.getSource();
-					putKey(key, (Supercluster) key.getChild());
+		switch (e.getCommand()) {
+		case GENESIS:
+			if(sender.equals(getKey())) {
+				if (e.getSource() instanceof Supercluster) {
+					Supercluster entry = (Supercluster) e.getSource();
+					System.out.println("Supercluster");
+					putValue(entry, (Interstellar) entry.getChild());
 				}
-				break;
-			default:
-				break;
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Matter) {
-					comparator().compare((Matter) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Matter) {
-					Matter entry = (Matter) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case LISTEN:
+			if(e.getSource() instanceof Matter) {
+				comparator().compare((Matter) e.getSource(), getStem());
+				sendEvent(new EventArgs(comparator().getSource()));
 			}
+			break;
+		default:
+			break;
 		}
 	}
 	@Override
-	public synchronized void run() {
-		Enumerator<Supercluster> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

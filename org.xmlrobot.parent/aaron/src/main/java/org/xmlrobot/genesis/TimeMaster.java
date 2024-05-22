@@ -18,8 +18,9 @@ public final class TimeMaster extends ScrewNut<BigBong,BigBang> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(Entry<BigBong,BigBang> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<Entry<BigBong,BigBang>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -75,7 +76,7 @@ public final class TimeMaster extends ScrewNut<BigBong,BigBang> {
 	
 	@Override
 	public int compareTo(Entry<BigBang, BigBong> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		Entry<Matter,Antimatter> entry = getKey().comparator().getSource();
 		comparator((BigBang) entry, (BigBong) entry.getChild());
 		return 0;
@@ -83,41 +84,30 @@ public final class TimeMaster extends ScrewNut<BigBong,BigBang> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof BigBang) {
-					BigBang key = (BigBang) e.getSource();
-					putKey(key, (BigBong) key.getChild());
-				}
-				break;
-			default:
-				break;
+		switch (e.getCommand()) {
+		case LISTEN:
+			if(e.getSource() instanceof TimeMaster) {
+				TimeMaster entry = (TimeMaster) e.getSource();
+				entry.permuteChild(call(), get());	
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof TimeMaster) {
-					comparator().compare((TimeMaster) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof TimeMaster) {
-					TimeMaster entry = (TimeMaster) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case TRANSFER:
+			if(e.getSource() instanceof TimeMaster) {
+				TimeMaster entry = (TimeMaster) e.getSource();
+				entry.release();
 			}
+			break;
+		default:
+			break;
 		}
 	}
-	public synchronized void run() {
-		Enumerator<BigBong> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	@Override
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

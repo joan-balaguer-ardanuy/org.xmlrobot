@@ -3,7 +3,6 @@
  */
 package org.xmlrobot;
 
-import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -118,15 +117,10 @@ public abstract class ScrewDriver<K,V>
 	}
 	
 	@Override
-	public Entry<K,V> clone() {
-		return (Entry<K,V>) super.clone();
-	}
-	
-	@Override
 	public V getValue(Object key) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				return entry.getValue();
 			}
@@ -139,9 +133,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public Entry<K,V> getParentByKey(K key) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				return entry;
 			}
@@ -154,9 +148,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public V getValueOrDefault(K key, V defaultValue) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				return entry.getValue();
 			}
@@ -169,9 +163,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public boolean containsKey(Object key) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				return true;
 			}
@@ -185,9 +179,9 @@ public abstract class ScrewDriver<K,V>
 	@Override
 	public int indexOfKey(K key) {
 		int i = 0;
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			i++;
 			if(key == entry.getKey()) {
 				return i;
@@ -210,9 +204,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public Entry<K,V> putValueIfAbsent(K key, V value) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				return null;
 			}
@@ -225,9 +219,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public V removeValue(K key) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext()) {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements()) {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				entry.release();
 				return entry.getValue();
@@ -241,9 +235,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public boolean removeValue(K key, V value) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				if(value == entry.getValue()) {
 					entry.release();
@@ -260,9 +254,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public V replaceValue(K key, V value) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				return entry.setValue(value);
 			}
@@ -275,9 +269,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public boolean replaceValue(K key, V oldValue, V newValue) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				if(oldValue == entry.getValue()) {
 					entry.setValue(newValue);
@@ -294,9 +288,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public void replaceAllValues(BiFunction<? super K, ? super V, ? extends V> function) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			entry.setValue(function.apply(entry.getKey(), entry.getValue()));
 		}
 	}
@@ -306,9 +300,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public V computeValue(K key, BiFunction<? super K,? super V,? extends V> remappingFunction) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				V newValue;
 				if((newValue = remappingFunction.apply(key, entry.getValue())) == null) {
@@ -326,9 +320,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public V computeValueIfAbsent(K key, Function<? super K,? extends V> mappingFunction) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				return null;
 			}
@@ -348,9 +342,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public V computeValueIfPresent(K key, BiFunction<? super K,? super V,? extends V> remappingFunction) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				V newValue;
 				V oldValue = null;
@@ -370,9 +364,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public void forEachValue(BiConsumer<? super K, ? super V> action) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			action.accept(entry.getKey(), entry.getValue());	
 		}
 	}
@@ -382,9 +376,9 @@ public abstract class ScrewDriver<K,V>
 	}
 	@Override
 	public V mergeValue(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
-		Iterator<Entry<K,V>> en = iterator();
-		while(en.hasNext())  {
-			Entry<K,V> entry = en.next();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())  {
+			Entry<K,V> entry = en.nextElement();
 			if(key == entry.getKey()) {
 				return entry.setValue(remappingFunction.apply(entry.getValue(), value));
 			}
@@ -394,11 +388,6 @@ public abstract class ScrewDriver<K,V>
 	@Override
 	public K mergeKey(V value, K key, BiFunction<? super K, ? super K, ? extends K> remappingFunction) {
 		return getChild().mergeValue(value, key, remappingFunction);
-	}
-
-	@Override
-	public Enumerator<K> enumerator() {
-		return new KeyEnumerator(getParent());
 	}
 	
 	/**
@@ -433,56 +422,6 @@ public abstract class ScrewDriver<K,V>
 		@SuppressWarnings("unchecked")
 		public Grid(V value, K key) {
 			super(instance(getChild().getClass(), value, key));
-		}
-	}
-	public class KeyEnumerator implements Enumerator<K> {
-
-		/**
-		 * The current time-listener.
-		 */
-		Entry<K,V> current;
-
-		/**
-		 * The next time-listener.
-		 */
-		Entry<K,V> next;
-
-		/**
-		 * If this recursor has next time-listener.
-		 */
-		boolean hasNext;
-
-		public KeyEnumerator(Entry<K,V> parent) {
-			next = current = parent;
-			hasNext = true;
-		}
-
-		@Override
-		public boolean hasMoreElements() {
-			return hasNext;
-		}
-
-		@Override
-		public K nextElement() {
-			Entry<K,V> c = next;
-			current = c;
-			next = c.getParent();
-			if (c == ScrewDriver.this)
-				hasNext = false;
-			else
-				hasNext = true;
-			return c.getKey();
-		}
-
-		@Override
-		public void remove() {
-			Entry<K,V> k = next;
-			current.release();
-			if (!k.isEmpty()) {
-				current = k;
-				next = k.getParent();
-			} else
-				hasNext = false;
 		}
 	}
 }

@@ -72,7 +72,8 @@ public abstract class Child
 
 	@Override
 	public synchronized void run() {
-		execute(getChild());
+		if(!isEmpty())
+			execute(getChild());
 		super.run();
 	}
 	@Override

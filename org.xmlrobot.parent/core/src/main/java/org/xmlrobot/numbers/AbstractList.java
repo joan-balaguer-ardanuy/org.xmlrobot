@@ -189,7 +189,7 @@ public class AbstractList<E>
 				hasMoreEntries = false;
 			else
 				hasMoreEntries = true;
-			return c.getEntry();
+			return c.getElement();
 		}
 
 		@Override
@@ -207,7 +207,7 @@ public class AbstractList<E>
 				hasMoreEntries = false;
 			else
 				hasMoreEntries = true;
-			return c.getEntry();
+			return c.getElement();
 		}
 
 		@Override
@@ -224,7 +224,7 @@ public class AbstractList<E>
 
 		@Override
 		public void set(E e) {
-			current.setEntry(e);
+			current.setElement(e);
 		}
 
 		@SuppressWarnings("unchecked")

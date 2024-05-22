@@ -25,7 +25,7 @@ public abstract class AbstractQueue<E>
 			throw new NoSuchElementException();
 		Collection<E> parent = getParent();
 		parent.release();
-		return parent.getEntry();
+		return parent.getElement();
 	}
 	@Override
 	public E poll() {
@@ -33,18 +33,18 @@ public abstract class AbstractQueue<E>
 			return null;
 		Collection<E> parent = getParent();
 		parent.release();
-		return parent.getEntry();
+		return parent.getElement();
 	}
 	@Override
 	public E element() {
 		if(isEmpty())
 			throw new NoSuchElementException();
-		return getParent().getEntry();
+		return getParent().getElement();
 	}
 	@Override
 	public E peek() {
 		if(isEmpty())
 			return null;
-		return getParent().getEntry();
+		return getParent().getElement();
 	}
 }

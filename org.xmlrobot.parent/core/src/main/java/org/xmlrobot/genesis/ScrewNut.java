@@ -11,6 +11,7 @@ import java.util.Objects;
 import org.xmlrobot.Entry;
 import org.xmlrobot.Parity;
 import org.xmlrobot.ScrewDriver;
+import org.xmlrobot.numbers.Enumerator;
 
 /**
  * @author joan
@@ -92,6 +93,25 @@ public abstract class ScrewNut<K,V>
 		return (DNA<V,K>) getChild();
 	}
 	
+	@Override
+	public Iterator<Entry<K,V>> iterator() {
+		Enumerator<Entry<K,V>> en = enumerator();
+		return new Iterator<Entry<K,V>>() {
+			@Override
+			public boolean hasNext() {
+				return en.hasMoreElements();
+			}
+			@Override
+			public Entry<K,V> next() {
+				return en.nextElement();
+			}
+			@Override
+			public void remove() {
+				en.remove();
+			}
+		};
+	}
+	
 	public void clear() {
 		release();
 	}
@@ -99,15 +119,15 @@ public abstract class ScrewNut<K,V>
 	@Override
 	public boolean contains(Object o) {
 		Objects.requireNonNull(o);
-		Iterator<Entry<K,V>> it = iterator();
-		while (it.hasNext())
-            if (o.equals(it.next()))
+		Enumerator<Entry<K,V>> en = enumerator();
+		while (en.hasMoreElements())
+            if (o.equals(en.nextElement()))
                 return true;
         return false;
 	}
 	
 	@Override
-	public boolean add(Entry<K, V> e) {
+	public boolean add(Entry<K,V> e) {
 		Objects.requireNonNull(e);
 		submitChild(e, e.getChild());
 		return true;
@@ -116,10 +136,10 @@ public abstract class ScrewNut<K,V>
 	@Override
 	public boolean remove(Object o) {
 		Objects.requireNonNull(o);
-		Iterator<Entry<K,V>> it = iterator();
-		while (it.hasNext()) {
-			if (o.equals(it.next())) {
-				it.remove();
+		Enumerator<Entry<K,V>> en = enumerator();
+		while (en.hasMoreElements()) {
+			if (o.equals(en.nextElement())) {
+				en.remove();
 				return true;
 			}
 		}
@@ -135,9 +155,9 @@ public abstract class ScrewNut<K,V>
 	@Override
 	public boolean addAll(Collection<? extends Entry<K, V>> c) {
 		boolean modified = false;
-		Iterator<Entry<K,V>> it = iterator();
-		while(it.hasNext())
-			if (add(it.next()))
+		Enumerator<Entry<K,V>> en = enumerator();
+		while(en.hasMoreElements())
+			if (add(en.nextElement()))
 				modified = true;
 		return modified;
 	}
@@ -145,9 +165,9 @@ public abstract class ScrewNut<K,V>
 	public boolean retainAll(Collection<?> c) {
 		Objects.requireNonNull(c);
 		boolean modified = false;
-		Iterator<Entry<K,V>> en = iterator();
-		while (en.hasNext()) {
-			if (!c.contains(en.next())) {
+		Enumerator<Entry<K,V>> en = enumerator();
+		while (en.hasMoreElements()) {
+			if (!c.contains(en.nextElement())) {
 				en.remove();
 				modified = true;
 			}
@@ -158,9 +178,9 @@ public abstract class ScrewNut<K,V>
 	public boolean removeAll(Collection<?> c) {
 		Objects.requireNonNull(c);
 		boolean modified = false;
-		Iterator<Entry<K,V>> it = iterator();
-		while (it.hasNext()) {
-			if (c.contains(it.next())) {
+		Enumerator<Entry<K,V>> it = enumerator();
+		while (it.hasMoreElements()) {
+			if (c.contains(it.nextElement())) {
 				it.remove();
 				modified = true;
 			}
@@ -170,9 +190,9 @@ public abstract class ScrewNut<K,V>
 	@Deprecated
 	public int size() {
 		int i = 0;
-		Iterator<?> it = iterator();
-		while(it.hasNext()) {
-			it.next();
+		Enumerator<?> en = enumerator();
+		while(en.hasMoreElements()) {
+			en.nextElement();
 			i++;
 		}
 		return i;
@@ -182,13 +202,13 @@ public abstract class ScrewNut<K,V>
 	public Object[] toArray() {
 		// Estimate size of array; be prepared to see more or fewer elements
         Object[] r = new Object[size()];
-        Iterator<Entry<K,V>> it = iterator();
+        Enumerator<Entry<K,V>> en = enumerator();
         for (int i = 0; i < r.length; i++) {
-            if (! it.hasNext()) // fewer elements than expected
+            if (!en.hasMoreElements()) // fewer elements than expected
                 return Arrays.copyOf(r, i);
-            r[i] = it.next();
+            r[i] = en.nextElement();
         }
-        return it.hasNext() ? finishToArray(r, it) : r;
+        return en.hasMoreElements() ? finishToArray(r, en) : r;
 	}
 
 	@Deprecated
@@ -199,10 +219,10 @@ public abstract class ScrewNut<K,V>
         T[] r = a.length >= size ? a :
                   (T[])java.lang.reflect.Array
                   .newInstance(a.getClass().getComponentType(), size);
-        Iterator<Entry<K,V>> it = iterator();
+        Enumerator<Entry<K,V>> en = enumerator();
 
         for (int i = 0; i < r.length; i++) {
-            if (! it.hasNext()) { // fewer elements than expected
+            if (! en.hasMoreElements()) { // fewer elements than expected
                 if (a == r) {
                     r[i] = null; // null-terminate
                 } else if (a.length < i) {
@@ -215,10 +235,10 @@ public abstract class ScrewNut<K,V>
                 }
                 return a;
             }
-            r[i] = (T)it.next();
+            r[i] = (T)en.nextElement();
         }
         // more elements than expected
-        return it.hasNext() ? finishToArray(r, it) : r;
+        return en.hasMoreElements() ? finishToArray(r, en) : r;
 	}
 	 /**
      * Reallocates the array being used within toArray when the iterator
@@ -232,9 +252,9 @@ public abstract class ScrewNut<K,V>
      */
 	@Deprecated
     @SuppressWarnings("unchecked")
-    private static <T> T[] finishToArray(T[] r, Iterator<?> it) {
+    private static <T> T[] finishToArray(T[] r, Enumerator<?> en) {
         int i = r.length;
-        while (it.hasNext()) {
+        while (en.hasMoreElements()) {
             int cap = r.length;
             if (i == cap) {
                 int newCap = cap + (cap >> 1) + 1;
@@ -243,7 +263,7 @@ public abstract class ScrewNut<K,V>
                     newCap = hugeCapacity(cap + 1);
                 r = Arrays.copyOf(r, newCap);
             }
-            r[i++] = (T)it.next();
+            r[i++] = (T)en.nextElement();
         }
         // trim if overallocated
         return (i == r.length) ? r : Arrays.copyOf(r, i);

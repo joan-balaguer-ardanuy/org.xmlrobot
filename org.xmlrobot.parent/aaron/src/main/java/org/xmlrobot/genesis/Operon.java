@@ -16,8 +16,9 @@ public final class Operon extends Screw<Ribosome,Tetraploid> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(org.xmlrobot.Entry<Ribosome,Tetraploid> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<org.xmlrobot.Entry<Ribosome,Tetraploid>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -72,7 +73,7 @@ public final class Operon extends Screw<Ribosome,Tetraploid> {
 	
 	@Override
 	public int compareTo(org.xmlrobot.Entry<Tetraploid, Ribosome> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		org.xmlrobot.Entry<Diploid, Chromosome> entry = getKey().comparator().getSource();
 		comparator((Tetraploid) entry, (Ribosome) entry.getChild());
 		return 0;
@@ -80,42 +81,33 @@ public final class Operon extends Screw<Ribosome,Tetraploid> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof Tetraploid) {
-					Tetraploid key = (Tetraploid) e.getSource();
-					putKey(key, (Ribosome) key.getChild());
+		switch (e.getCommand()) {
+		case GENESIS:
+			if(sender.equals(getKey())) {
+				if (e.getSource() instanceof Ribosome) {
+					Ribosome entry = (Ribosome) e.getSource();
+					System.out.println("Ribosome");
+					putValue(entry, (Tetraploid) entry.getChild());
 				}
-				break;
-			default:
-				break;
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Operon) {
-					comparator().compare((Operon) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Operon) {
-					Operon entry = (Operon) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case LISTEN:
+			if(e.getSource() instanceof Operon) {
+				comparator().compare((Operon) e.getSource(), getStem());
+				sendEvent(new EventArgs(comparator().getSource()));
 			}
+			break;
+		default:
+			break;
 		}
 	}
 	@Override
-	public synchronized void run() {
-		Enumerator<Ribosome> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }

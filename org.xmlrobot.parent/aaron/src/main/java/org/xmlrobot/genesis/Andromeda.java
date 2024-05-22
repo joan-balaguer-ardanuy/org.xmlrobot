@@ -18,8 +18,9 @@ public final class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 	@Override
 	public String getName() {
 		StringBuilder stringBuilder = new StringBuilder();
-		for(Entry<AlphaCentauri,Sun> entry : this) {
-			stringBuilder.append(entry.getKey().getName());
+		Enumerator<Entry<AlphaCentauri,Sun>> en = enumerator();
+		while(en.hasMoreElements()) {
+			stringBuilder.append(en.nextElement().getKey().getName());
 		}
 		return stringBuilder.toString();
 	}
@@ -74,7 +75,7 @@ public final class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 	
 	@Override
 	public int compareTo(Entry<Sun, AlphaCentauri> o) {
-		getKey().comparator().compare(getKey(), o.getKey());
+		getKey().comparator().compare(o.getValue(), getValue());
 		Entry<Earth,Gliese> entry = getKey().comparator().getSource();
 		comparator((Sun) entry, (AlphaCentauri) entry.getChild());
 		return 0;
@@ -82,41 +83,30 @@ public final class Andromeda extends ScrewNut<AlphaCentauri,Sun> {
 	@Override
 	public void event(Object sender, EventArgs e) {
 		super.event(sender, e);
-		if(sender.equals(getKey())) {
-			switch (e.getCommand()) {
-			case GENESIS:
-				if(e.getSource() instanceof Sun) {
-					Sun key = (Sun) e.getSource();
-					putKey(key, (AlphaCentauri) key.getChild());
-				}
-				break;
-			default:
-				break;
+		switch (e.getCommand()) {
+		case LISTEN:
+			if(e.getSource() instanceof Andromeda) {
+				Andromeda entry = (Andromeda) e.getSource();
+				entry.permuteChild(call(), get());	
 			}
-		} else {
-			switch (e.getCommand()) {
-			case LISTEN:
-				if(e.getSource() instanceof Andromeda) {
-					comparator().compare((Andromeda) e.getSource(), getStem());
-					sendEvent(new EventArgs(comparator().getSource()));
-				}
-				break;
-			case TRANSFER:
-				if(e.getSource() instanceof Andromeda) {
-					Andromeda entry = (Andromeda) e.getSource();
-					entry.release();
-				}
-				break;
-			default:
-				break;
+			break;
+		case TRANSFER:
+			if(e.getSource() instanceof Andromeda) {
+				Andromeda entry = (Andromeda) e.getSource();
+				entry.release();
 			}
+			break;
+		default:
+			break;
 		}
 	}
-	public synchronized void run() {
-		Enumerator<AlphaCentauri> en = enumerator();
-		while(en.hasMoreElements()) {
-			en.nextElement().run();
-		}
+	@Override
+	public void run() {
+		org.xmlrobot.Entry<?,?> key = getKey();
+		do {
+			key = key.getParent();
+			key.run();
+		} while (key != getKey());
 		super.run();
 	}
 }
