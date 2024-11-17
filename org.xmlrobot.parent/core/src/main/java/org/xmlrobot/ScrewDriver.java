@@ -117,6 +117,11 @@ public abstract class ScrewDriver<K,V>
 	}
 	
 	@Override
+	public Entry<K,V> clone() {
+		return (Entry<K,V>) super.clone();
+	}
+	
+	@Override
 	public V getValue(Object key) {
 		Enumerator<Entry<K,V>> en = enumerator();
 		while(en.hasMoreElements())  {

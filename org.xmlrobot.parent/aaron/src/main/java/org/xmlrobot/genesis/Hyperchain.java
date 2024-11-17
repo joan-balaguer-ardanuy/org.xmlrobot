@@ -82,10 +82,10 @@ public final class Hyperchain extends ScrewNut<Integer,Character> {
 		default:
 			if(getKey() > o.getValue()) {
 				comparator(getValue(), getKey());
-				return -1;
+				return 1;
 			} else {
 				comparator(o.getKey(), o.getValue());
-				return 1;
+				return -1;
 			}
 		}
 	}

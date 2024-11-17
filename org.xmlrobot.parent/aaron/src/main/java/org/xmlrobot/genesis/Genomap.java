@@ -74,6 +74,30 @@ public final class Genomap extends Screw<Hypercube, Hyperchain> {
 	}
 	
 	@Override
+	public org.xmlrobot.Entry<Hypercube, Hyperchain> clone() {
+		org.xmlrobot.Entry<Hypercube, Hyperchain> entry = super.clone();
+		org.xmlrobot.Entry<Character, Integer> root = getKey().clone();
+		
+		root.setRoot(root);
+		root.setStem(root.getChild());
+		root.addEventListener(entry);
+		root.getChild().addEventListener(entry.getChild());
+		
+		org.xmlrobot.Entry<Character, Integer> key = getKey().getParent();
+		while(key != getKey()) {
+			org.xmlrobot.Entry<Character, Integer> parent = key.clone();
+			parent.setRoot(root);
+			parent.setStem(root.getChild());
+			root.submitChild(parent, parent.getChild());
+			key = key.getParent();
+		}
+		
+		entry.setKey((Hypercube) root);
+		entry.setValue((Hyperchain) root.getChild());
+		
+		return entry;
+	}
+	@Override
 	public int compareTo(org.xmlrobot.Entry<Hyperchain,Hypercube> o) {
 		getKey().comparator().compare(o.getValue(), getValue());
 		org.xmlrobot.Entry<Integer,Character> entry = getKey().comparator().getSource();

@@ -66,22 +66,6 @@ public abstract class Hyperspace
 		child.getChild().setParent(parent.getChild().getChild());
 		child.getChild().getChild().setParent(child);
 	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public K clone() {
-		try {
-			K k = (K) super.clone();
-			V v = (V) getChild().getClass().getConstructor().newInstance();
-			k.setParent(k);
-			v.setParent(v);
-			k.setChild(v);
-			v.setChild(k);
-			return k;
-		} catch (Throwable t) {
-			throw new Error("org.xmlrobot.Hyperspace: clone exception.", t);
-		}
-	}
 
 	@Override
 	public void release() {

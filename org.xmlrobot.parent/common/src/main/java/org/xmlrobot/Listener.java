@@ -29,4 +29,6 @@ public interface Listener
 	 * @param e {@link EventArgs} the event arguments
 	 */
 	void event(Object sender, EventArgs e);
+	
+	Listener clone();
 }

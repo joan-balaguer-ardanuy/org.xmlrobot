@@ -69,6 +69,13 @@ public final class Hypercube extends Screw<Character,Integer> {
 	}
 
 	@Override
+	public org.xmlrobot.Entry<Character, Integer> clone() {
+		org.xmlrobot.Entry<Character, Integer> entry = super.clone();
+		entry.setKey(getKey());
+		entry.setValue(getValue());
+		return entry;
+	}
+	@Override
 	public int compareTo(org.xmlrobot.Entry<Integer, Character> o) {
 		switch (getParity()) {
 		case XX:
@@ -82,10 +89,10 @@ public final class Hypercube extends Screw<Character,Integer> {
 		default:
 			if (getValue() < o.getKey()) {
 				comparator(getValue(), getKey());
-				return 1; 
+				return -1; 
 			} else {
 				comparator(o.getKey(), o.getValue());
-				return -1;
+				return 1;
 			}
 		}
 	}

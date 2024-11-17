@@ -50,6 +50,10 @@ public class EventArgs extends EventObject implements Listener {
 		return (Listener) super.getSource();
 	}
 	@Override
+	public Listener clone() {
+		return getSource().clone();
+	}
+	@Override
 	public void run() {
 		getSource().run();
 	}

@@ -81,6 +81,9 @@ public interface Entry<K,V>
 
     V getValue();
     V setValue(V value);
+
+    @Override
+    Entry<K,V> clone();
     
     V getValue(Object key);
     K getKey(Object value);

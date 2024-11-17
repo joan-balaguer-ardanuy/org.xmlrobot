@@ -59,6 +59,9 @@ public abstract class XML implements Message {
 	}
 	
 	@Override
+	public abstract Object clone();
+	
+	@Override
 	public final boolean equals(Object obj) {
 		return this == obj;
 	}

@@ -33,4 +33,6 @@ public interface Message extends Cloneable, Serializable {
 	 * @param parity {@link Parity}
 	 */
 	void setParity(Parity parity);
+	
+	Object clone();
 }

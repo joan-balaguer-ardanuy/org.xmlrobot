@@ -67,6 +67,8 @@ public interface TimeListener<K,V>
 	 * */
 	V setChild(V child);
 	
+	TimeListener<K,V> clone();
+	
 	/**
 	 * Returns the information transmitter of this time-listener
 	 * @return
