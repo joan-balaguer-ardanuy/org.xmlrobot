@@ -1,5 +1,6 @@
 package org.xmlrobot;
 
+import java.io.Serial;
 import java.util.EventObject;
 
 /**
@@ -9,12 +10,12 @@ import java.util.EventObject;
  * @author joan
  *
  */
-public class EventArgs extends EventObject implements Listener {
-
-	/**
-	 * 6347247597829991161L
-	 */
+public class EventArgs 
+	extends EventObject implements Listener {
+	
+	@Serial
 	private static final long serialVersionUID = 6347247597829991161L;
+	
 	@Override
 	public Order getCommand() {
 		return getSource().getCommand();

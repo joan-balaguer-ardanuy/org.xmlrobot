@@ -6,8 +6,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.xmlrobot.Entry;
 import org.xmlrobot.EventArgs;
-import org.xmlrobot.Parity;
 import org.xmlrobot.numbers.Enumerator;
+
+import org.xmlrobot.Parity;
 
 @XmlRootElement
 @XmlType(propOrder={"key", "value", "entry"})

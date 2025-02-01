@@ -3,8 +3,6 @@
  */
 package org.xmlrobot;
 
-import javax.xml.bind.annotation.XmlTransient;
-
 public abstract class Hyperspace
 	<K extends TimeListener<K,V>,V extends TimeListener<V,K>> 
 		extends Child<K,V>
@@ -16,7 +14,6 @@ public abstract class Hyperspace
 	private static final long serialVersionUID = 4428935997216883052L;
 
 	@Override
-	@XmlTransient
 	public Order getCommand() {
 		return super.getCommand();
 	}

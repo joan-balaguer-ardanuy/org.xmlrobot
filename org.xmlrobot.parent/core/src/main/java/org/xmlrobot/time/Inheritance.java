@@ -5,8 +5,9 @@ import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.xmlrobot.Parity;
 import org.xmlrobot.numbers.Enumerator;
+
+import org.xmlrobot.Parity;
 
 /**
  * <tt>

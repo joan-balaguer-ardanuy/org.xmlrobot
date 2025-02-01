@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
 
-import org.xmlrobot.Entry;
 import org.xmlrobot.Parity;
+import org.xmlrobot.Entry;
 import org.xmlrobot.ScrewDriver;
 import org.xmlrobot.numbers.Enumerator;
 

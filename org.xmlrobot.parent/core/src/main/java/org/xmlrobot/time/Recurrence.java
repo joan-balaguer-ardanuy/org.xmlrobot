@@ -1,7 +1,8 @@
 package org.xmlrobot.time;
 
-import org.xmlrobot.Parity;
 import org.xmlrobot.numbers.Enumerator;
+
+import org.xmlrobot.Parity;
 
 /**
  * <tt>

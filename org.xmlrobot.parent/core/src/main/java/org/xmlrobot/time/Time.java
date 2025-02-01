@@ -3,8 +3,9 @@ package org.xmlrobot.time;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-import org.xmlrobot.Parity;
 import org.xmlrobot.numbers.Enumerator;
+
+import org.xmlrobot.Parity;
 
 public abstract class Time
 	<K extends Recursive<K,V>,V extends Recursive<V,K>>
